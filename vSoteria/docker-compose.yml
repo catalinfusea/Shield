@@ -12,24 +12,24 @@ services:
             - 8500:8500
         restart: always
     shield-browser:
-        image: securebrowsing/shield-browser:latest
+        image: securebrowsing/shield-browser:161226-13.19
         restart: always
         hostname: browser
         shm_size: 1GB
     shield-proxy:
-        image: securebrowsing/squid-proxy:latest
+        image: securebrowsing/squid-proxy:161226-13.04
         hostname: proxy
         restart: always
         ports:
             - "3128:3128"
     icap-server:
-        image: securebrowsing/shield-icap:161226
+        image: securebrowsing/shield-icap:161226-13.02
         hostname: icap-server
         restart: always
         expose:
             - 8500
     shield-broker:
-        image: securebrowsing/shield-broker
+        image: securebrowsing/shield-broker:161226-13.10
         hostname: broker
         restart: always
     elk:
