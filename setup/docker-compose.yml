@@ -23,7 +23,7 @@ services:
         ports:
             - "3128:3128"
     icap-server:
-        image: securebrowsing/shield-icap:161225
+        image: securebrowsing/shield-icap:161226
         hostname: icap-server
         restart: always
         expose:
