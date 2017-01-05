@@ -9,20 +9,15 @@ apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E8
 apt-add-repository 'deb https://apt.dockerproject.org/repo ubuntu-xenial main'
 apt-get update
 apt-cache policy docker-engine
-
 apt-get install -y docker-engine
 service docker start
 
 #Verify that docker is installed correctly by running the hello-world image.
 docker run hello-world
 systemctl status docker
-
 curl -L "https://github.com/docker/compose/releases/download/1.9.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/bin/docker-compose
-
 chmod +x /usr/bin/docker-compose
+
 #Login and enter the credentials you received separately when prompt
-docker login 
-
+docker login
 ./run
-
-
