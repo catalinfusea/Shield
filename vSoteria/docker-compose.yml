@@ -17,7 +17,7 @@ services:
         hostname: browser
         shm_size: 1GB
     shield-proxy:
-        image: securebrowsing/squid-proxy:161226-13.04
+        image: securebrowsing/squid-proxy:latest
         hostname: proxy
         restart: always
         ports:
