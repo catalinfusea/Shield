@@ -20,6 +20,6 @@ curl -L "https://github.com/docker/compose/releases/download/1.9.0/docker-compos
 chmod +x /usr/bin/docker-compose
 
 #Login and enter the credentials you received separately when prompt
-echo 'docker login --username=$DOCKER_USER --password=$DOCKER_PASS'
+/bin/bash -c 'docker login --username="@0" --password="@1"' $DOCKER_USER $DOCKER_PASSWORD
 
 ./run
