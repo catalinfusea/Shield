@@ -1,0 +1,52 @@
+version: '2'
+
+services:
+    consul:
+        image: smebberson/alpine-consul
+        restart: always
+        expose:
+            - 8500
+    consului:
+        image: smebberson/alpine-consul-ui
+        ports:
+            - 8500:8500
+        restart: always
+    shield-browser:
+        image: securebrowsing/shield-browser:latest
+        restart: always
+        hostname: browser
+        shm_size: 1GB
+        ports:
+            - "9090:9090"
+    shield-proxy:
+        image: securebrowsing/squid-proxy:latest
+        hostname: proxy
+        restart: always
+        ports:
+            - "3128:3128"
+    icap-server:
+        image: securebrowsing/shield-icap:latest
+        hostname: icap-server
+        restart: always
+        ports:
+            - "1344:1344"
+    shield-broker:
+        image: securebrowsing/shield-broker:latest
+        hostname: broker
+        restart: always
+        ports:
+            - "8055:8055"
+    elk:
+        image: alpin3/elk 
+        hostname: elk
+        ports:
+            - "5601:5601"
+            - "5044:5044"
+            - "9200:9200"
+    portainer:
+        image: portainer/portainer
+        hostname: portainer
+        ports:
+            - "9000:9000"
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
