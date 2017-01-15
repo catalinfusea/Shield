@@ -1,7 +1,7 @@
 sudo su
 
-curl -o docker-compose.yml https://raw.githubusercontent.com/ErezPasternak/Shield/master/vSoteria/docker-compose.yml
-curl -o run https://raw.githubusercontent.com/ErezPasternak/Shield/master/vSoteria/run
+curl -o docker-compose.yml https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev15/docker-compose.yml
+curl -o run https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev15/run
 chmod 777 run
 
 apt-get update
