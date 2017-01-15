@@ -1,0 +1,27 @@
+version: '2'
+
+services:
+    shield-browser: 
+        image: securebrowsing/shield-browser:latest
+        restart: always
+        hostname: browser
+        volumes:
+            - /dev/shm:/dev/shm 
+    shield-proxy:
+        image: securebrowsing/shield-proxy
+        hostname: proxy
+        restart: always
+        ports:
+            - "8213:8213"
+    shield-broker:
+        image: securebrowsing/shield-broker
+        hostname: broker
+        restart: always
+        volumes:
+            - /dev/shm:/dev/shm 
+    elk:
+        image: sebp/elk
+        hostname: elk
+        ports:
+            - "5601:5601"
+            - "5044:5044"
