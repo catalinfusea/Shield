@@ -68,15 +68,15 @@ services:
             - "9000:9000"
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
-    # shield-proxy:
-    #     image: securebrowsing/squid-proxy:latest
-    #     hostname: proxy
-    #     restart: always
-    #     ports:
-    #         - "3128:3128"
-    # icap-server:
-    #     image: securebrowsing/shield-icap:latest
-    #     hostname: icap-server
-    #     restart: always
-    #     ports:
-    #         - "1344:1344"
+    shield-proxy:
+        image: securebrowsing/squid-proxy:latest
+        hostname: proxy
+        restart: always
+        ports:
+            - "3128:3128"
+    icap-server:
+        image: securebrowsing/shield-icap:latest
+        hostname: icap-server
+        restart: always
+        ports:
+            - "1344:1344"
