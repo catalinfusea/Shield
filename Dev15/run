@@ -1,0 +1,5 @@
+
+# Start the example.
+# add info on this
+
+docker-compose up -d && docker-compose scale nomad-client=3 consul=3 elk=1 shield-broker=1 shield-browser=1 shield-proxy=1 icap-server=1 && docker-compose logs

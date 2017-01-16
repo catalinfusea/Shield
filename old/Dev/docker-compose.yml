@@ -1,6 +1,31 @@
 version: '2'
 
 services:
+    nomad-server:
+        image:  securebrowsing/nomad-server:latest
+        restart: always
+        hostname: nomad-server
+        expose:
+            - 4646
+            - 4647
+            - 4648
+    nomad-client:
+        image:  securebrowsing/nomad-client:latest
+        restart: always
+        expose:
+            - 4646
+            - 4647
+            - 4648
+    nui:
+        image: iverberk/nomad-ui:v0.5.1
+        restart: always
+        ports:
+            - 3000:3000
+        environment:
+            - NOMAD_ADDR=http://nomad-server:4646
+            - NOMAD_ENABLE=true
+            - CONSUL_ENABLE=true
+            - CONSUL_ADDR=consul:8500
     consul:
         image: smebberson/alpine-consul
         restart: always
@@ -28,7 +53,6 @@ services:
             - 8080:8080
             - 9090:9090
             - 3389:3389
-            
     shield-broker:
         image: securebrowsing/shield-broker:latest
         hostname: broker
