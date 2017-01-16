@@ -25,7 +25,10 @@ services:
         depends_on:
             - "elk"
         ports:
+            - 8080:8080
             - 9090:9090
+            - 3389:3389
+            
     shield-broker:
         image: securebrowsing/shield-broker:latest
         hostname: broker
