@@ -7,6 +7,7 @@ Open a Shell:
 Create a new Folder and go to this folder
 
 Type the following commands:
-curl -o ES-setup.sh  "https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev15/ES-setup.sh"
+wget "https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev15/ES-setup.sh"
+(optionally: dos2unix ES-Setup.sh)
 chmod +x ES-Setup.sh
 ./ES-Setup.sh
