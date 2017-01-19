@@ -1,7 +1,8 @@
 #!/bin/bash
-# Ericom Shield
-# Installer
-#
+############################################
+#####   Ericom Shield Installer        #####
+#######################################BH###
+
 #Check if we are root
 if (( $EUID != 0 )); then
     sudo su
@@ -56,7 +57,7 @@ if [ "$#" -eq 2 ]; then
     echo "docker login" $1 $2
     docker login --username=$1 --password=$2
 else
-    echo " Please enter your login credentials to dockeri-hub"
+    echo " Please enter your login credentials to docker-hub"
     docker login
 fi
 
