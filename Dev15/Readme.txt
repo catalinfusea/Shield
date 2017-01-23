@@ -11,3 +11,6 @@ wget "https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev15/ES-set
 (optionally: dos2unix ES-setup.sh)
 chmod +x ES-setup.sh
 ./ES-setup.sh
+
+
+# This is a test for Commit
