@@ -20,16 +20,7 @@ services:
             - 4648
         volumes:
             - /tmp:/tmp
-    tech-admin:
-        image: securebrowsing/nomad-consul-ui:latest
-        restart: always
-        ports:
-            - 3000:3000
-        environment:
-            - NOMAD_ADDR=http://nomad-server:4646
-            - NOMAD_ENABLE=false
-            - CONSUL_ENABLE=true
-            - CONSUL_ADDR=consul:8500
+    
     consul:
         image: securebrowsing/shield-configuration:latest
         restart: always
@@ -38,7 +29,7 @@ services:
     shield-admin:
         image: securebrowsing/shield-admin:latest
         ports:
-            - 8500:8500
+            - 3000:3000
         restart: always
     shield-browser:
         image: securebrowsing/shield-browser:latest
