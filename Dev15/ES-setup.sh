@@ -1,8 +1,7 @@
 #!/bin/bash
-############################################
-#####   Ericom Shield Installer        #####
-#######################################BH###
-
+# Ericom Shield
+# Installer
+#
 #Check if we are root
 if (( $EUID != 0 )); then
     sudo su
@@ -32,7 +31,7 @@ if [ $(dpkg -l | grep  -c docker-engine ) -eq  0 ]; then
      echo "***************     Installing docker-engine"
      apt-cache policy docker-engine
      apt-get install -y docker-engine
-
+   
 else
      echo " ******* docker-engine is already installed"
 fi
@@ -42,12 +41,12 @@ service docker start
 #Verify that docker is installed correctly by running the hello-world image.
 #docker run hello-world
 #systemctl status docker
-
-if [ $( which docker-compose | wc -l ) -eq 0 ]; then
+ 
+if [ $( which docker-compose | wc -l ) -eq 0 ]; then 
    echo "***************     Installing docker-compose"
    curl -L "https://github.com/docker/compose/releases/download/1.9.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/bin/docker-compose
    chmod +x /usr/bin/docker-compose
-else
+else 
    echo "***************     DockerCompose is already installed"
 fi
 
@@ -58,7 +57,20 @@ if [ "$#" -eq 2 ]; then
     docker login --username=$1 --password=$2
 else
     echo " Please enter your login credentials to docker-hub"
-    docker login
+    docker login 
 fi
+    
+    if [ $? == 0 ]; then
+      echo "Login Succeeded!"
+    else
+      echo "Please try again:"
+      docker login 
+      if [ $? == 0 ]; then
+         echo "Login Succeeded!"
+        else
+         echo "Cannot Login, Exiting!"
+         exit
+      fi
+    fi
 
 ./run.sh
