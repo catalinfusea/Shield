@@ -1,7 +1,8 @@
 #!/bin/bash
-# Ericom Shield
-# Installer
-#
+############################################
+#####   Ericom Shield Installer        #####
+#######################################BH###
+
 #Check if we are root
 if (( $EUID != 0 )); then
     sudo su
