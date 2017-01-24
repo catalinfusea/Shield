@@ -27,7 +27,7 @@ services:
             - 3000:3000
         environment:
             - NOMAD_ADDR=http://nomad-server:4646
-            - NOMAD_ENABLE=true
+            - NOMAD_ENABLE=false
             - CONSUL_ENABLE=true
             - CONSUL_ADDR=consul:8500
     consul:
