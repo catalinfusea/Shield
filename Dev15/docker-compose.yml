@@ -41,7 +41,7 @@ services:
             - 8500:8500
         restart: always
     shield-browser:
-        image: securebrowsing/shield-browser
+        image: securebrowsing/shield-browser:latest
         restart: always
         hostname: browser
         shm_size: 1GB
