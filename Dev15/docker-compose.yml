@@ -9,6 +9,8 @@ services:
             - 4646
             - 4647
             - 4648
+        ports:
+            - 4646:4646
     nomad-client:
         image:  securebrowsing/nomad-client:latest
         restart: always
@@ -16,8 +18,10 @@ services:
             - 4646
             - 4647
             - 4648
-    nui:
-        image: iverberk/nomad-ui:v0.5.1
+        volumes:
+            - /tmp:/tmp
+    tech-admin:
+        image: securebrowsing/nomad-consul-ui:latest
         restart: always
         ports:
             - 3000:3000
@@ -27,17 +31,17 @@ services:
             - CONSUL_ENABLE=true
             - CONSUL_ADDR=consul:8500
     consul:
-        image: smebberson/alpine-consul
+        image: securebrowsing/shield-configuration:latest
         restart: always
         expose:
             - 8500
-    consului:
-        image: smebberson/alpine-consul-ui
+    shield-admin:
+        image: securebrowsing/shield-admin:latest
         ports:
             - 8500:8500
         restart: always
     shield-browser:
-        image: securebrowsing/shield-browser:latest
+        image: securebrowsing/shield-browser
         restart: always
         hostname: browser
         shm_size: 1GB
@@ -58,7 +62,7 @@ services:
         hostname: broker
         restart: always
     elk:
-        image: alpin3/elk 
+        image: alpin3/elk
         hostname: elk
         ports:
             - "5601:5601"
