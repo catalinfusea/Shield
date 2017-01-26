@@ -1,4 +1,4 @@
-version: '2'
+version: '2.1'
 
 services:
     nomad-server:
@@ -11,6 +11,11 @@ services:
             - 4648
         ports:
             - 4646:4646
+        depends_on:
+          elk:
+            condition: service_healthy
+          consul:
+            condition: service_started
     nomad-client:
         image:  securebrowsing/nomad-client:latest
         restart: always
@@ -20,44 +25,94 @@ services:
             - 4648
         volumes:
             - /tmp:/tmp
-    
+        depends_on:
+          elk:
+            condition: service_healthy
+          consul:
+            condition: service_started
+          nomad-server:
+            condition: service_started
     consul:
         image: securebrowsing/shield-configuration:latest
         restart: always
-        expose:
-            - 8500
     shield-admin:
         image: securebrowsing/shield-admin:latest
         ports:
             - 8500:8500
         restart: always
+        depends_on:
+          elk:
+            condition: service_healthy
+          consul:
+            condition: service_started    
     shield-browser:
-        image: securebrowsing/shield-browser:latest
+        image: securebrowsing/shield-browser
         restart: always
         hostname: browser
         shm_size: 1GB
         ports:
             - "9090:9090"
-    shield-proxy:
-        image: securebrowsing/squid-proxy:latest
+        depends_on:
+          elk:
+            condition: service_healthy
+          consul:
+            condition: service_started
+    proxy-server:
+        image: securebrowsing/proxy-server:latest
         hostname: proxy
         restart: always
         ports:
             - "3128:3128"
+        dns:
+            - 8.8.8.8
+            - 126.0.0.4
+            - 126.0.0.3
+        depends_on:
+          elk:
+            condition: service_healthy
+          icap-server:
+            condition: service_started 
+          consul:
+            condition: service_started
     icap-server:
-        image: securebrowsing/shield-icap:latest
+        image: securebrowsing/icap-server:latest
         hostname: icap-server
         restart: always
+        dns:
+            - 8.8.8.8
+            - 126.0.0.4
+            - 126.0.0.3
+        depends_on:
+          elk:
+             condition: service_healthy
+          consul:
+             condition: service_started
+          shield-broker:
+             condition: service_started
     shield-broker:
         image: securebrowsing/shield-broker:latest
         hostname: broker
         restart: always
+        depends_on:
+          elk:
+            condition: service_healthy
+          consul:
+            condition: service_started
     elk:
-        image: alpin3/elk
+        image: securebrowsing/shield-elk:latest
         hostname: elk
         ports:
             - "5601:5601"
             - "5044:5044"
+            - "9200:9200"
+        healthcheck:
+            test: ["CMD-SHELL", "curl -s -XGET 'http://localhost:9200/_cluster/health' | grep -q yellow"]
+            interval: 20s
+            timeout: 10s
+            retries: 5
+        depends_on:
+            - portainer
+            - consul
     portainer:
         image: portainer/portainer
         hostname: portainer
@@ -65,3 +120,4 @@ services:
             - "9000:9000"
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
+            
