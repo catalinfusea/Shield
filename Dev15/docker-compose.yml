@@ -63,10 +63,6 @@ services:
         restart: always
         ports:
             - "3128:3128"
-        dns:
-            - 8.8.8.8
-            - 126.0.0.4
-            - 126.0.0.3
         depends_on:
           elk:
             condition: service_healthy
@@ -78,10 +74,6 @@ services:
         image: securebrowsing/icap-server:latest
         hostname: icap-server
         restart: always
-        dns:
-            - 8.8.8.8
-            - 126.0.0.4
-            - 126.0.0.3
         depends_on:
           elk:
              condition: service_healthy
