@@ -43,13 +43,13 @@ service docker start
 #docker run hello-world
 #systemctl status docker
  
-if [ $( which docker-compose | wc -l ) -eq 0 ]; then 
+#if [ $( which docker-compose | wc -l ) -eq 0 ]; then 
    echo "***************     Installing docker-compose"
    curl -L "https://github.com/docker/compose/releases/download/1.10.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/bin/docker-compose
    chmod +x /usr/bin/docker-compose
-else 
-   echo "***************     DockerCompose is already installed"
-fi
+#else 
+#   echo "***************     DockerCompose is already installed"
+#fi
 
 
 if [ "$#" -eq 2 ]; then
