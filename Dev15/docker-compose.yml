@@ -1,37 +1,6 @@
 version: '2.1'
 
 services:
-    nomad-server:
-        image:  securebrowsing/nomad-server:latest
-        restart: always
-        hostname: nomad-server
-        expose:
-            - 4646
-            - 4647
-            - 4648
-        ports:
-            - 4646:4646
-        depends_on:
-          elk:
-            condition: service_healthy
-          consul:
-            condition: service_started
-    nomad-client:
-        image:  securebrowsing/nomad-client:latest
-        restart: always
-        expose:
-            - 4646
-            - 4647
-            - 4648
-        volumes:
-            - /tmp:/tmp
-        depends_on:
-          elk:
-            condition: service_healthy
-          consul:
-            condition: service_started
-          nomad-server:
-            condition: service_started
     consul:
         image: securebrowsing/shield-configuration:latest
         restart: always
@@ -51,7 +20,7 @@ services:
         hostname: browser
         shm_size: 1GB
         ports:
-            - "9090:9090"
+            - "9091:9090"
         depends_on:
           elk:
             condition: service_healthy
@@ -71,13 +40,12 @@ services:
           consul:
             condition: service_started
         volumes:
-            - /tmp/docker/squid/cache:/var/spool/squid3
+            - /tmp/docker/squid/cache:/var/cache/squid
+            - /tmp/docker/squid/log/squid:/var/log/squid
     icap-server:
         image: securebrowsing/icap-server:latest
         hostname: icap-server
         restart: always
-        ports:
-            - "1344:1344"
         depends_on:
           elk:
              condition: service_healthy
