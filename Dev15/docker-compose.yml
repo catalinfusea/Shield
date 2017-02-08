@@ -15,12 +15,9 @@ services:
           consul:
             condition: service_started    
     shield-browser:
-        image: securebrowsing/shield-browser:latest
+        image: securebrowsing/shield-cef
         restart: always
         hostname: browser
-        shm_size: 1GB
-        ports:
-            - "9091:9090"
         depends_on:
           elk:
             condition: service_healthy
