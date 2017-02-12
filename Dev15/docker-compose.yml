@@ -43,6 +43,8 @@ services:
         image: securebrowsing/icap-server:latest
         hostname: icap-server
         restart: always
+        ports:
+            - "3144:3144"
         depends_on:
           elk:
              condition: service_healthy
