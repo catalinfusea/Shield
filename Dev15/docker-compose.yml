@@ -43,6 +43,8 @@ services:
         image: securebrowsing/icap-server:latest
         hostname: icap-server
         restart: always
+        ports:
+             - "1344:1344"
         depends_on:
           elk:
              condition: service_healthy
@@ -50,8 +52,6 @@ services:
              condition: service_started
           shield-broker:
              condition: service_started
-          ports:
-             - "1344:1344"
     shield-broker:
         image: securebrowsing/shield-broker:latest
         hostname: broker
