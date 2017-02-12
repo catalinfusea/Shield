@@ -1,0 +1,86 @@
+version: '2.1'
+
+services:
+    consul:
+        image: securebrowsing/shield-configuration:latest
+        restart: always
+    shield-admin:
+        image: securebrowsing/shield-admin:latest
+        ports:
+            - 8500:8500
+        restart: always
+        depends_on:
+          elk:
+            condition: service_healthy
+          consul:
+            condition: service_started    
+    shield-browser:
+        image: securebrowsing/shield-cef
+        restart: always
+        hostname: browser
+        depends_on:
+          elk:
+            condition: service_healthy
+          consul:
+            condition: service_started
+    proxy-server:
+        image: securebrowsing/proxy-server:latest
+        hostname: proxy
+        restart: always
+        ports:
+            - "3129:3128"
+        depends_on:
+          elk:
+            condition: service_healthy
+          icap-server:
+            condition: service_started 
+          consul:
+            condition: service_started
+        volumes:
+            - /tmp/docker/squid/cache:/var/cache/squid
+            - /tmp/docker/squid/log/squid:/var/log/squid
+    icap-server:
+        image: securebrowsing/icap-server:latest
+        hostname: icap-server
+        restart: always
+        ports:
+             - "1344:1344"
+        depends_on:
+          elk:
+             condition: service_healthy
+          consul:
+             condition: service_started
+          shield-broker:
+             condition: service_started
+    shield-broker:
+        image: securebrowsing/shield-broker:latest
+        hostname: broker
+        restart: always
+        depends_on:
+          elk:
+            condition: service_healthy
+          consul:
+            condition: service_started
+    elk:
+        image: securebrowsing/shield-elk:latest
+        hostname: elk
+        ports:
+            - "5601:5601"
+            - "5044:5044"
+            - "9200:9200"
+        healthcheck:
+            test: ["CMD-SHELL", "curl -s -XGET 'http://localhost:9200/_cluster/health' | grep -q yellow"]
+            interval: 20s
+            timeout: 10s
+            retries: 5
+        depends_on:
+            - portainer
+            - consul
+    portainer:
+        image: portainer/portainer
+        hostname: portainer
+        ports:
+            - "9000:9000"
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+            
