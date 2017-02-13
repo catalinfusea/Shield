@@ -28,7 +28,7 @@ services:
         hostname: proxy
         restart: always
         ports:
-            - "3129:3128"
+            - "3128:3128"
         depends_on:
           elk:
             condition: service_healthy
@@ -45,22 +45,12 @@ services:
         restart: always
         ports:
              - "1344:1344"
+       
         depends_on:
           elk:
              condition: service_healthy
           consul:
              condition: service_started
-          shield-broker:
-             condition: service_started
-    shield-broker:
-        image: securebrowsing/shield-broker:latest
-        hostname: broker
-        restart: always
-        depends_on:
-          elk:
-            condition: service_healthy
-          consul:
-            condition: service_started
     elk:
         image: securebrowsing/shield-elk:latest
         hostname: elk
