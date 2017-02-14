@@ -27,7 +27,8 @@ services:
         image: securebrowsing/proxy-server:latest
         hostname: proxy
         restart: always
-        dns: 8.8.8.8
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
         ports:
             - "3128:3128"
         ulimits:
@@ -41,13 +42,18 @@ services:
             condition: service_started 
           consul:
             condition: service_started
-        volumes:
-            - /tmp/docker/squid/cache:/var/cache/squid
-            - /tmp/docker/squid/log/squid:/var/log/squid
     icap-server:
         image: securebrowsing/icap-server:latest
         hostname: icap-server
         restart: always
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+        ports:
+            - "1344:1344"
+        ulimits:
+          nofile:
+            soft: 65535
+            hard: 65535
         depends_on:
           elk:
              condition: service_healthy
