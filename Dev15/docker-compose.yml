@@ -23,6 +23,9 @@ services:
             condition: service_healthy
           consul:
             condition: service_started
+        dns: 
+            - 126.0.0.3
+            - 8.8.8.8
     proxy-server:
         image: securebrowsing/proxy-server:latest
         hostname: proxy
