@@ -46,7 +46,7 @@ services:
           consul:
             condition: service_started
     icap-server:
-        image: securebrowsing/icap-server:170216-10.05
+        image: securebrowsing/icap-server:170216-10.42
         hostname: icap-server
         restart: always
         environment:
