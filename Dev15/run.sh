@@ -4,9 +4,8 @@
 
 echo "***********       Launching docker-compose up"
 echo "                  consul=3"
-echo "                  consului=1 "
+echo "                  shield-admin=1 "
 echo "                  elk=1 "
-echo "                  shield-broker=1 "
 echo "                  shield-browser=1 "
 echo "                  proxy-server=1 "
 echo "                  icap-server=1"

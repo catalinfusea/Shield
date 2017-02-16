@@ -15,7 +15,7 @@ services:
           consul:
             condition: service_started    
     shield-browser:
-        image: securebrowsing/shield-cef
+        image: securebrowsing/shield-cef:170215-23.15
         restart: always
         hostname: browser
         depends_on:
@@ -27,7 +27,7 @@ services:
             - 126.0.0.3
             - 8.8.8.8
     proxy-server:
-        image: securebrowsing/proxy-server:latest
+        image: securebrowsing/proxy-server:170216-08.30
         hostname: proxy
         restart: always
         volumes:
@@ -46,7 +46,7 @@ services:
           consul:
             condition: service_started
     icap-server:
-        image: securebrowsing/icap-server:latest
+        image: securebrowsing/icap-server:170215-23.13
         hostname: icap-server
         restart: always
         environment:
