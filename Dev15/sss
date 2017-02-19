@@ -1,21 +1,13 @@
-version: '2.1'
+   dns: 8.8.8.8
+
+   version: '2.1'
 
 services:
     consul:
         image: securebrowsing/shield-configuration:latest
         restart: always
     shield-admin:
-        image: securebrowsing/shield-admin
-        ports:
-            - 8181:8181
-        restart: always
-        depends_on:
-          elk:
-            condition: service_healthy
-          consul:
-            condition: service_started    
-    shield-admin1:
-        image: securebrowsing/shield-admin-orig:latest
+        image: securebrowsing/shield-admin:latest
         ports:
             - 8500:8500
         restart: always
@@ -33,17 +25,11 @@ services:
             condition: service_healthy
           consul:
             condition: service_started
-        dns: 
-            - 126.0.0.3
-            - 8.8.8.8
     proxy-server:
-        image: securebrowsing/proxy-server
+        image: securebrowsing/proxy-server:latest
         hostname: proxy
         restart: always
-        links: 
-            - icap-server
-        volumes:
-            - /var/run/docker.sock:/var/run/docker.sock
+        dns: 8.8.8.8
         ports:
             - "3128:3128"
         ulimits:
@@ -57,12 +43,16 @@ services:
             condition: service_started 
           consul:
             condition: service_started
+        volumes:
+            - /tmp/docker/squid/cache:/var/cache/squid
+            - /tmp/docker/squid/log/squid:/var/log/squid
+            - /var/run/docker.sock:/var/run/docker.sock
     icap-server:
-        image: securebrowsing/icap-server:170216-10.42
+        image: securebrowsing/icap-server:latest
         hostname: icap-server
         restart: always
-        environment:
-            - NODE_ENV=production
+        ports:
+            - "1344:1344"
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
         ulimits:
