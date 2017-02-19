@@ -13,9 +13,19 @@ services:
           elk:
             condition: service_healthy
           consul:
-            condition: service_started    
+            condition: service_started  
+    shield-admin1:
+        image: securebrowsing/shield-admin-orig:170219-20.17
+        ports:
+            - 8500:8500
+        restart: always
+        depends_on:
+          elk:
+            condition: service_healthy
+          consul:
+            condition: service_started      
     shield-browser:
-        image: securebrowsing/shield-cef:170219-08.29
+        image: securebrowsing/shield-cef:170219-19.52
         restart: always
         hostname: browser
         depends_on:
