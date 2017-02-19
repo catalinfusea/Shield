@@ -15,7 +15,7 @@ services:
           consul:
             condition: service_started  
     shield-admin1:
-        image: securebrowsing/shield-admin-orig:170219-20.17
+        image: securebrowsing/shield-admin-orig:170219-21.06
         ports:
             - 8500:8500
         restart: always
