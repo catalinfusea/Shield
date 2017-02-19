@@ -82,8 +82,8 @@ Vagrant.configure("2") do |config|
     apt-get update
     apt-get upgrade
     apt-get install -y git tofrodos dos2unix firefox 
-    mkdir shield
-    cd shield
+    mkdir ericomshield
+    cd ericomshield
     ES_repo_run="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev15/run.sh"
     ES_repo_yml="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev15/docker-compose.yml"
     curl -s -S -o docker-compose.yml $ES_repo_yml
@@ -95,7 +95,7 @@ Vagrant.configure("2") do |config|
     sudo ./ES-setup.sh "benyh" "Ericom123$"
     echo ' '
     echo ' ' 
-    echo ' your shield VM is ready '
+    echo ' your ericomshield VM is ready '
     echo ' your VM address is '
     echo ' '
     hostname -I | cut -d' ' -f2
