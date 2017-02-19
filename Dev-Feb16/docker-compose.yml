@@ -27,7 +27,7 @@ services:
             - 126.0.0.3
             - 8.8.8.8
     proxy-server:
-        image: securebrowsing/proxy-server:170216-08.30
+        image: securebrowsing/proxy-server:170219-16.06
         hostname: proxy
         restart: always
         volumes:
