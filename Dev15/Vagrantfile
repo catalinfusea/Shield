@@ -19,7 +19,7 @@ Vagrant.configure("2") do |config|
 #   condig.vm.box = "pulsesecure/alpine-3.3-x86_64-docker"
 
   # Assign a friendly name to this host VM
-   config.vm.hostname = "docker-host"
+   config.vm.hostname = "es-host"
 
  # config.vm.provision :docker
  # config.vm.provision :docker_login, username: "benyh", password: "Ericom123$"
@@ -33,7 +33,12 @@ Vagrant.configure("2") do |config|
   # within the machine from a port on the host machine. In the example below,
   # accessing "localhost:8080" will access port 80 on the guest machine.
   # config.vm.network "forwarded_port", guest: 80, host: 8080
-
+   config.vm.network "forwarded_port", guest: 22, host: 10022
+   config.vm.network "forwarded_port", guest: 9000, host: 19000
+   config.vm.network "forwarded_port" , guest: 3128, host: 13128
+   config.vm.network "forwarded_port" , guest: 5601, host: 15601
+   config.vm.network "forwarded_port" , guest: 8500, host: 18500
+  
   # Create a private network, which allows host-only access to the machine
   # using a specific IP.
   # config.vm.network "private_network", ip: "192.168.33.10"
@@ -41,8 +46,8 @@ Vagrant.configure("2") do |config|
   # Create a public network, which generally matched to bridged network.
   # Bridged networks make the machine appear as another physical device on
   # your network.
-#  config.vm.network "public_network"
-  config.vm.network "public_network"
+  #  config.vm.network "public_network"
+  
 
   # Share an additional folder to the guest VM. The first argument is
   # the path on the host to the actual folder. The second argument is
@@ -101,10 +106,11 @@ Vagrant.configure("2") do |config|
     hostname -I | cut -d' ' -f2
     echo ' '
     echo ' you can use these ports'
-    echo ' port 9000 - admin'
-    echo ' port 3128 - proxy'
-    echo ' port 5601 - logs'
-    echo ' port 8500 - consul'
+    echo ' port 10022 - ssh'
+    echo ' port 19000 - admin'
+    echo ' port 13128 - proxy'
+    echo ' port 15601 - logs'
+    echo ' port 18500 - consul'
     echo ' '
     echo ' Have a nice day'
   SHELL
