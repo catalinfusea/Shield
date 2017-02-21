@@ -2,6 +2,8 @@
 ############################################
 #####   Ericom Shield Installer        #####
 #######################################BH###
+Version="8.0.0.0001"
+
 #Check if we are root
 if (( $EUID != 0 )); then
 #    sudo su
@@ -20,6 +22,11 @@ ES_repo_yml="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev15
 
 
 echo "***************     Installing Ericom Shield ..."
+
+if [ $(dpkg -l | grep  -c curl ) -eq  0 ]; then
+    echo "***************     Installing curl"
+    sudo apt-get install curl
+fi
 
 curl -s -S -o docker-compose.yml $ES_repo_yml
 curl -s -S -o run.sh $ES_repo_run
@@ -77,3 +84,7 @@ fi
     fi
 
 ./run.sh
+
+echo "***************     Success!"
+echo "***************"
+echo "***************     Ericom Shield Version:" $Version "is up and running"
