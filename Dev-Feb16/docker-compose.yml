@@ -25,7 +25,7 @@ services:
           consul:
             condition: service_started      
     shield-browser:
-        image: securebrowsing/shield-cef:170221-08.50
+        image: securebrowsing/shield-cef:170222-07.38
         restart: always
         hostname: browser
         depends_on:
@@ -56,7 +56,7 @@ services:
           consul:
             condition: service_started
     icap-server:
-        image: securebrowsing/icap-server:170221-08.16
+        image: securebrowsing/icap-server:170221-17.31
         hostname: icap-server
         restart: always
         environment:
