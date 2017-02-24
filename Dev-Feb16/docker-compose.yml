@@ -25,7 +25,7 @@ services:
           consul:
             condition: service_started      
     shield-browser:
-        image: securebrowsing/shield-cef:170222-07.38
+        image: securebrowsing/shield-cef:170222-12.03
         restart: always
         hostname: browser
         depends_on:
@@ -56,9 +56,11 @@ services:
           consul:
             condition: service_started
     icap-server:
-        image: securebrowsing/icap-server:170221-17.31
+        image: securebrowsing/icap-server:170224-11.05
         hostname: icap-server
         restart: always
+        ports:
+            - "1344:1344"
         environment:
             - NODE_ENV=production
         volumes:
@@ -93,5 +95,4 @@ services:
         ports:
             - "9000:9000"
         volumes:
-            - /var/run/docker.sock:/var/run/docker.sock
-            
+            - /var/run/docker.sock:/var/run/docker.sock            
