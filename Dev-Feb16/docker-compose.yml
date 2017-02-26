@@ -25,7 +25,7 @@ services:
           consul:
             condition: service_started      
     shield-browser:
-        image: securebrowsing/shield-cef:170226-09.03
+        image: securebrowsing/shield-cef:170226-17.55
         restart: always
         hostname: browser
         depends_on:
@@ -60,7 +60,7 @@ services:
         hostname: icap-server
         restart: always
         ports:
-            - "1344:1344"
+            - "13441:13441"
         environment:
             - NODE_ENV=production
         volumes:
