@@ -2,15 +2,19 @@
 ############################################
 #####   Ericom Shield Installer        #####
 #######################################BH###
+Version="8.0.0.0001"
 
 #Check if we are root
 if (( $EUID != 0 )); then
-    sudo su
+#    sudo su
+        echo " Please run it as Root"
+        echo "sudo" $0 $1 $2
+        exit
 fi
 
 # Development Repository: (Latest)
-ES_repo_run="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev15/run.sh"
-ES_repo_yml="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev15/docker-compose.yml"
+ES_repo_run="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/run.sh"
+ES_repo_yml="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/docker-compose.yml"
 
 # Production Repository: (Stable)
 #ES_repo_run="https://raw.githubusercontent.com/ErezPasternak/Shield/master/vSoteria/run"
@@ -18,6 +22,11 @@ ES_repo_yml="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev15
 
 
 echo "***************     Installing Ericom Shield ..."
+
+if [ $(dpkg -l | grep  -c curl ) -eq  0 ]; then
+    echo "***************     Installing curl"
+    sudo apt-get install curl
+fi
 
 curl -s -S -o docker-compose.yml $ES_repo_yml
 curl -s -S -o run.sh $ES_repo_run
@@ -75,3 +84,7 @@ fi
     fi
 
 ./run.sh
+
+echo "***************     Success!"
+echo "***************"
+echo "***************     Ericom Shield Version:" $Version "is up and running"
