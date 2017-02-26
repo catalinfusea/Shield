@@ -5,7 +5,7 @@ services:
         image: securebrowsing/shield-configuration:latest
         restart: always
     shield-admin:
-        image: securebrowsing/shield-admin:170220-11.56
+        image: securebrowsing/shield-admin:170226-08.46
         ports:
             - 8181:8181
         restart: always
