@@ -89,12 +89,7 @@ Vagrant.configure("2") do |config|
     apt-get install -y git tofrodos dos2unix firefox 
     mkdir ericomshield
     cd ericomshield
-    ES_repo_run="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev15/run.sh"
-    ES_repo_yml="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev15/docker-compose.yml"
-    curl -s -S -o docker-compose.yml $ES_repo_yml
-    curl -s -S -o run.sh $ES_repo_run
-    chmod +x run.sh
-    wget https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev15/ES-setup.sh
+    wget https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/ES-setup.sh
     dos2unix ES-setup.sh  
     chmod o+x ES-setup.sh
     sudo ./ES-setup.sh "benyh" "Ericom123$"
