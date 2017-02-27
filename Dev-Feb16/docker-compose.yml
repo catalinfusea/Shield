@@ -25,7 +25,7 @@ services:
           consul:
             condition: service_started      
     shield-browser:
-        image: securebrowsing/shield-cef:170226-17.55
+        image: securebrowsing/shield-cef:170227-18.28
         restart: always
         hostname: browser
         depends_on:
