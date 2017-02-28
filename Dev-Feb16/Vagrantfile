@@ -97,7 +97,7 @@ Vagrant.configure("2") do |config|
     echo ' '
     echo ' ' 
     echo ' your ericomshield VM is ready '
-    echo ' your VM HostName is:
+    echo ' your VM HostName is:'
     hostname
     echo ' your VM address is:'
     echo ' '
