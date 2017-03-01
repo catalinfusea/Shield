@@ -5,7 +5,7 @@ services:
         image: securebrowsing/shield-configuration:latest
         restart: always
     shield-admin:
-        image: securebrowsing/shield-admin:170226-08.46
+        image: securebrowsing/shield-admin:170301-17.56
         ports:
             - 8181:8181
         restart: always
@@ -25,7 +25,7 @@ services:
           consul:
             condition: service_started      
     shield-browser:
-        image: securebrowsing/shield-cef:170301-16.07
+        image: securebrowsing/shield-cef:170301-17.56
         shm_size: 1GB
         restart: always
         hostname: browser
@@ -81,7 +81,7 @@ services:
             - "1345:1344"
         environment:
             - NODE_ENV=production
-            - SHIELD_VER=8.0.0.0
+            - SHIELD_VER=8.0.0.1
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
         ulimits:
