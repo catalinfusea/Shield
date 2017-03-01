@@ -25,7 +25,7 @@ services:
           consul:
             condition: service_started      
     shield-browser:
-        image: securebrowsing/shield-cef:170227-18.28
+        image: securebrowsing/shield-cef:170301-16.07
         shm_size: 1GB
         restart: always
         hostname: browser
@@ -56,14 +56,32 @@ services:
             condition: service_started 
           consul:
             condition: service_started
+    extproxy:
+        image: securebrowsing/extproxy
+        hostname: extproxy
+        restart: always
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+        ports:
+            - "3138:3138"
+        ulimits:
+          nofile:
+            soft: 65535
+            hard: 65535
+        depends_on:
+          elk:
+            condition: service_healthy
+          consul:
+            condition: service_started
     icap-server:
-        image: securebrowsing/icap-server:170224-11.05
+        image: securebrowsing/icap-server:170301-14.36
         hostname: icap-server
         restart: always
         ports:
-            - "13441:13441"
+            - "1345:1344"
         environment:
             - NODE_ENV=production
+            - SHIELD_VER=8.0.0.0
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
         ulimits:
