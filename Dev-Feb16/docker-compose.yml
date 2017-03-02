@@ -79,7 +79,7 @@ services:
         restart: always
         environment:
             - NODE_ENV=production
-            - SHIELD_VER=8.0.0.5
+            - SHIELD_VER=8.0.0.6
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
         ulimits:
@@ -112,4 +112,5 @@ services:
         ports:
             - "9000:9000"
         volumes:
-            - /var/run/docker.sock:/var/run/docker.sock            
+            - /var/run/docker.sock:/var/run/docker.sock   
+            - /tmp/portainer/data:/data         
