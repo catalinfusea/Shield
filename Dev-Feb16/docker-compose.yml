@@ -5,7 +5,7 @@ services:
         image: securebrowsing/shield-configuration:latest
         restart: always
     shield-admin:
-        image: securebrowsing/shield-admin:170301-17.56
+        image: securebrowsing/shield-admin:170302-15.40
         ports:
             - 8181:8181
         restart: always
@@ -78,7 +78,7 @@ services:
         restart: always
         environment:
             - NODE_ENV=production
-            - SHIELD_VER=8.0.0.7
+            - SHIELD_VER=8.0.0.8
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
         ulimits:
