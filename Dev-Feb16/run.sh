@@ -1,6 +1,8 @@
 #!/bin/bash
-# Ericom Shield
-# Launch Dockers for Ericom Shield
+############################################
+#####   Ericom Shield Run              #####
+#######################################BH###
+
 
 echo "***********       Launching docker-compose up"
 echo "                  consul=3"
