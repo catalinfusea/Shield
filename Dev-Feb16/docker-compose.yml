@@ -25,7 +25,7 @@ services:
           consul:
             condition: service_started      
     shield-browser:
-        image: securebrowsing/shield-cef:170302-13.55
+        image: securebrowsing/shield-cef:170302-18.07
         shm_size: 1GB
         restart: always
         hostname: browser
@@ -73,12 +73,12 @@ services:
           consul:
             condition: service_started
     icap-server:
-        image: securebrowsing/icap-server:170302-11.28
+        image: securebrowsing/icap-server:170302-18.09
         hostname: icap-server
         restart: always
         environment:
             - NODE_ENV=production
-            - SHIELD_VER=8.0.0.8
+            - SHIELD_VER=8.0.0.9
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
         ulimits:
