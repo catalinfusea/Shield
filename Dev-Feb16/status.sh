@@ -2,7 +2,7 @@
 ############################################
 #####   Ericom Shield Run              #####
 #######################################BH###
-ES_PATH="/home/ericom/ericomshield"
+ES_PATH="/usr/local/ericomshield"
 ES_RUN="$ES_PATH/run.sh"
 
 NUM=`grep scale $ES_RUN | tr '\n' ' ' | sed -e 's/[^0-9]/ /g' -e 's/^ *//g' -e 's/ *$//g' | tr -s ' ' | sed 's/ /'+'/g'`
