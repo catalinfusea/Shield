@@ -2,7 +2,7 @@
 #######################################BH###
 
 SHIELD_BROWSER=10
-ES_PATH=/home/ericom/ericomshield
+ES_PATH=/usr/local/ericomshield
 
 cd $ES_PATH
 
