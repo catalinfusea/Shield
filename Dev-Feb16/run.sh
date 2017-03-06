@@ -2,6 +2,9 @@
 #######################################BH###
 
 SHIELD_BROWSER=10
+ES_PATH=/home/ericom/ericomshield
+
+cd $ES_PATH
 
 echo "***********       Launching docker-compose up"
 echo "                  consul=3"
