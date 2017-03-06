@@ -3,4 +3,7 @@
 #####   Ericom Shield ShowVersion      #####
 #######################################BH###
 
-cat .version
+ES_PATH="/usr/local/ericomshield"
+ES_VER="$ES_PATH/.version"
+
+cat $ES_VER
