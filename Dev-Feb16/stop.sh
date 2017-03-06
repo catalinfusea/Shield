@@ -2,7 +2,7 @@
 ############################################
 #####   Ericom Shield Stop             #####
 #######################################BH###
-ES_PATH=/home/ericom/ericomshield
+ES_PATH=/usr/local/ericomshield
 
 cd $ES_PATH
 echo "***********       Stopping ericomshield dockers "
