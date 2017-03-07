@@ -1,7 +1,5 @@
 #####   Ericom Shield Run              #####
 #######################################BH###
-
-SHIELD_BROWSER=10
 ES_PATH=/usr/local/ericomshield
 
 cd $ES_PATH
@@ -14,5 +12,6 @@ echo "                  shield-browser=$SHIELD_BROWSER "
 echo "                  proxy-server=1 "
 echo "                  icap-server=1"
 echo "***********       "
-docker-compose up -d && docker-compose scale consul=3 shield-admin=1 elk=1 shield-browser=$SHIELD_BROWSER proxy-server=1 icap-server=1
+# Statsu script is using that command: Number of Expected Dockers is taken from here (numbers)
+docker-compose up -d && docker-compose scale consul=3 shield-admin=1 elk=1 shield-browser=10 proxy-server=1 icap-server=1
 # && docker-compose logs
