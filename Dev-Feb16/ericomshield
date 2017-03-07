@@ -4,7 +4,7 @@
 #######################################BH###
 
 ### BEGIN INIT INFO
-# Provides:          Ericom Software
+# Provides:          ericomshield
 # Required-Start:    $local_fs $network $named $time $syslog
 # Required-Stop:     $local_fs $network $named $time $syslog
 # Default-Start:     2 3 4 5
@@ -26,6 +26,7 @@ SCRIPT="$ES_PATH/autoupdate.sh"
 STOP_SCRIPT="$ES_PATH/stop.sh"
 VERSION_SCRIPT="$ES_PATH/showversion.sh"
 STATUS_SCRIPT="$ES_PATH/status.sh"
+START_SCRIPT="$ES_PATH/run.sh"
 RUNAS=root
 
 if [ $(whoami) != $RUNAS ]; then
@@ -51,7 +52,6 @@ if [ ! -d /var/log/ericom ]; then
     chmod 0777 /var/run/ericom
 fi
 
-
 start() {
   printf 'Starting service ...' >&2
 
@@ -62,6 +62,8 @@ start() {
 
   local CMD="$SCRIPT exec ${cmdLineArray[@]:1:$len} 1>&2 & echo \$!"
   su -c "$CMD" $RUNAS > "$PIDFILE"
+  local CMD="$START_SCRIPT exec ${cmdLineArray[@]:1:$len} 1>&2 & echo \$!"  
+  su -c "$CMD" $RUNAS > "$PIDFILE"  
   echo ' Service started' >&2
 }
 
