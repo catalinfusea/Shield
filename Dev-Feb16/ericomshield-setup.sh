@@ -62,7 +62,7 @@ fi
 
 if [ ! -f "ericomshield-setup.sh" ]; then
    curl -s -S -o ericomshield-setup.sh $ES_repo_setup
-   chmod +x ES-setup.sh
+   chmod +x ericomshield-setup.sh
 fi
 curl -s -S -o run.sh $ES_repo_run
 chmod +x run.sh
