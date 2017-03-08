@@ -86,7 +86,7 @@ if [ $UPDATE -eq 0 ]; then
          apt-add-repository 'deb https://apt.dockerproject.org/repo ubuntu-xenial main'
          apt-get update
          apt-cache policy docker-engine
-         apt-get install -y docker-engine
+         apt-get --assume-yes -y install docker-engine
 
     else
          echo " ******* docker-engine is already installed"
