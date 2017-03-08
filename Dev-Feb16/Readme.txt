@@ -7,10 +7,8 @@ Open a Shell:
 Create a new Folder and go to this folder
 
 Type the following commands:
-wget "https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/ES-setup.sh"
-(optionally: dos2unix ES-setup.sh)
-chmod +x ES-setup.sh
-./ES-setup.sh
+wget "https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/ericomshield-setup.sh"
+chmod +x ericomshield-setup.sh
+./ericomshield-setup.sh
 
-
-# This is a test for Commit
+Ericom Shield will be installed and ericomshield service will be available 
