@@ -12,7 +12,7 @@ if (( $EUID != 0 )); then
 fi
 ES_PATH="/usr/local/ericomshield"
 LOGFILE="$ES_PATH/ericomshield.log"
-DOCKER_VERSION="1.13"
+DOCKER_VERSION="17.03"
 DOCKER_COMPOSE_VERSION="1.10"
 UPDATE=0
 
@@ -66,7 +66,7 @@ if [ ! -f "ericomshield-setup.sh" ]; then
    chmod +x ericomshield-setup.sh
 fi
 curl -s -S -o run.sh $ES_repo_run
-if [ "a$3" =="a-eval" ]; then
+if [ "a$3" == "a-eval" ]; then
    curl -s -S -o run.sh $ES_repo_run_eval
 fi
 chmod +x run.sh
