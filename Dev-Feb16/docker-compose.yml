@@ -72,12 +72,12 @@ services:
           consul:
             condition: service_started
     icap-server:
-        image: securebrowsing/icap-server:170306-09.13
+        image: securebrowsing/icap-server:170307-17.25
         hostname: icap-server
         restart: always
         environment:
             - NODE_ENV=production
-            - SHIELD_VER=8.0.0.10
+            - SHIELD_VER=8.0.0.11
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
         ulimits:
