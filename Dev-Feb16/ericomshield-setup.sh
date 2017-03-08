@@ -16,7 +16,7 @@ LOGFILE="$ES_PATH/ericomshield.log"
 UPDATE=0
 
 # Development Repository: (Latest)
-ES_repo_setup="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/ES-setup.sh"
+ES_repo_setup="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/ericomshield-setup.sh"
 ES_repo_run="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/run.sh"
 ES_repo_update="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/autoupdate.sh"
 ES_repo_version="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/showversion.sh"
@@ -59,8 +59,8 @@ if [ -f "docker-compose.yml" ]; then
    mv docker-compose.yml.1 docker-compose.yml
 fi
 
-if [ ! -f "ES-setup.sh" ]; then
-   curl -s -S -o ES-setup.sh $ES_repo_setup
+if [ ! -f "ericomshield-setup.sh" ]; then
+   curl -s -S -o ericomshield-setup.sh $ES_repo_setup
    chmod +x ES-setup.sh
 fi
 curl -s -S -o run.sh $ES_repo_run
