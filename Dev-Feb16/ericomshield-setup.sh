@@ -12,7 +12,8 @@ if (( $EUID != 0 )); then
 fi
 ES_PATH="/usr/local/ericomshield"
 LOGFILE="$ES_PATH/ericomshield.log"
-
+DOCKER_VERSION="1.13"
+DOCKER_COMPOSE_VERSION="1.10"
 UPDATE=0
 
 # Development Repository: (Latest)
@@ -78,7 +79,7 @@ chmod +x ericomshield
 
 if [ $UPDATE -eq 0 ]; then
 
-    if [ $(dpkg -l | grep  -c docker-engine ) -eq  0 ]; then
+    if [ $(sudo docker version | grep $DOCKER_VERSION |wc -l ) -le  1 ]; then
          echo "***************     Installing docker-engine"
          apt-get update
          apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
@@ -97,7 +98,7 @@ if [ $UPDATE -eq 0 ]; then
     #docker run hello-world
     #systemctl status docker
 
-    if [ $( which docker-compose | wc -l ) -eq 0 ]; then
+    if [ $(  sudo docker-compose version | grep $DOCKER_COMPOSE_VERSION |wc -l ) -eq 0 ]; then
        echo "***************     Installing docker-compose"
        curl -L "https://github.com/docker/compose/releases/download/1.10.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
        chmod +x /usr/local/bin/docker-compose
