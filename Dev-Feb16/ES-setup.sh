@@ -10,6 +10,8 @@ if (( $EUID != 0 )); then
         echo "sudo" $0 $1 $2
         exit
 fi
+ES_PATH="/usr/local/ericomshield"
+LOGFILE="$ES_PATH/ericomshield.log"
 
 UPDATE=0
 
@@ -17,12 +19,26 @@ UPDATE=0
 ES_repo_run="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/run.sh"
 ES_repo_update="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/autoupdate.sh"
 ES_repo_version="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/showversion.sh"
+ES_repo_stop="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/stop.sh"
+ES_repo_status="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/status.sh"
+ES_repo_service="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/ericomshield"
 ES_repo_yml="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/docker-compose.yml"
 
 if [ $(dpkg -l | grep  -c curl ) -eq  0 ]; then
     echo "***************     Installing curl"
     sudo apt-get install curl
 fi
+
+# Create the Ericom empty dir if necessary
+if [ ! -d $ES_PATH ]; then
+    mkdir -p $ES_PATH
+    chmod 0755 $ES_PATH
+fi
+if [ ! -d /var/log/ericom ]; then
+    mkdir -p /var/log/ericom
+    chmod 0777 /var/run/ericom
+fi
+cd $ES_PATH
 
 curl -s -S -o docker-compose.yml.1 $ES_repo_yml
 if [ -f "docker-compose.yml" ]; then
@@ -31,12 +47,14 @@ if [ -f "docker-compose.yml" ]; then
       exit
     else
       echo "***************     Updating EricomShield"
+      echo "$(date): New version found:  Updating EricomShield" >> "$LOGFILE"
       mv docker-compose.yml docker-compose.yml.org
       mv docker-compose.yml.1 docker-compose.yml
       UPDATE=1
    fi
  else
    echo "***************     Installing EricomShield ..."
+   echo "$(date): Installing EricomShield" >> "$LOGFILE"
    mv docker-compose.yml.1 docker-compose.yml
 fi
 
@@ -46,6 +64,12 @@ curl -s -S -o autoupdate.sh $ES_repo_update
 chmod +x autoupdate.sh
 curl -s -S -o showversion.sh $ES_repo_version
 chmod +x showversion.sh
+curl -s -S -o stop.sh $ES_repo_stop
+chmod +x stop.sh
+curl -s -S -o status.sh $ES_repo_status
+chmod +x status.sh
+curl -s -S -o ericomshield $ES_repo_service
+chmod +x ericomshield
 
 if [ $UPDATE -eq 0 ]; then
 
@@ -76,27 +100,36 @@ if [ $UPDATE -eq 0 ]; then
        echo "***************     DockerCompose is already installed"
     fi
 
-    if [ "$#" -eq 2 ]; then
-        #Login and enter the credentials you received separately when prompt
-        echo "docker login" $1 $2
-        docker login --username=$1 --password=$2
-    else
-        echo " Please enter your login credentials to docker-hub"
-        docker login
+    if [ $(docker info | grep Username |wc -l) -eq 0 ]; then
+       if [ "$#" -eq 2 ]; then
+           #Login and enter the credentials you received separately when prompt
+           echo "docker login" $1 $2
+           docker login --username=$1 --password=$2
+       else
+           echo " Please enter your login credentials to docker-hub"
+           docker login
+       fi
+
+       if [ $? == 0 ]; then
+         echo "Login Succeeded!"
+       else
+         echo "Please try again:"
+         docker login
+         if [ $? == 0 ]; then
+            echo "Login Succeeded!"
+           else
+            echo "Cannot Login, Exiting!"
+            exit 1
+         fi
+       fi
     fi
 
-    if [ $? == 0 ]; then
-      echo "Login Succeeded!"
-    else
-      echo "Please try again:"
-      docker login
-      if [ $? == 0 ]; then
-         echo "Login Succeeded!"
-        else
-         echo "Cannot Login, Exiting!"
-         exit
-      fi
-    fi
+
+    echo "**************  Creating the ericomshield service..."
+    cp ericomshield /etc/init.d/
+    update-rc.d ericomshield defaults
+    systemctl daemon-reload
+    echo "Done!"
 fi
 
 ./run.sh
@@ -104,7 +137,10 @@ fi
 grep SHIELD_VER docker-compose.yml  > .version
 grep image docker-compose.yml >> .version
 
+service ericomshield start
+
 Version=`grep  SHIELD_VER docker-compose.yml`
 echo "***************     Success!"
 echo "***************"
 echo "***************     Ericom Shield Version:" $Version "is up and running"
+echo "$(date): Ericom Shield Version:" $Version "is up and running" >> "$LOGFILE"
