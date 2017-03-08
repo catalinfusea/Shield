@@ -12,7 +12,7 @@ cd $ES_PATH
 while true
 do
         echo "."
-        ./ES-setup.sh
+        ./ericomshield-setup.sh
         sleep 5m
         ./status.sh
         if [ $? -ne 0 ]; then
