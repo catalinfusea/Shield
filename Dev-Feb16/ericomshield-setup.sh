@@ -65,7 +65,11 @@ if [ ! -f "ericomshield-setup.sh" ]; then
    chmod +x ericomshield-setup.sh
 fi
 curl -s -S -o run.sh $ES_repo_run
+if [ "$3" =="-eval" ]; then
+   curl -s -S -o run.sh $ES_repo_run_eval
+fi
 chmod +x run.sh
+
 curl -s -S -o autoupdate.sh $ES_repo_update
 chmod +x autoupdate.sh
 curl -s -S -o showversion.sh $ES_repo_version
