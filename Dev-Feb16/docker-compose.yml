@@ -5,7 +5,7 @@ services:
         image: securebrowsing/shield-configuration:latest
         restart: always
     shield-admin:
-        image: securebrowsing/shield-admin:170302-15.40
+        image: securebrowsing/shield-admin:170308-15.29
         ports:
             - 8181:8181
         restart: always
@@ -25,7 +25,7 @@ services:
           consul:
             condition: service_started      
     shield-browser:
-        image: securebrowsing/shield-cef:170308-14.06
+        image: securebrowsing/shield-cef:170308-17.27
         shm_size: 1GB
         restart: always
         depends_on:
@@ -72,12 +72,12 @@ services:
           consul:
             condition: service_started
     icap-server:
-        image: securebrowsing/icap-server:170307-17.25
+        image: securebrowsing/icap-server:170308-17.56
         hostname: icap-server
         restart: always
         environment:
             - NODE_ENV=production
-            - SHIELD_VER=8.0.0.12
+            - SHIELD_VER=8.0.0.13
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
         ulimits:
