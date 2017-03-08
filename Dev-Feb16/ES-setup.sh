@@ -16,6 +16,7 @@ LOGFILE="$ES_PATH/ericomshield.log"
 UPDATE=0
 
 # Development Repository: (Latest)
+ES_repo_setup="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/ES-setup.sh"
 ES_repo_run="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/run.sh"
 ES_repo_update="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/autoupdate.sh"
 ES_repo_version="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/showversion.sh"
@@ -52,12 +53,14 @@ if [ -f "docker-compose.yml" ]; then
       mv docker-compose.yml.1 docker-compose.yml
       UPDATE=1
    fi
- else
+    else
    echo "***************     Installing EricomShield ..."
    echo "$(date): Installing EricomShield" >> "$LOGFILE"
    mv docker-compose.yml.1 docker-compose.yml
 fi
 
+curl -s -S -o ES-setup.sh $ES_repo_setup
+chmod +x ES-setup.sh
 curl -s -S -o run.sh $ES_repo_run
 chmod +x run.sh
 curl -s -S -o autoupdate.sh $ES_repo_update
