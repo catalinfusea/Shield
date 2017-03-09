@@ -112,7 +112,7 @@ if [ $UPDATE -eq 0 ]; then
     fi
 
     if [ $(docker info | grep Username |wc -l) -eq 0 ]; then
-       if [ "$#" -eq 2 ]; then
+       if [ "$#" -ge 2 ]; then
            #Login and enter the credentials you received separately when prompt
            echo "docker login" $1 $2
            docker login --username=$1 --password=$2
