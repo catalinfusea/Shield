@@ -39,7 +39,7 @@ if [ ! -d $ES_PATH ]; then
 fi
 if [ ! -d /var/log/ericom ]; then
     mkdir -p /var/log/ericom
-    chmod 0777 /var/run/ericom
+    chmod 0777 /var/log/ericom
 fi
 cd $ES_PATH
 
