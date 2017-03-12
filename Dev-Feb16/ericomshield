@@ -23,6 +23,7 @@ len=${#cmdLineArray[@]}
 ES_PATH="/usr/local/ericomshield"
 ES_VER="$ES_PATH/.version"
 SCRIPT="$ES_PATH/autoupdate.sh"
+START_SCRIPT="$ES_PATH/run.sh"
 STOP_SCRIPT="$ES_PATH/stop.sh"
 VERSION_SCRIPT="$ES_PATH/showversion.sh"
 STATUS_SCRIPT="$ES_PATH/status.sh"
@@ -66,6 +67,7 @@ start() {
 
   local CMD="$SCRIPT exec ${cmdLineArray[@]:1:$len} 1>&2 & echo \$!"
   su -c "$CMD" $RUNAS > "$PIDFILE"
+  su -c "$START_SCRIPT" $RUNAS
   echo ' Service started' >&2
 }
 
