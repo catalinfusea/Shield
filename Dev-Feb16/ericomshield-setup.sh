@@ -68,7 +68,7 @@ fi
 curl -s -S -o run.sh $ES_repo_run
 if [ "a$3" == "a-eval" ]; then
    curl -s -S -o run.sh $ES_repo_run_eval
-   echo "Installing Ericom Shield evaluation
+   echo "Installing Ericom Shield evaluation"
 fi
 chmod +x run.sh
 
