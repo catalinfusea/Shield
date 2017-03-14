@@ -1,0 +1,76 @@
+version: '3'
+
+services:
+    consul:
+        image: securebrowsing/shield-configuration:latest
+        restart: always
+        deployment_strategy: high_availability
+        target_num_containers: 3
+    shield-admin:
+        image: securebrowsing/shield-admin:170226-08.46
+        ports:
+            - 8181:8181
+        restart: always
+    shield-admin1:
+        image: securebrowsing/shield-admin-orig:170219-20.17
+        ports:
+            - 8500:8500
+        restart: always 
+    shield-browser:
+        image: securebrowsing/shield-cef:170227-18.28
+        autodestroy: always
+        restart: always
+        hostname: browser
+        dns: 
+            - 126.0.0.3
+            - 8.8.8.8
+    proxy-server:
+        image: securebrowsing/proxy-server:170226-18.39
+        deployment_strategy: high_availability
+        hostname: proxy
+        restart: always
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+        ports:
+            - "3128:3128"
+        ulimits:
+          nofile:
+            soft: 65535
+            hard: 65535
+    icap-server:
+        image: securebrowsing/icap-server:170224-11.05
+        deployment_strategy: high_availability
+        hostname: icap-server
+        restart: always
+        ports:
+            - "13441:13441"
+        environment:
+            - NODE_ENV=production
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+        ulimits:
+          nofile:
+            soft: 65535
+            hard: 65535
+    elk:
+        image: securebrowsing/shield-elk:170126-09.14
+        hostname: elk
+        ports:
+            - 5601:5601
+            - 5044:5044
+            - 9200:9200
+        healthcheck:
+            test: ["CMD-SHELL", "curl -s -XGET 'http://localhost:9200/_cluster/health' | grep -q yellow"]
+            interval: 20s
+            timeout: 10s
+            retries: 5
+        depends_on:
+            - portainer
+            - consul
+    portainer:
+        image: portainer/portainer
+        hostname: portainer
+        ports:
+            - "9000:9000"
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock    
