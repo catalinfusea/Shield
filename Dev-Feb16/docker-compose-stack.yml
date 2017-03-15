@@ -1,44 +1,48 @@
-version: '2.1'
+version: '3'
 
 services:
     consul:
         image: securebrowsing/shield-configuration:latest
-        restart: always
+        deploy:
+            replicas: 1
+        hostname: consul
+        ports:
+         - "8500"
+         - "8301/udp"
+    consul-server:
+        image: securebrowsing/shield-configuration:latest
+        deploy:
+            replicas: 2
+        ports:
+         - "8500"
+         - "8301/udp"
+    shield-browser:
+        image: securebrowsing/shield-cef:170309-16.53
+        depends_on:
+            - elk
+            - consul
+        deploy:
+            replicas: 1
+        ports:
+         - "8500"
+         - "8301/udp"
     shield-admin:
-        image: securebrowsing/shield-admin:170314-18.52
+        image: securebrowsing/shield-admin:170302-15.40
         ports:
             - 8181:8181
-        restart: always
         depends_on:
-          elk:
-            condition: service_healthy
-          consul:
-            condition: service_started  
+            - elk
+            - consul
     shield-admin1:
         image: securebrowsing/shield-admin-orig:170219-20.17
         ports:
             - 8500:8500
-        restart: always
         depends_on:
-          elk:
-            condition: service_healthy
-          consul:
-            condition: service_started      
-    shield-browser:
-        image: securebrowsing/shield-cef:170315-10.27
-        shm_size: 1GB
-        restart: always
-        depends_on:
-          elk:
-            condition: service_healthy
-          consul:
-            condition: service_started
-        dns: 
-            - 8.8.8.8
+            - elk
+            - consul  
     proxy-server:
         image: securebrowsing/proxy-server:170226-18.39
         hostname: proxy
-        restart: always
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
         ports:
@@ -48,16 +52,12 @@ services:
             soft: 65535
             hard: 65535
         depends_on:
-          elk:
-            condition: service_healthy
-          icap-server:
-            condition: service_started 
-          consul:
-            condition: service_started
+            - elk
+            - consul
+            - icap-server            
     extproxy:
         image: securebrowsing/extproxy
         hostname: extproxy
-        restart: always
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
         ports:
@@ -67,17 +67,14 @@ services:
             soft: 65535
             hard: 65535
         depends_on:
-          elk:
-            condition: service_healthy
-          consul:
-            condition: service_started
+            - elk
+            - consul
     icap-server:
-        image: securebrowsing/icap-server:170314-16.23
+        image: securebrowsing/icap-server:170306-09.13
         hostname: icap-server
-        restart: always
         environment:
             - NODE_ENV=production
-            - SHIELD_VER=8.0.0.18
+            - SHIELD_VER=8.0.0.10
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
         ulimits:
@@ -85,10 +82,8 @@ services:
             soft: 65535
             hard: 65535
         depends_on:
-          elk:
-             condition: service_healthy
-          consul:
-             condition: service_started
+            - elk
+            - consul
     elk:
         image: securebrowsing/shield-elk:170126-09.14
         hostname: elk
@@ -110,5 +105,5 @@ services:
         ports:
             - "9000:9000"
         volumes:
-            - /var/run/docker.sock:/var/run/docker.sock
+            - /var/run/docker.sock:/var/run/docker.sock   
             - /tmp/portainer/data:/data         

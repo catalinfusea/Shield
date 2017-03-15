@@ -1,0 +1,130 @@
+#!/bin/bash
+############################################
+#####   Ericom Shield Service Script   #####
+#######################################BH###
+
+### BEGIN INIT INFO
+# Provides:          ericomshield
+# Required-Start:    $local_fs $network $docker
+# Required-Stop:     $local_fs $network $docker
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Description:       Ericom Shield
+### END INIT INFO
+
+cmdLineArray=( $@ )
+len=${#cmdLineArray[@]}
+
+#args without last 2
+#_first_args=${cmdLineArray[@]:0:$len-2}
+#args without first 1
+#_last_args=${cmdLineArray[@]:1:$len}
+
+ES_PATH="/usr/local/ericomshield"
+ES_VER="$ES_PATH/.version"
+SCRIPT="$ES_PATH/autoupdate.sh"
+START_SCRIPT="$ES_PATH/run.sh"
+STOP_SCRIPT="$ES_PATH/stop.sh"
+VERSION_SCRIPT="$ES_PATH/showversion.sh"
+STATUS_SCRIPT="$ES_PATH/status.sh"
+RUNAS=root
+
+# Get lsb functions
+. /lib/lsb/init-functions
+
+if [ $(whoami) != $RUNAS ]; then
+        echo "You must be logged in as '$RUNAS' for running this operation"
+        exit 1
+fi
+
+if [ ! -f "$SCRIPT" ]; then
+        echo "Executable is missing from $SCRIPT"
+        exit 1
+fi
+
+PIDFILE="$ES_PATH/.shield.pid"
+LOGFILE="$ES_PATH/ericomshield.log"
+
+
+# Create the Ericom empty dir if necessary
+if [ ! -d /var/run/ericom ]; then
+    mkdir -p /var/run/ericom
+    chmod 0755 /var/run/ericom
+fi
+if [ ! -d /var/log/ericom ]; then
+    mkdir -p /var/log/ericom
+    chmod 0777 /var/run/ericom
+fi
+
+
+start() {
+  printf 'Starting service ...' >&2
+
+  if [ -f "$PIDFILE" ] && kill -0 $(cat "$PIDFILE") 2> /dev/null ; then
+    echo ' Service already running' >&2
+    return 1
+  fi
+
+  local CMD="$SCRIPT exec ${cmdLineArray[@]:1:$len} 1>&2 & echo \$!"
+  su -c "$CMD" $RUNAS > "$PIDFILE"
+  su -c "$START_SCRIPT" $RUNAS
+  echo ' Service started' >&2
+}
+
+stop() {
+  printf 'Stopping service ...' >&2
+  if [ ! -f "$PIDFILE" ] || ! kill -0 $(cat "$PIDFILE" ) 2> /dev/null ; then
+    echo ' Service not running' >&2
+    return 1
+  fi
+
+  PID=$(cat "$PIDFILE")
+  kill -15 $PID && rm -f "$PIDFILE"
+  while kill -0 $PID 2>/dev/null; do
+                printf '.' >&2
+            sleep 0.5
+        done
+  su -c "$STOP_SCRIPT" $RUNAS
+  echo ' Service stopped' >&2
+}
+
+restart() {
+  stop
+  start
+}
+
+status() {
+  if [ ! -f "$PIDFILE" ] || ! kill -0 $(cat "$PIDFILE") 2> /dev/null ; then
+    echo 'not running' >&2
+    return 1
+  fi
+  statusRet= su -c "$STATUS_SCRIPT" $RUNAS
+}
+
+version() {
+  local CMD="$VERSION_SCRIPT"
+  su -c "$CMD" $RUNAS
+}
+
+case "$1" in
+  start)
+    start
+    ;;
+  stop)
+    stop
+    ;;
+  restart)
+    restart
+    ;;
+  status)
+    status
+    ;;
+  version)
+    version
+    ;;
+  tail)
+    tail -f "$LOGFILE"
+    ;;
+  *)
+    echo "Usage: $0 {start|stop|restart|status|version}"
+esac

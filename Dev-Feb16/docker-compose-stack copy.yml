@@ -1,42 +1,32 @@
-version: '2.1'
+version: '3'
 
 services:
     consul:
         image: securebrowsing/shield-configuration:latest
         restart: always
+        deployment_strategy: high_availability
+        target_num_containers: 3
     shield-admin:
-        image: securebrowsing/shield-admin:170314-18.52
+        image: securebrowsing/shield-admin:170226-08.46
         ports:
             - 8181:8181
         restart: always
-        depends_on:
-          elk:
-            condition: service_healthy
-          consul:
-            condition: service_started  
     shield-admin1:
         image: securebrowsing/shield-admin-orig:170219-20.17
         ports:
             - 8500:8500
-        restart: always
-        depends_on:
-          elk:
-            condition: service_healthy
-          consul:
-            condition: service_started      
+        restart: always 
     shield-browser:
-        image: securebrowsing/shield-cef:170315-10.27
-        shm_size: 1GB
+        image: securebrowsing/shield-cef:170227-18.28
+        autodestroy: always
         restart: always
-        depends_on:
-          elk:
-            condition: service_healthy
-          consul:
-            condition: service_started
+        hostname: browser
         dns: 
+            - 126.0.0.3
             - 8.8.8.8
     proxy-server:
         image: securebrowsing/proxy-server:170226-18.39
+        deployment_strategy: high_availability
         hostname: proxy
         restart: always
         volumes:
@@ -47,48 +37,21 @@ services:
           nofile:
             soft: 65535
             hard: 65535
-        depends_on:
-          elk:
-            condition: service_healthy
-          icap-server:
-            condition: service_started 
-          consul:
-            condition: service_started
-    extproxy:
-        image: securebrowsing/extproxy
-        hostname: extproxy
-        restart: always
-        volumes:
-            - /var/run/docker.sock:/var/run/docker.sock
-        ports:
-            - "3138:3138"
-        ulimits:
-          nofile:
-            soft: 65535
-            hard: 65535
-        depends_on:
-          elk:
-            condition: service_healthy
-          consul:
-            condition: service_started
     icap-server:
-        image: securebrowsing/icap-server:170314-16.23
+        image: securebrowsing/icap-server:170224-11.05
+        deployment_strategy: high_availability
         hostname: icap-server
         restart: always
+        ports:
+            - "13441:13441"
         environment:
             - NODE_ENV=production
-            - SHIELD_VER=8.0.0.18
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
         ulimits:
           nofile:
             soft: 65535
             hard: 65535
-        depends_on:
-          elk:
-             condition: service_healthy
-          consul:
-             condition: service_started
     elk:
         image: securebrowsing/shield-elk:170126-09.14
         hostname: elk
@@ -110,5 +73,4 @@ services:
         ports:
             - "9000:9000"
         volumes:
-            - /var/run/docker.sock:/var/run/docker.sock
-            - /tmp/portainer/data:/data         
+            - /var/run/docker.sock:/var/run/docker.sock    
