@@ -25,7 +25,7 @@ services:
           consul:
             condition: service_started      
     shield-browser:
-        image: securebrowsing/shield-cef:170315-10.27
+        image: securebrowsing/shield-cef:170315-12.06
         shm_size: 1GB
         restart: always
         depends_on:
@@ -77,7 +77,7 @@ services:
         restart: always
         environment:
             - NODE_ENV=production
-            - SHIELD_VER=8.0.0.19
+            - SHIELD_VER=8.0.0.20
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
         ulimits:
