@@ -65,7 +65,10 @@ if [ ! -f "ericomshield-setup.sh" ]; then
    curl -s -S -o ericomshield-setup.sh $ES_repo_setup
    chmod +x ericomshield-setup.sh
 fi
-curl -s -S -o run.sh $ES_repo_run
+
+if [ ! -f "run.sh" ]; then
+   curl -s -S -o run.sh $ES_repo_run
+fi   
 if [ "a$3" == "a-eval" ]; then
    curl -s -S -o run.sh $ES_repo_run_eval
    echo "Installing Ericom Shield evaluation"
@@ -136,7 +139,6 @@ if [ $UPDATE -eq 0 ]; then
        fi
     fi
 
-
     echo "**************  Creating the ericomshield service..."
     cp ericomshield /etc/init.d/
     update-rc.d ericomshield defaults
@@ -145,14 +147,28 @@ if [ $UPDATE -eq 0 ]; then
 fi
 
 ./run.sh
+if [ $? == 0 ]; then
+   echo "***************     Ericom Shield is Up!"
+  else
+   echo "An error occured during the installation"
+   echo "$(date): An error occured during the installation" >> "$LOGFILE"
+   exit
+fi         
+
+service ericomshield start
+if [ $? == 0 ]; then
+   echo "***************     Success!"
+  else
+   echo "An error occured during the installation"
+   echo "$(date): An error occured during the installation" >> "$LOGFILE"
+   exit
+fi         
 
 grep SHIELD_VER docker-compose.yml  > .version
 grep image docker-compose.yml >> .version
 
-service ericomshield start
-
 Version=`grep  SHIELD_VER docker-compose.yml`
-echo "***************     Success!"
+          
 echo "***************"
 echo "***************     Ericom Shield Version:" $Version "is up and running"
 echo "$(date): Ericom Shield Version:" $Version "is up and running" >> "$LOGFILE"
