@@ -152,7 +152,7 @@ if [ $? == 0 ]; then
   else
    echo "An error occured during the installation"
    echo "$(date): An error occured during the installation" >> "$LOGFILE"
-   exit
+   exit 1
 fi         
 
 service ericomshield start
@@ -161,7 +161,7 @@ if [ $? == 0 ]; then
   else
    echo "An error occured during the installation"
    echo "$(date): An error occured during the installation" >> "$LOGFILE"
-   exit
+   exit 1
 fi         
 
 grep SHIELD_VER docker-compose.yml  > .version
