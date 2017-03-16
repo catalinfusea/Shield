@@ -65,7 +65,10 @@ if [ ! -f "ericomshield-setup.sh" ]; then
    curl -s -S -o ericomshield-setup.sh $ES_repo_setup
    chmod +x ericomshield-setup.sh
 fi
-curl -s -S -o run.sh $ES_repo_run
+
+if [ ! -f "run.sh" ]; then
+   curl -s -S -o run.sh $ES_repo_run
+fi   
 if [ "a$3" == "a-eval" ]; then
    curl -s -S -o run.sh $ES_repo_run_eval
    echo "Installing Ericom Shield evaluation"
