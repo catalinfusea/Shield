@@ -26,6 +26,7 @@ ES_repo_stop="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-
 ES_repo_status="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/status.sh"
 ES_repo_service="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/ericomshield"
 ES_repo_yml="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/docker-compose.yml"
+ES_repo_ip="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/show-my-ip.sh"
 
 if [ $(dpkg -l | grep  -c curl ) -eq  0 ]; then
     echo "***************     Installing curl"
@@ -85,11 +86,14 @@ curl -s -S -o status.sh $ES_repo_status
 chmod +x status.sh
 curl -s -S -o ericomshield $ES_repo_service
 chmod +x ericomshield
+curl -s -S -o ~/show-my-ip.sh $ES_repo_ip
+chmod +x ~/show-my-ip.sh
 
 if [ $UPDATE -eq 0 ]; then
 
     if [ $(sudo docker version | grep $DOCKER_VERSION |wc -l ) -le  1 ]; then
          echo "***************     Installing docker-engine"
+         apt-get --assume-yes install software-properties-common python-software-properties
          apt-get update
          apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
          apt-add-repository 'deb https://apt.dockerproject.org/repo ubuntu-xenial main'
