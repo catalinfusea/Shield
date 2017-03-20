@@ -53,7 +53,7 @@ if [ ! -d /var/run/ericom ]; then
 fi
 if [ ! -d /var/log/ericom ]; then
     mkdir -p /var/log/ericom
-    chmod 0777 /var/run/ericom
+    chmod 0777 /var/log/ericom
 fi
 
 
@@ -62,7 +62,6 @@ start() {
 
   if [ -f "$PIDFILE" ] && kill -0 $(cat "$PIDFILE") 2> /dev/null ; then
     echo ' Service already running' >&2
-    return 1
   fi
 
   local CMD="$SCRIPT exec ${cmdLineArray[@]:1:$len} 1>&2 & echo \$!"
@@ -75,7 +74,6 @@ stop() {
   printf 'Stopping service ...' >&2
   if [ ! -f "$PIDFILE" ] || ! kill -0 $(cat "$PIDFILE" ) 2> /dev/null ; then
     echo ' Service not running' >&2
-    return 1
   fi
 
   PID=$(cat "$PIDFILE")
@@ -98,7 +96,7 @@ status() {
     echo 'not running' >&2
     return 1
   fi
-  statusRet= su -c "$STATUS_SCRIPT" $RUNAS
+  su -c "$STATUS_SCRIPT" $RUNAS
 }
 
 version() {
