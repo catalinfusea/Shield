@@ -14,7 +14,9 @@ Vagrant.configure("2") do |config|
   # boxes at https://atlas.hashicorp.com/search.
 #  config.vm.box = "boxcutter/ubuntu1604"
 #  config.vm.box = "ubuntu/trusty64"
-   config.vm.box = "williamyeh/ubuntu-trusty64-docker"
+#   config.vm.box = "williamyeh/ubuntu-trusty64-docker"  -- was ubuntu 14
+# now moved to ubuntu 16.04  
+  config.vm.box = "gbarbieru/xenial"
 
 #   condig.vm.box = "pulsesecure/alpine-3.3-x86_64-docker"
 
