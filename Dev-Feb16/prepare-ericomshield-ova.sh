@@ -1,6 +1,6 @@
 #!/bin/bash
 ############################################
-#####   Ericom Shield Installer        #####
+#####   Ericom Shield Virtual Appliance  ###
 #######################################BH###
 
 #Check if we are root
@@ -14,6 +14,7 @@ fi
 echo "Preparing Ericom Shield Virtual Appliance"
 echo "Cleaning existing VM"
 vagrant destroy -f
+rm shield_eval.ova
 
 ES_repo_Vagrant="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/Vagrantfile"
 curl -s -S -o Vagrantfile $ES_repo_Vagrant
@@ -30,3 +31,17 @@ if [ $? == 0 ]; then
    echo "An error occured during the Virtual Appliance generation"
    exit 1
 fi
+
+# Need to define push strategy (ftp, GoogleDrive, repo)
+#using gdrive for now (assuming it is installed:
+#  gdrive installation from home directory (~)
+#  
+#  wget https://docs.google.com/uc?id=0B3X9GlR6EmbnWksyTEtCM0VfaFE&export=download
+#  ls
+#  mv uc\?id\=0B3X9GlR6EmbnWksyTEtCM0VfaFE gdrive
+#  chmod +x gdrive
+#  sudo install gdrive /usr/local/bin/gdrive
+#  gdrive list
+
+gdrive update 0B_wcQRaAT_INcXhsc1E4bXlySWs shield_eval.ova
+
