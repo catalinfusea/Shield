@@ -28,6 +28,7 @@ ES_repo_version="https://raw.githubusercontent.com/ErezPasternak/Shield/master/D
 ES_repo_stop="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/stop.sh"
 ES_repo_status="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/status.sh"
 ES_repo_service="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/ericomshield"
+ES_repo_ip="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/show-my-ip.sh"
 # Production Repository: (Release)
 ES_repo_yml="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/docker-compose.yml"
 # Development Repository: (Latest)
@@ -77,11 +78,6 @@ if [ "$ES_AUTO_UPDATE" == true ]; then
    echo "ES_AUTO_UPDATE" > "$ES_AUTO_UPDATE_FILE"
 fi
 
-echo $DOCKER_USER $DOCKER_SECRET
-echo "eval=$ES_EVAL"
-echo "dev=$ES_DEV"
-echo "autoupdate=$ES_AUTO_UPDATE"
-
 if [ $(dpkg -l | grep  -c curl ) -eq  0 ]; then
     echo "***************     Installing curl"
     sudo apt-get install curl
@@ -92,7 +88,6 @@ if [ ! -d $ES_PATH ]; then
     mkdir -p $ES_PATH
     chmod 0755 $ES_PATH
 fi
-
 
 cd $ES_PATH
 
@@ -147,16 +142,21 @@ curl -s -S -o status.sh $ES_repo_status
 chmod +x status.sh
 curl -s -S -o ericomshield $ES_repo_service
 chmod +x ericomshield
+curl -s -S -o ~/show-my-ip.sh $ES_repo_ip
+chmod +x ~/show-my-ip.sh
 
 if [ $UPDATE -eq 0 ]; then
 
     if [ $(sudo docker version | grep $DOCKER_VERSION |wc -l ) -le  1 ]; then
          echo "***************     Installing docker-engine"
          apt-get update
+         apt-get --assume-yes install software-properties-common python-software-properties
          apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
          apt-add-repository 'deb https://apt.dockerproject.org/repo ubuntu-xenial main'
-         apt-get update
+         apt-get -y install apt-transport-https
          apt-cache policy docker-engine
+         apt-get --assume-yes install linux-image-extra-$(uname -r) linux-image-extra-virtual
+         apt-get update
          apt-get --assume-yes -y install docker-engine
 
     else
@@ -209,11 +209,25 @@ if [ $UPDATE -eq 0 ]; then
 fi
 
 ./run.sh
+if [ $? == 0 ]; then
+   echo "***************     Ericom Shield is Up!"
+  else
+   echo "An error occured during the installation"
+   echo "$(date): An error occured during the installation" >> "$LOGFILE"
+   exit 1
+fi
+
+service ericomshield start
+if [ $? == 0 ]; then
+   echo "***************     Success!"
+  else
+   echo "An error occured during the installation"
+   echo "$(date): An error occured during the installation" >> "$LOGFILE"
+   exit 1
+fi
 
 grep SHIELD_VER docker-compose.yml  > .version
 grep image docker-compose.yml >> .version
-
-service ericomshield start
 
 Version=`grep  SHIELD_VER docker-compose.yml`
 echo "***************     Success!"
