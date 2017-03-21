@@ -6,8 +6,9 @@
 #Check if we are root
 if (( $EUID != 0 )); then
 #    sudo su
+        echo "Usage:" $0 [Docker_UserName] [Docker_Password] [-eval] [-noautoupdate] [-dev]
         echo " Please run it as Root"
-        echo "sudo" $0 $1 $2
+        echo "sudo" $0 $1 $2 $3 $4 $5
         exit
 fi
 ES_PATH="/usr/local/ericomshield"
@@ -15,6 +16,8 @@ LOGFILE="$ES_PATH/ericomshield.log"
 DOCKER_VERSION="17.03"
 DOCKER_COMPOSE_VERSION="1.10"
 UPDATE=0
+ES_DEV_FILE="$ES_PATH/.esdev"
+ES_AUTO_UPDATE_FILE="$ES_PATH/.autoupdate"
 
 # Development Repository: (Latest)
 ES_repo_setup="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/ericomshield-setup.sh"
@@ -25,8 +28,59 @@ ES_repo_version="https://raw.githubusercontent.com/ErezPasternak/Shield/master/D
 ES_repo_stop="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/stop.sh"
 ES_repo_status="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/status.sh"
 ES_repo_service="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/ericomshield"
+# Production Repository: (Release)
 ES_repo_yml="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/docker-compose.yml"
-ES_repo_ip="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/show-my-ip.sh"
+# Development Repository: (Latest)
+ES_dev_repo_yml="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/docker-compose_dev.yml"
+
+DOCKER_USER=" "
+DOCKER_SECRET=" "
+ES_EVAL=false
+ES_DEV=false
+ES_AUTO_UPDATE=true
+
+while [ $# -ne 0 ]
+do
+    arg="$1"
+    case "$arg" in
+        -eval)
+            ES_EVAL=true
+            ;;
+        -dev)
+            ES_DEV=true
+            echo "ES_DEV" > "$ES_DEV_FILE"
+            ;;
+        -noautoupdate)
+            ES_AUTO_UPDATE=false
+            rm -f "$ES_AUTO_UPDATE_FILE"
+            ;;
+        -usage)
+            echo "Usage:" $0 Username Password [-eval] [-autoupdate] [-dev]
+            exit
+            ;;
+        *)
+            if [ "$DOCKER_USER" == " " ]; then
+               DOCKER_USER=$1
+             else
+               DOCKER_SECRET=$1
+            fi
+            ;;
+    esac
+    shift
+done
+
+if [ -f "$ES_DEV_FILE" ]; then
+   ES_DEV=true
+fi
+
+if [ "$ES_AUTO_UPDATE" == true ]; then
+   echo "ES_AUTO_UPDATE" > "$ES_AUTO_UPDATE_FILE"
+fi
+
+echo $DOCKER_USER $DOCKER_SECRET
+echo "eval=$ES_EVAL"
+echo "dev=$ES_DEV"
+echo "autoupdate=$ES_AUTO_UPDATE"
 
 if [ $(dpkg -l | grep  -c curl ) -eq  0 ]; then
     echo "***************     Installing curl"
@@ -38,13 +92,16 @@ if [ ! -d $ES_PATH ]; then
     mkdir -p $ES_PATH
     chmod 0755 $ES_PATH
 fi
-if [ ! -d /var/log/ericom ]; then
-    mkdir -p /var/log/ericom
-    chmod 0777 /var/log/ericom
-fi
+
+
 cd $ES_PATH
 
-curl -s -S -o docker-compose.yml.1 $ES_repo_yml
+if [ "$ES_DEV" == true ]; then
+   curl -s -S -o docker-compose.yml.1 $ES_dev_repo_yml
+ else
+   curl -s -S -o docker-compose.yml.1 $ES_repo_yml
+fi
+
 if [ -f "docker-compose.yml" ]; then
    if [ $( diff  docker-compose.yml.1  docker-compose.yml | wc -l ) -eq 0 ]; then
       echo "Your EricomShield System is Up to date"
@@ -61,6 +118,10 @@ if [ -f "docker-compose.yml" ]; then
    echo "$(date): Installing EricomShield" >> "$LOGFILE"
    mv docker-compose.yml.1 docker-compose.yml
 fi
+echo $DOCKER_USER $DOCKER_SECRET
+echo "eval=$ES_EVAL"
+echo "dev=$ES_DEV"
+echo "autoupdate=$ES_AUTO_UPDATE"
 
 if [ ! -f "ericomshield-setup.sh" ]; then
    curl -s -S -o ericomshield-setup.sh $ES_repo_setup
@@ -69,8 +130,8 @@ fi
 
 if [ ! -f "run.sh" ]; then
    curl -s -S -o run.sh $ES_repo_run
-fi   
-if [ "a$3" == "a-eval" ]; then
+fi
+if [ "$ES_EVAL" == true ]; then
    curl -s -S -o run.sh $ES_repo_run_eval
    echo "Installing Ericom Shield evaluation"
 fi
@@ -86,21 +147,16 @@ curl -s -S -o status.sh $ES_repo_status
 chmod +x status.sh
 curl -s -S -o ericomshield $ES_repo_service
 chmod +x ericomshield
-curl -s -S -o ~/show-my-ip.sh $ES_repo_ip
-chmod +x ~/show-my-ip.sh
 
 if [ $UPDATE -eq 0 ]; then
 
     if [ $(sudo docker version | grep $DOCKER_VERSION |wc -l ) -le  1 ]; then
          echo "***************     Installing docker-engine"
-         apt-get --assume-yes install software-properties-common python-software-properties
          apt-get update
          apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
          apt-add-repository 'deb https://apt.dockerproject.org/repo ubuntu-xenial main'
-         apt-get -y install apt-transport-https
-         apt-cache policy docker-engine
-         apt-get --assume-yes install linux-image-extra-$(uname -r) linux-image-extra-virtual                  
          apt-get update
+         apt-cache policy docker-engine
          apt-get --assume-yes -y install docker-engine
 
     else
@@ -122,13 +178,13 @@ if [ $UPDATE -eq 0 ]; then
     fi
 
     if [ $(docker info | grep Username |wc -l) -eq 0 ]; then
-       if [ "$#" -ge 2 ]; then
-           #Login and enter the credentials you received separately when prompt
-           echo "docker login" $1 $2
-           docker login --username=$1 --password=$2
-       else
+       if [ "$DOCKER_USER" == " " ]; then
            echo " Please enter your login credentials to docker-hub"
            docker login
+       else
+           #Login and enter the credentials you received separately when prompt
+           echo "docker login" $DOCKER_USER $DOCKER_SECRET
+           docker login --username=$DOCKER_USER --password= $DOCKER_SECRET
        fi
 
        if [ $? == 0 ]; then
@@ -153,28 +209,14 @@ if [ $UPDATE -eq 0 ]; then
 fi
 
 ./run.sh
-if [ $? == 0 ]; then
-   echo "***************     Ericom Shield is Up!"
-  else
-   echo "An error occured during the installation"
-   echo "$(date): An error occured during the installation" >> "$LOGFILE"
-   exit 1
-fi         
-
-service ericomshield start
-if [ $? == 0 ]; then
-   echo "***************     Success!"
-  else
-   echo "An error occured during the installation"
-   echo "$(date): An error occured during the installation" >> "$LOGFILE"
-   exit 1
-fi         
 
 grep SHIELD_VER docker-compose.yml  > .version
 grep image docker-compose.yml >> .version
 
+service ericomshield start
+
 Version=`grep  SHIELD_VER docker-compose.yml`
-          
+echo "***************     Success!"
 echo "***************"
 echo "***************     Ericom Shield Version:" $Version "is up and running"
 echo "$(date): Ericom Shield Version:" $Version "is up and running" >> "$LOGFILE"
