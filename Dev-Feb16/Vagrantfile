@@ -18,8 +18,6 @@ Vagrant.configure("2") do |config|
 # now moved to ubuntu 16.04  
   config.vm.box = "gbarbieru/xenial"
 
-#   condig.vm.box = "pulsesecure/alpine-3.3-x86_64-docker"
-
   # Assign a friendly name to this host VM
    config.vm.hostname = "es-host"
 
@@ -90,9 +88,9 @@ Vagrant.configure("2") do |config|
   # documentation for more information about their specific syntax and use.
   config.vm.provision "shell", inline: <<-SHELL
     echo ' ericomshield VM using Vagrant (v-8.0.0.27) '
-    apt-get update
-    apt-get upgrade
-    apt-get install -y git tofrodos dos2unix firefox
+  #  apt-get update
+  #  apt-get upgrade
+  #  apt-get install -y git tofrodos dos2unix firefox
     mkdir ericomshield
     cd ericomshield
     wget https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/ericomshield-setup.sh
