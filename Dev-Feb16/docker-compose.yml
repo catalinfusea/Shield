@@ -4,6 +4,8 @@ services:
     consul:
         image: securebrowsing/shield-configuration:latest
         restart: always
+        volumes:
+            - consul-data:/data/consul
     shield-admin:
         image: securebrowsing/shield-admin:170316-19.35
         ports:
@@ -114,3 +116,7 @@ services:
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
             - /tmp/portainer/data:/data         
+
+volumes:
+    consul-data:
+        external: false
