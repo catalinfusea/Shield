@@ -34,8 +34,8 @@ ES_repo_yml="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-F
 # Development Repository: (Latest)
 ES_dev_repo_yml="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/docker-compose_dev.yml"
 
-DOCKER_USER=" "
-DOCKER_SECRET=" "
+DOCKER_USER="benyh"
+DOCKER_SECRET="Ericom123$"
 ES_EVAL=false
 ES_DEV=false
 ES_AUTO_UPDATE=true
@@ -60,7 +60,7 @@ do
             exit
             ;;
         *)
-            if [ "$DOCKER_USER" == " " ]; then
+            if [ "$DOCKER_USER" == "benyh" ]; then
                DOCKER_USER=$1
              else
                DOCKER_SECRET=$1
