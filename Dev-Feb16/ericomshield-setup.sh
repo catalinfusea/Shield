@@ -184,7 +184,7 @@ if [ $UPDATE -eq 0 ]; then
        else
            #Login and enter the credentials you received separately when prompt
            echo "docker login" $DOCKER_USER $DOCKER_SECRET
-           docker login --username=$DOCKER_USER --password= $DOCKER_SECRET
+           docker login --username=$DOCKER_USER --password=$DOCKER_SECRET
        fi
 
        if [ $? == 0 ]; then
