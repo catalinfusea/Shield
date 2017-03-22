@@ -40,6 +40,11 @@ ES_EVAL=false
 ES_DEV=false
 ES_AUTO_UPDATE=true
 
+# Create the Ericom empty dir if necessary
+if [ ! -d $ES_PATH ]; then
+    mkdir -p $ES_PATH
+    chmod 0755 $ES_PATH
+fi
 cd $ES_PATH
 
 while [ $# -ne 0 ]
@@ -83,12 +88,6 @@ fi
 if [ $(dpkg -l | grep  -c curl ) -eq  0 ]; then
     echo "***************     Installing curl"
     sudo apt-get install curl
-fi
-
-# Create the Ericom empty dir if necessary
-if [ ! -d $ES_PATH ]; then
-    mkdir -p $ES_PATH
-    chmod 0755 $ES_PATH
 fi
 
 if [ "$ES_DEV" == true ]; then
