@@ -40,6 +40,8 @@ ES_EVAL=false
 ES_DEV=false
 ES_AUTO_UPDATE=true
 
+cd $ES_PATH
+
 while [ $# -ne 0 ]
 do
     arg="$1"
@@ -88,8 +90,6 @@ if [ ! -d $ES_PATH ]; then
     mkdir -p $ES_PATH
     chmod 0755 $ES_PATH
 fi
-
-cd $ES_PATH
 
 if [ "$ES_DEV" == true ]; then
    curl -s -S -o docker-compose.yml.1 $ES_dev_repo_yml
