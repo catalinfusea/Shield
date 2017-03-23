@@ -14,7 +14,7 @@ fi
 ES_PATH="/usr/local/ericomshield"
 LOGFILE="$ES_PATH/ericomshield.log"
 DOCKER_VERSION="17.03"
-DOCKER_COMPOSE_VERSION="docker-compose version 1.10"
+DOCKER_COMPOSE_VERSION="1.10"
 UPDATE=0
 ES_DEV_FILE="$ES_PATH/.esdev"
 ES_AUTO_UPDATE_FILE="$ES_PATH/.autoupdate"
