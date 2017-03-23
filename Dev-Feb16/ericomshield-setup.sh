@@ -6,7 +6,7 @@
 #Check if we are root
 if (( $EUID != 0 )); then
 #    sudo su
-        echo "Usage:" $0 [Docker_UserName] [Docker_Password] [-eval] [-noautoupdate] [-dev]
+        echo "Usage:" $0 [-force] [-noautoupdate] [-dev] [-usage]
         echo " Please run it as Root"
         echo "sudo" $0 $1 $2 $3 $4 $5
         exit
@@ -14,7 +14,7 @@ fi
 ES_PATH="/usr/local/ericomshield"
 LOGFILE="$ES_PATH/ericomshield.log"
 DOCKER_VERSION="17.03"
-DOCKER_COMPOSE_VERSION="1.10"
+DOCKER_COMPOSE_VERSION="docker-compose version 1.10"
 UPDATE=0
 ES_DEV_FILE="$ES_PATH/.esdev"
 ES_AUTO_UPDATE_FILE="$ES_PATH/.autoupdate"
@@ -39,6 +39,7 @@ DOCKER_SECRET="Ericom123$"
 ES_EVAL=false
 ES_DEV=false
 ES_AUTO_UPDATE=true
+ES_FORCE=false
 
 while [ $# -ne 0 ]
 do
@@ -54,6 +55,9 @@ do
         -noautoupdate)
             ES_AUTO_UPDATE=false
             rm -f "$ES_AUTO_UPDATE_FILE"
+            ;;
+        -force)
+            ES_FORCE=true
             ;;
         -usage)
             echo "Usage:" $0 Username Password [-eval] [-autoupdate] [-dev]
