@@ -39,7 +39,14 @@ DOCKER_SECRET="Ericom123$"
 ES_EVAL=false
 ES_DEV=false
 ES_AUTO_UPDATE=true
-ES_FORCE=false
+
+# Create the Ericom empty dir if necessary
+if [ ! -d $ES_PATH ]; then
+    mkdir -p $ES_PATH
+    chmod 0755 $ES_PATH
+fi
+
+cd $ES_PATH
 
 while [ $# -ne 0 ]
 do
@@ -58,6 +65,7 @@ do
             ;;
         -force)
             ES_FORCE=true
+            mv docker-compose.yml docker-compose.yml.org            
             ;;
         -usage)
             echo "Usage:" $0 Username Password [-eval] [-autoupdate] [-dev]
@@ -86,14 +94,6 @@ if [ $(dpkg -l | grep  -c curl ) -eq  0 ]; then
     echo "***************     Installing curl"
     sudo apt-get install curl
 fi
-
-# Create the Ericom empty dir if necessary
-if [ ! -d $ES_PATH ]; then
-    mkdir -p $ES_PATH
-    chmod 0755 $ES_PATH
-fi
-
-cd $ES_PATH
 
 if [ "$ES_DEV" == true ]; then
    curl -s -S -o docker-compose.yml.1 $ES_dev_repo_yml
