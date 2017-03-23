@@ -6,8 +6,8 @@
 #  If you are not using ericomshield service, run this script in the background
 #  sudo nohup ./autoupdate.sh > /dev/null &
 
-ES_AUTO_UPDATE_FILE="$ES_PATH/.autoupdate"
 ES_PATH="/usr/local/ericomshield"
+ES_AUTO_UPDATE_FILE="$ES_PATH/.autoupdate"
 cd $ES_PATH
 
 while true
