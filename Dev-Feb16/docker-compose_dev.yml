@@ -1,16 +1,26 @@
 version: '2.1'
 
 services:
+    consul-master:
+        image: securebrowsing/shield-configuration:latest
+        restart: always
+        #deploy:
+        #    mode: global
+        volumes:
+            - consul-data:/data/consul
     consul:
         image: securebrowsing/shield-configuration:latest
         restart: always
+        depends_on:
+          consul-master:
+            condition: service_started
     shield-admin:
         image: securebrowsing/shield-admin:170321-18.16
         ports:
             - 8181:8181
         restart: always
         environment:
-            - SHIELD_VER=8.0.0.30-DEV
+            - SHIELD_VER=8.0.0.30
         depends_on:
           elk:
             condition: service_healthy
@@ -116,3 +126,6 @@ services:
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
             - /tmp/portainer/data:/data         
+volumes:
+    consul-data:
+        external: false
