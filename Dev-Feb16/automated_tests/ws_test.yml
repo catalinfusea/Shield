@@ -1,0 +1,22 @@
+config:
+  target: 'ws://localhost:8081'
+  phases:
+    - duration: 10
+      arrivalRate: 10
+  ws:
+    # Ignore SSL certificate errors
+    # - useful in *development* with self-signed certs
+    - rejectUnauthorized: false
+    - protocol: 'ericom|accessnow.3'
+  
+scenarios:
+  -
+    engine: "ws"
+    protocol: 'ericom|accessnow.3'
+    flow:
+      -
+        send: '["p","h",["AccessNow","7","6","1","0","Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36"]]'
+      -
+        think: 1
+      -
+        send: '["c","c",["AccessNow","7","6","1","0","Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36"]]'

@@ -1,0 +1,18 @@
+config:
+  target: 'http://localhost:8080'
+  phases:
+    - duration: 60
+      arrivalRate: 20
+  http:
+    pool: 30
+scenarios:
+  - flow:
+    - get:
+        url: "/start.html"
+  - flow:
+      -
+        loop:
+          -
+            get:
+              url: "/start.html"
+        count: 100
