@@ -65,7 +65,7 @@ do
             ;;
         -force)
             ES_FORCE=true
-            mv docker-compose.yml docker-compose.yml.org            
+            echo " " >> docker-compose.yml
             ;;
         -usage)
             echo "Usage:" $0 Username Password [-eval] [-autoupdate] [-dev]
@@ -110,6 +110,7 @@ if [ -f "docker-compose.yml" ]; then
       echo "$(date): New version found:  Updating EricomShield" >> "$LOGFILE"
       mv docker-compose.yml docker-compose.yml.org
       mv docker-compose.yml.1 docker-compose.yml
+      docker-compose pull
       UPDATE=1
    fi
     else
@@ -148,7 +149,6 @@ curl -s -S -o ericomshield $ES_repo_service
 chmod +x ericomshield
 curl -s -S -o ~/show-my-ip.sh $ES_repo_ip
 chmod +x ~/show-my-ip.sh
-
 if [ $UPDATE -eq 0 ]; then
 
     if [ $(sudo docker version | grep $DOCKER_VERSION |wc -l ) -le  1 ]; then
@@ -168,12 +168,19 @@ if [ $UPDATE -eq 0 ]; then
     fi
     echo "Starting docker service"
     service docker start
+    if [ $? == 0 ]; then
+       echo "***************     Success!"
+      else
+       echo "An error occured during the installation"
+       echo "$(date): An error occured during the installation: failed to install docker" >> "$LOGFILE"
+       exit 1
+    fi
 
     #Verify that docker is installed correctly by running the hello-world image.
     #docker run hello-world
     #systemctl status docker
 
-    if [ $(  sudo docker-compose version | grep $DOCKER_COMPOSE_VERSION |wc -l ) -eq 0 ]; then
+    if [ $(  docker-compose version | grep $DOCKER_COMPOSE_VERSION |wc -l ) -eq 0 ]; then
        echo "***************     Installing docker-compose"
        curl -L "https://github.com/docker/compose/releases/download/1.10.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
        chmod +x /usr/local/bin/docker-compose
@@ -199,7 +206,8 @@ if [ $UPDATE -eq 0 ]; then
          if [ $? == 0 ]; then
             echo "Login Succeeded!"
            else
-            echo "Cannot Login, Exiting!"
+            echo "Cannot Login to docker, Exiting!"
+            echo "$(date): An error occured during the installation: Cannot login to docker" >> "$LOGFILE"
             exit 1
          fi
        fi
@@ -212,16 +220,26 @@ if [ $UPDATE -eq 0 ]; then
     echo "Done!"
 fi
 
-./run.sh
-if [ $? == 0 ]; then
-   echo "***************     Ericom Shield is Up!"
+#  No need to Run, the service will do that
+#./run.sh
+#if [ $? == 0 ]; then
+#   echo "***************     Ericom Shield is Up!"
+#  else
+#   echo "An error occured during the installation"
+#   echo "$(date): An error occured during the installation" >> "$LOGFILE"
+#   exit 1
+#fi
+
+
+if [ $UPDATE -eq 0 ]; then
+   echo "Starting Ericom Shield Service"
+   service ericomshield start
   else
-   echo "An error occured during the installation"
-   echo "$(date): An error occured during the installation" >> "$LOGFILE"
-   exit 1
+   echo "Restarting Ericom Shield Service"
+   service ericomshield restart
+   docker system prune -f -a
 fi
 
-service ericomshield start
 if [ $? == 0 ]; then
    echo "***************     Success!"
   else
