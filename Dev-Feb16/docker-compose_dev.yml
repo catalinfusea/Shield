@@ -10,7 +10,7 @@ services:
             - 8181:8181
         restart: always
         environment:
-            - SHIELD_VER=8.0.0.34-DEV
+            - SHIELD_VER=8.0.0.35-DEV
         depends_on:
           elk:
             condition: service_healthy
@@ -27,7 +27,7 @@ services:
           consul:
             condition: service_started      
     shield-browser:
-        image: securebrowsing/shield-cef:170327-23.03
+        image: securebrowsing/shield-cef:170328-12.53
         shm_size: 1GB
         restart: always
         depends_on:
@@ -79,7 +79,7 @@ services:
         restart: always
         environment:
             - NODE_ENV=production
-            - SHIELD_VER=8.0.0.34-DEV
+            - SHIELD_VER=8.0.0.35-DEV
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
         dns: 
