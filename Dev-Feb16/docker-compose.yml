@@ -11,8 +11,6 @@ services:
         restart: always
         environment:
             - SHIELD_VER=8.0.0.29
-        volumes:
-            - ./consul-data:/data/consul
         depends_on:
           elk:
             condition: service_healthy

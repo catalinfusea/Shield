@@ -11,6 +11,8 @@ services:
         restart: always
         environment:
             - SHIELD_VER=8.0.0.35-DEV
+        volumes:
+            - /usr/local/ericomshield/config:/data/consul
         depends_on:
           elk:
             condition: service_healthy
