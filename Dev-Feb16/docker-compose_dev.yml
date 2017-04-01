@@ -10,7 +10,7 @@ services:
             - 8181:8181
         restart: always
         environment:
-            - SHIELD_VER=8.0.0.40-DEV
+            - SHIELD_VER=8.0.0.41-DEV
         volumes:
             - /usr/local/ericomshield/config:/data/consul
         depends_on:
@@ -83,7 +83,7 @@ services:
         restart: always
         environment:
             - NODE_ENV=production
-            - SHIELD_VER=8.0.0.40-DEV
+            - SHIELD_VER=8.0.0.41-DEV
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
         dns: 
