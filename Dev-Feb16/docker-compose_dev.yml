@@ -31,7 +31,7 @@ services:
           consul:
             condition: service_started      
     shield-browser:
-        image: securebrowsing/shield-cef:170329-17.34
+        image: securebrowsing/shield-cef:170331-18.20
         shm_size: 1GB
         restart: always
         depends_on:
