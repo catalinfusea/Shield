@@ -32,7 +32,11 @@ services:
             condition: service_started      
     shield-browser:
         image: securebrowsing/shield-cef:170403-09.35
+        cpu_quota: 100000
         shm_size: 1GB
+        mem_limit: 1GB
+        memswap_limit: 0
+        mem_swappiness: 0
         restart: always
         depends_on:
           elk:
