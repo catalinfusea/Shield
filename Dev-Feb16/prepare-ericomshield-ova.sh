@@ -8,34 +8,48 @@ if (( $EUID != 0 )); then
 #    sudo su
         echo " Please run it as Root"
         echo "sudo" $0 $1 $2
-        exit
+        exit 1
 fi
+
+LOGFILE="ericomshield-ova.log"
+OVA_FILE="shield_eval.ova"
 
 echo "Preparing Ericom Shield Virtual Appliance"
 echo "Cleaning existing VM"
 vagrant destroy -f
-rm shield_eval.ova
+rm $OVA_FILE
 
 ES_repo_Vagrant="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/Vagrantfile"
-curl -s -S -o Vagrantfile $ES_repo_Vagrant
+ES_repo_Vagrant_dev="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/Vagrantfile_dev"
 
-vagrant up
-vagrant halt
-vboxmanage export shield-eval -o shield_eval.ova
-chmod 277 shield_eval.ova
+if [ "$1" == "-dev" ]; then
+   echo "Using Dev Release"
+   curl -s -S -o Vagrantfile $ES_repo_dev_Vagrant
+   DEV="Dev"
+  else
+   echo "Using Production Release"
+   curl -s -S -o Vagrantfile $ES_repo_Vagrant
+fi
+
+time vagrant up
+time vagrant halt
+time vboxmanage export shield-eval -o $OVA_FILE
+chmod 277 $OVA_FILE
 
 if [ $? == 0 ]; then
    echo "***************     Success!"
-   echo "Ericom Shield Virtual Appliance is ready: shield_eval.ova"
+   echo "Ericom Shield Virtual Appliance is ready: $OVA_FILE"
+   echo "$(date): "Ericom Shield Virtual Appliance is ready: $OVA_FILE" >> "$LOGFILE"
   else
-   echo "An error occured during the Virtual Appliance generation"
+   echo "An error occured during the Virtual Appliance $DEV generation"
+   echo "$(date): An error occured during the Virtual Appliance $DEV generation" >> "$LOGFILE"
    exit 1
 fi
 
 # Need to define push strategy (ftp, GoogleDrive, repo)
 #using gdrive for now (assuming it is installed:
 #  gdrive installation from home directory (~)
-#  
+#
 #  wget https://docs.google.com/uc?id=0B3X9GlR6EmbnWksyTEtCM0VfaFE&export=download
 #  ls
 #  mv uc\?id\=0B3X9GlR6EmbnWksyTEtCM0VfaFE gdrive
@@ -43,5 +57,18 @@ fi
 #  sudo install gdrive /usr/local/bin/gdrive
 #  gdrive list
 
-gdrive update 0B_wcQRaAT_INcXhsc1E4bXlySWs shield_eval.ova
+if [ "$1" == "-dev" ]; then
+   time gdrive update 0B_wcQRaAT_INVkpVckU5eXh0cHM $OVA_FILE
+  else
+   time gdrive update 0B_wcQRaAT_INcXhsc1E4bXlySWs $OVA_FILE
+fi
 
+if [ $? == 0 ]; then
+   echo "***************     Success!"
+   echo "Ericom Shield Virtual Appliance Uploaded to Google Drive"
+   echo "$(date): "Ericom Shield Virtual Appliance $DEV Uploaded to Google Drive" >> "$LOGFILE"
+  else
+   echo "An error occured during the Virtual Appliance upload"
+   echo "$(date): An error occured during the Virtual Appliance $DEV upload" >> "$LOGFILE"
+   exit 1
+fi
