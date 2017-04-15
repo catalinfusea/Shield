@@ -31,7 +31,7 @@ services:
           consul:
             condition: service_started      
     shield-browser:
-        image: securebrowsing/shield-cef:170414-16.57
+        image: securebrowsing/shield-cef:170415-03.24
         cpu_quota: 100000
         shm_size: 1GB
         mem_limit: 1GB
