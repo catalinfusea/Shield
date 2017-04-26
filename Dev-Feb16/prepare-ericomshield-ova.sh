@@ -22,32 +22,45 @@ rm $OVA_FILE
 ES_repo_Vagrant="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/Vagrantfile"
 ES_repo_Vagrant_dev="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/Vagrantfile_dev"
 
+
 if [ "$1" == "-dev" ]; then
    echo "Using Dev Release"
-   curl -s -S -o Vagrantfile $ES_repo_dev_Vagrant
+   curl -s -S -o Vagrantfile $ES_repo_Vagrant_dev
    DEV="Dev"
+   OVA_FILE="shield_eval_dev.ova"
   else
    echo "Using Production Release"
    curl -s -S -o Vagrantfile $ES_repo_Vagrant
 fi
 
+echo "***************     Vagrant Up"
 time vagrant up
-time vagrant halt
-time vboxmanage export shield-eval -o $OVA_FILE
-chmod 277 $OVA_FILE
-
 if [ $? == 0 ]; then
    echo "***************     Success!"
-   echo "Ericom Shield Virtual Appliance is ready: $OVA_FILE"
-   echo "$(date): "Ericom Shield Virtual Appliance is ready: $OVA_FILE" >> "$LOGFILE"
   else
    echo "An error occured during the Virtual Appliance $DEV generation"
    echo "$(date): An error occured during the Virtual Appliance $DEV generation" >> "$LOGFILE"
    exit 1
 fi
 
+time vagrant halt
+echo "***************     Vagrant Export Ova"
+time vboxmanage export shield-eval -o $OVA_FILE
+
+if [ $? == 0 ]; then
+   echo "***************     Success!"
+   echo "Ericom Shield Virtual Appliance is ready: $OVA_FILE"
+   echo "$(date): Ericom Shield Virtual Appliance is ready: $OVA_FILE" >> "$LOGFILE"
+  else
+   echo "An error occured during the Virtual Appliance $DEV generation"
+   echo "$(date): An error occured during the Virtual Appliance $DEV generation" >> "$LOGFILE"
+   exit 1
+fi
+
+chmod 277 $OVA_FILE
+
 # Need to define push strategy (ftp, GoogleDrive, repo)
-#using gdrive for now (assuming it is installed:
+#  using gdrive for now (assuming it is installed:
 #  gdrive installation from home directory (~)
 #
 #  wget https://docs.google.com/uc?id=0B3X9GlR6EmbnWksyTEtCM0VfaFE&export=download
@@ -56,6 +69,8 @@ fi
 #  chmod +x gdrive
 #  sudo install gdrive /usr/local/bin/gdrive
 #  gdrive list
+
+echo "***************     Uploading to GoogleDrive"
 
 if [ "$1" == "-dev" ]; then
    time gdrive update 0B_wcQRaAT_INVkpVckU5eXh0cHM $OVA_FILE
