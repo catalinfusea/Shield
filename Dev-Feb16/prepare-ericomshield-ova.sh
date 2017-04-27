@@ -13,15 +13,8 @@ fi
 
 LOGFILE="ericomshield-ova.log"
 OVA_FILE="shield_eval.ova"
-
-echo "Preparing Ericom Shield Virtual Appliance"
-echo "Cleaning existing VM"
-vagrant destroy -f
-rm $OVA_FILE
-
 ES_repo_Vagrant="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/Vagrantfile"
 ES_repo_Vagrant_dev="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/Vagrantfile_dev"
-
 
 if [ "$1" == "-dev" ]; then
    echo "Using Dev Release"
@@ -32,6 +25,11 @@ if [ "$1" == "-dev" ]; then
    echo "Using Production Release"
    curl -s -S -o Vagrantfile $ES_repo_Vagrant
 fi
+
+echo "Preparing Ericom Shield Virtual Appliance"
+echo "Cleaning existing VM"
+vagrant destroy -f
+rm $OVA_FILE
 
 echo "***************     Vagrant Up"
 time vagrant up
