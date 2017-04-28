@@ -29,6 +29,7 @@ ES_repo_stop="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-
 ES_repo_status="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/status.sh"
 ES_repo_service="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/ericomshield"
 ES_repo_ip="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/show-my-ip.sh"
+ES_repo_systemd_service="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/ericomshield.service"
 # Production Repository: (Release)
 ES_repo_yml="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/docker-compose.yml"
 # Development Repository: (Latest)
@@ -149,6 +150,8 @@ curl -s -S -o ericomshield $ES_repo_service
 chmod +x ericomshield
 curl -s -S -o ~/show-my-ip.sh $ES_repo_ip
 chmod +x ~/show-my-ip.sh
+curl -s -S -o "${ES_PATH}/ericomshield.service" "${ES_repo_systemd_service}"
+systemctl enable "${ES_PATH}/ericomshield.service"
 if [ $UPDATE -eq 0 ]; then
 
     if [ $(sudo docker version | grep $DOCKER_VERSION |wc -l ) -le  1 ]; then
