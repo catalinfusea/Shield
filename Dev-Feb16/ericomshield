@@ -23,10 +23,7 @@ len=${#cmdLineArray[@]}
 ES_PATH="/usr/local/ericomshield"
 ES_VER="$ES_PATH/.version"
 SCRIPT="$ES_PATH/autoupdate.sh"
-START_SCRIPT="$ES_PATH/run.sh"
-STOP_SCRIPT="$ES_PATH/stop.sh"
 VERSION_SCRIPT="$ES_PATH/showversion.sh"
-STATUS_SCRIPT="$ES_PATH/status.sh"
 RUNAS=root
 
 # Get lsb functions
@@ -42,9 +39,7 @@ if [ ! -f "$SCRIPT" ]; then
         exit 1
 fi
 
-PIDFILE="$ES_PATH/.shield.pid"
 LOGFILE="$ES_PATH/ericomshield.log"
-
 
 # Create the Ericom empty dir if necessary
 if [ ! -d /var/run/ericom ]; then
@@ -59,31 +54,12 @@ fi
 
 start() {
   printf 'Starting service ...' >&2
-
-  if [ -f "$PIDFILE" ] && kill -0 $(cat "$PIDFILE") 2> /dev/null ; then
-    echo ' Service already running' >&2
-  fi
-
-  local CMD="$SCRIPT exec ${cmdLineArray[@]:1:$len} 1>&2 & echo \$!"
-  su -c "$CMD" $RUNAS > "$PIDFILE"
-  su -c "$START_SCRIPT" $RUNAS
-  echo ' Service started' >&2
+  systemctl start ericomshield && echo ' Service started' >&2
 }
 
 stop() {
   printf 'Stopping service ...' >&2
-  if [ ! -f "$PIDFILE" ] || ! kill -0 $(cat "$PIDFILE" ) 2> /dev/null ; then
-    echo ' Service not running' >&2
-  fi
-
-  PID=$(cat "$PIDFILE")
-  kill -15 $PID && rm -f "$PIDFILE"
-  while kill -0 $PID 2>/dev/null; do
-                printf '.' >&2
-            sleep 0.5
-        done
-  su -c "$STOP_SCRIPT" $RUNAS
-  echo ' Service stopped' >&2
+  systemctl stop ericomshield && echo ' Service stopped' >&2
 }
 
 restart() {
@@ -92,11 +68,7 @@ restart() {
 }
 
 status() {
-  if [ ! -f "$PIDFILE" ] || ! kill -0 $(cat "$PIDFILE") 2> /dev/null ; then
-    echo 'not running' >&2
-    return 1
-  fi
-  su -c "$STATUS_SCRIPT" $RUNAS
+    systemctl status ericomshield
 }
 
 version() {
@@ -119,9 +91,6 @@ case "$1" in
     ;;
   version)
     version
-    ;;
-  tail)
-    tail -f "$LOGFILE"
     ;;
   *)
     echo "Usage: $0 {start|stop|restart|status|version}"
