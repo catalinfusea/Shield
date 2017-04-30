@@ -8,7 +8,7 @@ if (( $EUID != 0 )); then
 #    sudo su
         echo " Please run it as Root"
         echo "sudo" $0 $1 $2
-        exit 1
+ #       exit 1
 fi
 
 LOGFILE="ericomshield-ova.log"
