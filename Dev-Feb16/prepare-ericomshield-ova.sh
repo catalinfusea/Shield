@@ -29,7 +29,10 @@ fi
 echo "Preparing Ericom Shield Virtual Appliance"
 echo "Cleaning existing VM"
 vagrant destroy -f
-rm $OVA_FILE
+
+if [ -f "$OVA_FILE" ]; then
+   rm $OVA_FILE
+fi
 
 echo "***************     Vagrant Up"
 time vagrant up
