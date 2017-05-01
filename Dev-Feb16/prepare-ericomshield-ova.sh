@@ -67,21 +67,6 @@ chmod 277 $OVA_FILE
 
 # Need to define push strategy (ftp, GoogleDrive, ftp, repo)
 
-if [ $PUSH_STRATEGY_COPY == "1" ]; then
-    echo "***************     Copying the File to: $TARGET_FOLDER"
-    time copy $OVA_FILE $TARGET_FOLDER
-
-    if [ $? == 0 ]; then
-       echo "***************     Success!"
-       echo "Ericom Shield Virtual Appliance Copied to $TARGET_FOLDER"
-       echo "$(date): "Ericom Shield Virtual Appliance $DEV Copied to $TARGET_FOLDER" >> "$LOGFILE"
-      else
-       echo "An error occured during the Virtual Appliance Copy to Folder:$TARGET_FOLDER"
-       echo "$(date): An error occured during the Virtual Appliance $DEV Copy to Folder:$TARGET_FOLDER " >> "$LOGFILE"
-       exit 1
-    fi
-fi
-
 if [ $PUSH_STRATEGY_GDRIVE == "1" ]; then
 #  using gdrive (assuming it is installed:
 #  gdrive installation from home directory (~)
@@ -110,4 +95,20 @@ if [ $PUSH_STRATEGY_GDRIVE == "1" ]; then
        exit 1
     fi
 fi
+
+if [ $PUSH_STRATEGY_COPY == "1" ]; then
+    echo "***************     Copying the File to: $TARGET_FOLDER"
+    time mv $OVA_FILE $TARGET_FOLDER
+
+    if [ $? == 0 ]; then
+       echo "***************     Success!"
+       echo "Ericom Shield Virtual Appliance Copied to $TARGET_FOLDER"
+       echo "$(date): "Ericom Shield Virtual Appliance $DEV Copied to $TARGET_FOLDER" >> "$LOGFILE"
+      else
+       echo "An error occured during the Virtual Appliance Copy to Folder:$TARGET_FOLDER"
+       echo "$(date): An error occured during the Virtual Appliance $DEV Copy to Folder:$TARGET_FOLDER " >> "$LOGFILE"
+       exit 1
+    fi
+fi
+
 # PUSH_STRATEGY_FTP="0"
