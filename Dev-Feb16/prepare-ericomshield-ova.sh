@@ -8,13 +8,18 @@ if (( $EUID != 0 )); then
 #    sudo su
         echo " Please run it as Root"
         echo "sudo" $0 $1 $2
- #       exit 1
+#       don't exit for now, because when running with Jenkins        
+#       exit 1
 fi
 
 LOGFILE="ericomshield-ova.log"
 OVA_FILE="shield_eval.ova"
 ES_repo_Vagrant="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/Vagrantfile"
 ES_repo_Vagrant_dev="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/Vagrantfile_dev"
+PUSH_STRATEGY_GDRIVE="0"
+PUSH_STRATEGY_COPY="1"
+TARGET_FOLDER="/shield_ova"
+PUSH_STRATEGY_FTP="0"
 
 if [ "$1" == "-dev" ]; then
    echo "Using Dev Release"
@@ -60,8 +65,25 @@ fi
 
 chmod 277 $OVA_FILE
 
-# Need to define push strategy (ftp, GoogleDrive, repo)
-#  using gdrive for now (assuming it is installed:
+# Need to define push strategy (ftp, GoogleDrive, ftp, repo)
+
+
+if [ $PUSH_STRATEGY_COPY == "1" ]; then
+    echo "***************     Copying the File to: $TARGET_FOLDER"
+    time copy $OVA_FILE $TARGET_FOLDER
+
+    if [ $? == 0 ]; then
+       echo "***************     Success!"
+       echo "Ericom Shield Virtual Appliance Copied to $TARGET_FOLDER"
+       echo "$(date): "Ericom Shield Virtual Appliance $DEV Copied to $TARGET_FOLDER" >> "$LOGFILE"
+      else
+       echo "An error occured during the Virtual Appliance Copy to Folder:$TARGET_FOLDER"
+       echo "$(date): An error occured during the Virtual Appliance $DEV Copy to Folder:$TARGET_FOLDER " >> "$LOGFILE"
+       exit 1
+    fi
+fi
+if [ $PUSH_STRATEGY_GDRIVE == "1" ]; then
+#  using gdrive (assuming it is installed:
 #  gdrive installation from home directory (~)
 #
 #  wget https://docs.google.com/uc?id=0B3X9GlR6EmbnWksyTEtCM0VfaFE&export=download
@@ -71,20 +93,21 @@ chmod 277 $OVA_FILE
 #  sudo install gdrive /usr/local/bin/gdrive
 #  gdrive list
 
-echo "***************     Uploading to GoogleDrive"
+    echo "***************     Uploading to GoogleDrive"
+    if [ "$1" == "-dev" ]; then
+       time gdrive update 0B_wcQRaAT_INVkpVckU5eXh0cHM $OVA_FILE
+      else
+       time gdrive update 0B_wcQRaAT_INcXhsc1E4bXlySWs $OVA_FILE
+    fi
 
-if [ "$1" == "-dev" ]; then
-   time gdrive update 0B_wcQRaAT_INVkpVckU5eXh0cHM $OVA_FILE
-  else
-   time gdrive update 0B_wcQRaAT_INcXhsc1E4bXlySWs $OVA_FILE
+    if [ $? == 0 ]; then
+       echo "***************     Success!"
+       echo "Ericom Shield Virtual Appliance Uploaded to Google Drive"
+       echo "$(date): "Ericom Shield Virtual Appliance $DEV Uploaded to Google Drive" >> "$LOGFILE"
+      else
+       echo "An error occured during the Virtual Appliance upload"
+       echo "$(date): An error occured during the Virtual Appliance $DEV upload to Google Drive" >> "$LOGFILE"
+       exit 1
+    fi
 fi
-
-if [ $? == 0 ]; then
-   echo "***************     Success!"
-   echo "Ericom Shield Virtual Appliance Uploaded to Google Drive"
-   echo "$(date): "Ericom Shield Virtual Appliance $DEV Uploaded to Google Drive" >> "$LOGFILE"
-  else
-   echo "An error occured during the Virtual Appliance upload"
-   echo "$(date): An error occured during the Virtual Appliance $DEV upload" >> "$LOGFILE"
-   exit 1
-fi
+# PUSH_STRATEGY_FTP="0"
