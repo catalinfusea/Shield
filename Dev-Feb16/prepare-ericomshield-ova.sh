@@ -18,16 +18,9 @@ ES_repo_Vagrant="https://raw.githubusercontent.com/ErezPasternak/Shield/master/D
 ES_repo_Vagrant_dev="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/Vagrantfile_dev"
 PUSH_STRATEGY_GDRIVE="0"
 PUSH_STRATEGY_COPY="1"
-TARGET_FOLDER="/tmp/"
-TEST_FILE="/tmp/a.txt"
+TARGET_FOLDER="/tmp/shield_ova"
 PUSH_STRATEGY_FTP="0"
 
-echo " " >> "$TEST_FILE
-if [ $? == 0 ]; then
-   echo "***************     Success!"
-  else
-   exit 1
-fi
 if [ "$1" == "-dev" ]; then
    echo "Using Dev Release"
    curl -s -S -o Vagrantfile $ES_repo_Vagrant_dev
@@ -74,7 +67,6 @@ chmod 277 $OVA_FILE
 
 # Need to define push strategy (ftp, GoogleDrive, ftp, repo)
 
-
 if [ $PUSH_STRATEGY_COPY == "1" ]; then
     echo "***************     Copying the File to: $TARGET_FOLDER"
     time copy $OVA_FILE $TARGET_FOLDER
@@ -89,6 +81,7 @@ if [ $PUSH_STRATEGY_COPY == "1" ]; then
        exit 1
     fi
 fi
+
 if [ $PUSH_STRATEGY_GDRIVE == "1" ]; then
 #  using gdrive (assuming it is installed:
 #  gdrive installation from home directory (~)
