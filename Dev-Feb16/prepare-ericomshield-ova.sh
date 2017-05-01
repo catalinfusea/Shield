@@ -18,10 +18,11 @@ ES_repo_Vagrant="https://raw.githubusercontent.com/ErezPasternak/Shield/master/D
 ES_repo_Vagrant_dev="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/Vagrantfile_dev"
 PUSH_STRATEGY_GDRIVE="0"
 PUSH_STRATEGY_COPY="1"
-TARGET_FOLDER="/home/ericom/shield_ova/"
+TARGET_FOLDER="/tmp/"
+TEST_FILE="/tmp/a.txt"
 PUSH_STRATEGY_FTP="0"
 
-echo " " >> "$TARGET_FOLDER a.txt"
+echo " " >> "$TEST_FILE
 if [ $? == 0 ]; then
    echo "***************     Success!"
   else
