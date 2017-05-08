@@ -224,7 +224,6 @@ if [ $UPDATE -eq 0 ]; then
     update-rc.d ericomshield defaults
 
     systemctl --global enable "${ES_PATH}/ericomshield-updater.service"    
-    systemctl start ericomshield-updater.service
     
     systemctl daemon-reload 
     echo "Done!"
@@ -233,6 +232,7 @@ fi
 if [ $UPDATE -eq 0 ]; then
    echo "Starting Ericom Shield Service"
    service ericomshield start
+   systemctl start ericomshield-updater.service   
   else
    echo "Restarting Ericom Shield Service"
    service ericomshield restart
