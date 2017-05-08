@@ -6,18 +6,18 @@ Conflicts=shutdown.target reboot.target halt.target
 
 [Service]
 Type=simple
-TimeoutStartSec=0
+TimeoutStartSec=180
 TimeoutStopSec=0
 Restart=no
 RestartSec=10
 
 WorkingDirectory=/usr/local/ericomshield
 
+Environment=SCALE_BROWSERS=10
+
 ExecStartPre=/usr/local/bin/docker-compose -f /usr/local/ericomshield/docker-compose.yml kill
-ExecStartPre=/usr/local/bin/docker-compose -f /usr/local/ericomshield/docker-compose.yml rm
-ExecStartPre=/usr/local/bin/docker-compose -f /usr/local/ericomshield/docker-compose.yml rm -f
-ExecStartPre=/usr/local/bin/docker-compose -f /usr/local/ericomshield/docker-compose.yml up --force-recreate --no-deps -d
-ExecStartPre=/usr/local/bin/docker-compose -f /usr/local/ericomshield/docker-compose.yml scale consul=3 shield-admin=1 elk=1 shield-browser=10 proxy-server=1 icap-server=1
+ExecStartPost=/usr/local/bin/docker-compose -f /usr/local/ericomshield/docker-compose.yml scale consul=3 shield-admin=1 elk=1 shield-browser=${SCALE_BROWSERS} proxy-server=1 icap-server=1
+
 ExecStart=/usr/local/bin/docker-compose -f /usr/local/ericomshield/docker-compose.yml up
 
 ExecStop=/usr/local/bin/docker-compose -f /usr/local/ericomshield/docker-compose.yml down
