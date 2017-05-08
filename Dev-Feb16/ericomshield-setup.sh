@@ -219,27 +219,16 @@ if [ $UPDATE -eq 0 ]; then
     fi
 
     echo "**************  Creating the ericomshield service..."
-    systemctl enable "${ES_PATH}/ericomshield.service"
+    systemctl --global enable "${ES_PATH}/ericomshield.service"
     cp ericomshield /etc/init.d/
     update-rc.d ericomshield defaults
 
-    systemctl enable "${ES_PATH}/ericomshield-updater.service"    
+    systemctl --global enable "${ES_PATH}/ericomshield-updater.service"    
     systemctl start ericomshield-updater.service
     
     systemctl daemon-reload 
     echo "Done!"
 fi
-
-#  No need to Run, the service will do that
-#./run.sh
-#if [ $? == 0 ]; then
-#   echo "***************     Ericom Shield is Up!"
-#  else
-#   echo "An error occured during the installation"
-#   echo "$(date): An error occured during the installation" >> "$LOGFILE"
-#   exit 1
-#fi
-
 
 if [ $UPDATE -eq 0 ]; then
    echo "Starting Ericom Shield Service"
