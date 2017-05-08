@@ -10,7 +10,7 @@ services:
             - 8181:8181
         restart: always
         environment:
-            - SHIELD_VER=8.0.0.60-DEV
+            - SHIELD_VER=8.0.0.61-DEV
         volumes:
             - /usr/local/ericomshield/config:/data/consul
         depends_on:
@@ -31,7 +31,7 @@ services:
           consul:
             condition: service_started      
     shield-browser:
-        image: securebrowsing/shield-cef:170427-15.27
+        image: securebrowsing/shield-cef:170508-16.39
         cpu_quota: 100000
         shm_size: 1GB
         mem_limit: 1GB
@@ -82,12 +82,12 @@ services:
           consul:
             condition: service_started
     icap-server:
-        image: securebrowsing/icap-server:170427-15.20
+        image: securebrowsing/icap-server:170508-15.39
         hostname: icap-server
         restart: always
         environment:
             - NODE_ENV=production
-            - SHIELD_VER=8.0.0.60-DEV
+            - SHIELD_VER=8.0.0.61-DEV
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
         dns: 
