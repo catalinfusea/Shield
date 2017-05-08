@@ -30,6 +30,7 @@ ES_repo_status="https://raw.githubusercontent.com/ErezPasternak/Shield/master/De
 ES_repo_service="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/ericomshield"
 ES_repo_ip="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/show-my-ip.sh"
 ES_repo_systemd_service="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/ericomshield.service"
+ES_repo_systemd_updater_service="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/ericomshield-updater.service"
 # Production Repository: (Release)
 ES_repo_yml="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/docker-compose.yml"
 # Development Repository: (Latest)
@@ -151,6 +152,7 @@ chmod +x ericomshield
 curl -s -S -o ~/show-my-ip.sh $ES_repo_ip
 chmod +x ~/show-my-ip.sh
 curl -s -S -o "${ES_PATH}/ericomshield.service" "${ES_repo_systemd_service}"
+curl -s -S -o "${ES_PATH}/ericomshield-updater.service" "${ES_repo_systemd_updater_service}"
 
 if [ $UPDATE -eq 0 ]; then
 
@@ -220,7 +222,11 @@ if [ $UPDATE -eq 0 ]; then
     systemctl enable "${ES_PATH}/ericomshield.service"
     cp ericomshield /etc/init.d/
     update-rc.d ericomshield defaults
-    systemctl daemon-reload
+
+    systemctl enable "${ES_PATH}/ericomshield-updater.service"    
+    systemctl start ericomshield-updater.service
+    
+    systemctl daemon-reload 
     echo "Done!"
 fi
 
