@@ -1,0 +1,23 @@
+[Unit]
+Description=Ericom Shield Service
+After=ericomshield.service
+BindsTo=ericomshield.service
+Conflicts=shutdown.target reboot.target halt.target
+
+[Service]
+Type=simple
+TimeoutStartSec=0
+TimeoutStopSec=0
+Restart=no
+RestartSec=10
+
+WorkingDirectory=/usr/local/ericomshield
+
+ExecStart=/usr/local/ericomshield/autoupdate.sh
+
+ExecStop=-pkill autoupdate.sh
+
+NotifyAccess=all
+
+[Install]
+WantedBy=multi-user.target
