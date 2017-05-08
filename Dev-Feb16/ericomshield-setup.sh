@@ -13,7 +13,7 @@ if (( $EUID != 0 )); then
 fi
 ES_PATH="/usr/local/ericomshield"
 LOGFILE="$ES_PATH/ericomshield.log"
-DOCKER_VERSION="17.03"
+DOCKER_VERSION="17.05"
 DOCKER_COMPOSE_VERSION="1.10"
 UPDATE=0
 ES_DEV_FILE="$ES_PATH/.esdev"
@@ -151,7 +151,7 @@ chmod +x ericomshield
 curl -s -S -o ~/show-my-ip.sh $ES_repo_ip
 chmod +x ~/show-my-ip.sh
 curl -s -S -o "${ES_PATH}/ericomshield.service" "${ES_repo_systemd_service}"
-systemctl enable "${ES_PATH}/ericomshield.service"
+
 if [ $UPDATE -eq 0 ]; then
 
     if [ $(sudo docker version | grep $DOCKER_VERSION |wc -l ) -le  1 ]; then
@@ -217,6 +217,7 @@ if [ $UPDATE -eq 0 ]; then
     fi
 
     echo "**************  Creating the ericomshield service..."
+    systemctl enable "${ES_PATH}/ericomshield.service"
     cp ericomshield /etc/init.d/
     update-rc.d ericomshield defaults
     systemctl daemon-reload
