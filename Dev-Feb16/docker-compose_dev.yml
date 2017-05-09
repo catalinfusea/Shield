@@ -48,6 +48,11 @@ services:
     proxy-server:
         image: securebrowsing/proxy-server:170426-11.59
         hostname: proxy
+        dns_search:
+            - service.consul
+        dns:
+            - 8.8.8.8
+            - 8.8.4.4
         restart: always
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
@@ -90,8 +95,11 @@ services:
             - SHIELD_VER=8.0.0.62-DEV
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
-        dns: 
+        dns_search:
+            - service.consul
+        dns:
             - 8.8.8.8
+            - 8.8.4.4
         ulimits:
           nofile:
             soft: 65535
