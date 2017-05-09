@@ -218,6 +218,9 @@ if [ $UPDATE -eq 0 ]; then
        fi
     fi
 
+    if [ "$ES_EVAL" == true ]; then
+       docker-compose pull
+    fi   
     echo "**************  Creating the ericomshield service..."
     systemctl --global enable "${ES_PATH}/ericomshield.service"
     cp ericomshield /etc/init.d/
