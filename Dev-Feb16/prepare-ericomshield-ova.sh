@@ -12,8 +12,6 @@ if (( $EUID != 0 )); then
 #       exit 1
 fi
 
-service ericomshield stop
-
 LOGFILE="ericomshield-ova.log"
 OVA_FILE="shield_eval.ova"
 ES_repo_Vagrant="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/Vagrantfile"
