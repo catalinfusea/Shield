@@ -31,10 +31,10 @@ services:
           consul:
             condition: service_started      
     shield-browser:
-        image: securebrowsing/shield-cef:170509-14.31
+        image: securebrowsing/shield-cef:170511-16.04
         cpu_quota: 100000
         shm_size: 1GB
-        mem_limit: 1GB
+        mem_limit: 2GB
         memswap_limit: 0
         mem_swappiness: 0
         restart: always
@@ -46,10 +46,10 @@ services:
           consul:
             condition: service_started
     proxy-server:
-        image: securebrowsing/proxy-server:170426-11.59
+        image: securebrowsing/proxy-server:170511-16.06
         hostname: proxy
         dns_search:
-            - service.consul
+            -  node.consul
         dns:
             - 8.8.8.8
             - 8.8.4.4
@@ -87,16 +87,14 @@ services:
           consul:
             condition: service_started
     icap-server:
-        image: securebrowsing/icap-server:170508-15.39
+        image: securebrowsing/icap-server:170511-16.07
         hostname: icap-server
         restart: always
         environment:
             - NODE_ENV=production
-            - SHIELD_VER=8.0.0.62-DEV
+            - SHIELD_VER=8.0.0.63-DEV
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
-        dns_search:
-            - service.consul
         dns:
             - 8.8.8.8
             - 8.8.4.4
