@@ -226,9 +226,9 @@ if [ $UPDATE -eq 0 ]; then
           cat "${ES_PATH}/sysctl_shield.conf" >> /etc/sysctl.conf
           #to apply the changes:
           sysctl -p
-          echo "file Updated!!!!"
+          echo "file /etc/sysctl.conf Updated!!!!"
          else
-          echo "file already updated"
+          echo "file /etc/sysctl.conf already updated"
        fi
     fi
 
