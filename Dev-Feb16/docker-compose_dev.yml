@@ -10,7 +10,7 @@ services:
             - 8181:8181
         restart: always
         environment:
-            - SHIELD_VER=8.0.0.62-DEV
+            - SHIELD_VER=8.0.0.63-DEV
         volumes:
             - /usr/local/ericomshield/config:/data/consul
         depends_on:
