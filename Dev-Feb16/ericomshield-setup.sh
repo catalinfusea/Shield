@@ -30,6 +30,7 @@ ES_repo_service="https://raw.githubusercontent.com/ErezPasternak/Shield/master/D
 ES_repo_ip="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/show-my-ip.sh"
 ES_repo_systemd_service="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/ericomshield.service"
 ES_repo_systemd_updater_service="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/ericomshield-updater.service"
+ES_repo_sysctl_shield.conf="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/sysctl_shield.conf"
 # Production Repository: (Release)
 ES_repo_yml="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/docker-compose.yml"
 # Development Repository: (Latest)
@@ -217,6 +218,17 @@ if [ $UPDATE -eq 0 ]; then
             echo "$(date): An error occured during the installation: Cannot login to docker" >> "$LOGFILE"
             exit 1
          fi
+       fi
+       #check if file was not updated
+       curl -s -S -o "${ES_PATH}/sysctl_shield.conf" "${ES_repo_sysctl_shield.conf}"
+       if [ $(grep EricomShield /etc/sysctl.conf | wc -l) -eq 0 ]; then
+          # append sysctl with our settings
+          cat "${ES_PATH}/sysctl_shield.conf" >> /etc/sysctl.conf
+          #to apply the changes:
+          sysctl -p
+          echo "file Updated!!!!"
+         else
+          echo "file already updated"
        fi
     fi
 
