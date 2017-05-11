@@ -151,7 +151,7 @@ curl -s -S -o ericomshield $ES_repo_service
 chmod +x ericomshield
 curl -s -S -o ~/show-my-ip.sh $ES_repo_ip
 chmod +x ~/show-my-ip.sh
-' Need to download these service files only if needed and reload only if changed
+# Need to download these service files only if needed and reload only if changed
 curl -s -S -o "${ES_PATH}/ericomshield.service" "${ES_repo_systemd_service}"
 curl -s -S -o "${ES_PATH}/ericomshield-updater.service" "${ES_repo_systemd_updater_service}"
 
