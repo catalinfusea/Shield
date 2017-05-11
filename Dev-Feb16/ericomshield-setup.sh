@@ -22,7 +22,6 @@ ES_AUTO_UPDATE_FILE="$ES_PATH/.autoupdate"
 # Development Repository: (Latest)
 ES_repo_setup="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/ericomshield-setup.sh"
 ES_repo_run="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/run.sh"
-ES_repo_run_eval="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/run_eval.sh"
 ES_repo_update="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/autoupdate.sh"
 ES_repo_version="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/showversion.sh"
 ES_repo_stop="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/stop.sh"
@@ -134,7 +133,7 @@ if [ ! -f "run.sh" ]; then
    curl -s -S -o run.sh $ES_repo_run
 fi
 if [ "$ES_EVAL" == true ]; then
-   curl -s -S -o run.sh $ES_repo_run_eval
+'   curl -s -S -o run.sh $ES_repo_run_eval
    echo "Installing Ericom Shield evaluation"
 fi
 chmod +x run.sh
@@ -151,8 +150,11 @@ curl -s -S -o ericomshield $ES_repo_service
 chmod +x ericomshield
 curl -s -S -o ~/show-my-ip.sh $ES_repo_ip
 chmod +x ~/show-my-ip.sh
+' Need to download these service files only if needed and reload only if changed
 curl -s -S -o "${ES_PATH}/ericomshield.service" "${ES_repo_systemd_service}"
 curl -s -S -o "${ES_PATH}/ericomshield-updater.service" "${ES_repo_systemd_updater_service}"
+
+systemctl daemon-reload 
 
 if [ $UPDATE -eq 0 ]; then
 
