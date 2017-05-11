@@ -88,7 +88,7 @@ if [ $PUSH_STRATEGY_GDRIVE == "1" ]; then
     if [ $? == 0 ]; then
        echo "***************     Success!"
        echo "Ericom Shield Virtual Appliance Uploaded to Google Drive"
-       echo "$(date): "Ericom Shield Virtual Appliance $DEV Uploaded to Google Drive" >> "$LOGFILE"
+       echo "$(date): Ericom Shield Virtual Appliance $DEV Uploaded to Google Drive" >> "$LOGFILE"
       else
        echo "An error occured during the Virtual Appliance upload"
        echo "$(date): An error occured during the Virtual Appliance $DEV upload to Google Drive" >> "$LOGFILE"
@@ -103,7 +103,7 @@ if [ $PUSH_STRATEGY_COPY == "1" ]; then
     if [ $? == 0 ]; then
        echo "***************     Success!"
        echo "Ericom Shield Virtual Appliance Copied to $TARGET_FOLDER"
-       echo "$(date): "Ericom Shield Virtual Appliance $DEV Copied to $TARGET_FOLDER" >> "$LOGFILE"
+       echo "$(date): Ericom Shield Virtual Appliance $DEV Copied to $TARGET_FOLDER" >> "$LOGFILE"
       else
        echo "An error occured during the Virtual Appliance Copy to Folder:$TARGET_FOLDER"
        echo "$(date): An error occured during the Virtual Appliance $DEV Copy to Folder:$TARGET_FOLDER " >> "$LOGFILE"
