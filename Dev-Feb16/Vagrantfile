@@ -63,7 +63,7 @@ Vagrant.configure("2") do |config|
       # vb.gui = true
       
       # set VM name
-      vb.name = "shield-eval-dev"
+      vb.name = "shield-eval"
 #     Doesnt work:
 #      vb.product = "Ericom Shield"
 #      vb.product-URL = "http://ericomshield.com/"
