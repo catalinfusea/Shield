@@ -108,7 +108,7 @@ services:
           consul:
              condition: service_started
     elk:
-        image: securebrowsing/shield-elk:170514-17.25
+        image: securebrowsing/shield-elk:170126-09.14
         hostname: elk
         ports:
             - 5601:5601
