@@ -10,7 +10,7 @@ services:
             - 8181:8181
         restart: always
         environment:
-            - SHIELD_VER=8.0.0.63-DEV
+            - SHIELD_VER=8.0.0.64-DEV
         volumes:
             - /usr/local/ericomshield/config:/data/consul
         depends_on:
@@ -31,7 +31,7 @@ services:
           consul:
             condition: service_started      
     shield-browser:
-        image: securebrowsing/shield-cef:170511-16.04
+        image: securebrowsing/shield-cef:170515-16.40
         cpu_quota: 100000
         shm_size: 1GB
         mem_limit: 2GB
@@ -46,7 +46,7 @@ services:
           consul:
             condition: service_started
     proxy-server:
-        image: securebrowsing/proxy-server:170511-16.06
+        image: securebrowsing/proxy-server:170514-07.39
         hostname: proxy
         dns_search:
             -  node.consul
@@ -87,12 +87,12 @@ services:
           consul:
             condition: service_started
     icap-server:
-        image: securebrowsing/icap-server:170511-16.07
+        image: securebrowsing/icap-server:170515-19.39
         hostname: icap-server
         restart: always
         environment:
             - NODE_ENV=production
-            - SHIELD_VER=8.0.0.63-DEV
+            - SHIELD_VER=8.0.0.64-DEV
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
         dns:
@@ -108,7 +108,7 @@ services:
           consul:
              condition: service_started
     elk:
-        image: securebrowsing/shield-elk:170126-09.14
+        image: securebrowsing/shield-elk:170514-17.25
         hostname: elk
         ports:
             - 5601:5601
