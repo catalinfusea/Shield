@@ -40,6 +40,9 @@ services:
         restart: always
         environment:
             - FPS=25
+            - DEBUG_REMOTE_SITE=false
+        #volumes:
+        #    - /tmp/.X11-unix:/tmp/.X11-unix
         depends_on:
           elk:
             condition: service_healthy
