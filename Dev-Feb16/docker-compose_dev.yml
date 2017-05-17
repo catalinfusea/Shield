@@ -41,6 +41,9 @@ services:
         environment:
             - FPS=25
             - DEBUG_REMOTE_SITE=false
+        # Forward X11 sockets to the container for the container applications to be
+        # able to connect to the X server on the host. This is not going to work on macOS
+        # due to this Docker issue: https://github.com/docker/for-mac/issues/483
         #volumes:
         #    - /tmp/.X11-unix:/tmp/.X11-unix
         depends_on:
