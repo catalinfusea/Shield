@@ -44,6 +44,8 @@ services:
         # Forward X11 sockets to the container for the container applications to be
         # able to connect to the X server on the host. This is not going to work on macOS
         # due to this Docker issue: https://github.com/docker/for-mac/issues/483
+        # IMPORTANT: run "xhost +" on the host computer before starting the container
+        # with X11 forwarding enabled.
         #volumes:
         #    - /tmp/.X11-unix:/tmp/.X11-unix
         depends_on:
