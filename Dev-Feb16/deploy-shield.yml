@@ -2,7 +2,7 @@ version: '3.2'
 
 services:
   shield-admin:
-    image: securebrowsing/shield-admin:170427-15.50
+    image: securebrowsing/shield-admin:170517-13.59
     ports:
         - 8181:8181
     environment:
@@ -12,7 +12,7 @@ services:
     networks:
         - shield
   icap-server:
-    image: securebrowsing/icap-server:170511-16.07
+    image: securebrowsing/icap-server:170517-19.39
     hostname: icap-server
     environment:
         - NODE_ENV=production
@@ -25,7 +25,7 @@ services:
     networks:
       - shield
   shield-browser:
-    image: securebrowsing/shield-cef:170511-16.04
+    image: securebrowsing/shield-cef:170517-21.42
     environment:
          - FPS=25
          #- DEBUG_REMOTE_SITE=true
@@ -62,7 +62,7 @@ services:
     networks:
       - shield
   proxy-server:
-    image: securebrowsing/proxy-server:170511-16.06
+    image: securebrowsing/proxy-server:170516-23.39
     ports:
       - "3128:3128"
     ulimits:
