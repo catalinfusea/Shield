@@ -1,0 +1,8 @@
+SHIELDVER 8.0.0.65-DEV
+shieldconfiguration 170516-23.40
+shieldadmin 170517-13.59
+shieldadminorig 170219-20.17
+shieldcef 170517-21.42
+proxyserver 170516-23.39
+icapserver 170517-19.39
+shieldelk 170126-09.14
