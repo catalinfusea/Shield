@@ -2,21 +2,21 @@ version: '3.2'
 
 services:
   shield-admin:
-    image: securebrowsing/shield-admin:170517-13.59
+    image: securebrowsing/shield-admin:shieldadmin
     ports:
         - 8181:8181
     environment:
-        - SHIELD_VER=8.0.0.57
+        - SHIELD_VER=shieldver
     volumes:
         - /usr/local/ericomshield/config:/data/consul
     networks:
         - shield
   icap-server:
-    image: securebrowsing/icap-server:170517-19.39
+    image: securebrowsing/icap-server:icapserver
     hostname: icap-server
     environment:
         - NODE_ENV=production
-        - SHIELD_VER=8.0.0.57
+        - SHIELD_VER=shieldver
         - MAX_ELASTIC_CHECK_ATTEMPTS=40
     ulimits:
       nofile:
@@ -25,7 +25,7 @@ services:
     networks:
       - shield
   shield-browser:
-    image: securebrowsing/shield-cef:170517-21.42
+    image: securebrowsing/shield-cef:shieldcef
     environment:
          - FPS=25
          #- DEBUG_REMOTE_SITE=true
@@ -48,7 +48,7 @@ services:
         memory-swappiness: 0
         shm-size: 1GB
   elk:
-    image: securebrowsing/shield-elk:170126-09.14
+    image: securebrowsing/shield-elk:shieldelk
     hostname: elk
     ports:
       - 5601:5601
@@ -62,7 +62,7 @@ services:
     networks:
       - shield
   proxy-server:
-    image: securebrowsing/proxy-server:170516-23.39
+    image: securebrowsing/proxy-server:proxyserver
     ports:
       - "3128:3128"
     ulimits:
