@@ -1,4 +1,4 @@
-#!/bin/bash 
+#!/bin/bash -x  
 DEBUG_MODE=
 CONSUL_IMAGE=consul:0.7.5
 NETWORK_INTERFACE=eth0
@@ -69,8 +69,7 @@ function create_network {
             --subnet 192.168.0.0/16 \
             --attachable=true \
             --opt iface=eth0 \
-         # not needed in linux 
-         #   --gateway=192.168.50.119 \
+            --gateway=192.168.50.119 \
             shield-network
     fi       
 }
@@ -141,7 +140,7 @@ case "$swarm_res" in
             echo 'Network for swarm created'
         fi
 
-        SECRET_RES=$( create_secrets )
+    #    SECRET_RES=$( create_secrets )
         
         CONSUL_RES=$( deploy_consul )
         if [[ "$CONSUL_RES" =~ "Error" ]]; then
