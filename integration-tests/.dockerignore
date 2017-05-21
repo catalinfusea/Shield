@@ -1,0 +1,9 @@
+# Created by .ignore support plugin (hsz.mobi)
+.gitignore
+.dockerignore
+Dockerfile
+.idea
+*.pyc
+*.iml
+run-example.sh
+__pycache__/
