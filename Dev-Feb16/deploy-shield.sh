@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash 
 DEBUG_MODE=
 CONSUL_IMAGE=consul:0.7.5
 NETWORK_INTERFACE=eth0
@@ -60,6 +60,8 @@ function get_right_interface {
 ALREADY_SWARM=$( (docker node ls | grep -i 'This node is not a swarm manager') 2>&1 )
 
 ##### Single node only #####
+# https://docs.docker.com/engine/reference/commandline/network_create/#bridge-driver-options
+
 function create_network {
     TEST_NETWORK=$(docker network ls | grep -i 'shield-network')
     if [ ! $TEST_NETWORK ]; then 
@@ -67,7 +69,8 @@ function create_network {
             --subnet 192.168.0.0/16 \
             --attachable=true \
             --opt iface=eth0 \
-            --gateway=192.168.50.119 \
+         # not needed in linux 
+         #   --gateway=192.168.50.119 \
             shield-network
     fi       
 }
@@ -118,7 +121,12 @@ function clean_system {
     echo "################## Clean system end ######################"
 }
 
+###########################################################
+# code start to run here
+
+# getting new images from docker hub if needed 
 update_images
+
 echo "################## Start Create docker swarm ######################"
 
 NETWORK_INTERFACE=$( get_right_interface )
