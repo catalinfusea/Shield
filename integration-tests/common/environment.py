@@ -15,6 +15,7 @@ class Configuration:
         self.logger_level = None
         self.docker_username = None
         self.docker_password = None
+        self.system_ready_sleep = 60
         #append config variables here
         self.apply_environment()
         self.setup_logging()
@@ -46,6 +47,10 @@ class Configuration:
         if 'DOCKER_PASSWORD' in os.environ:
             self.docker_password = os.environ['DOCKER_PASSWORD']
 
+        if 'SYSTEM_READY_SLEEP' in os.environ:
+            self.system_ready_sleep = int(os.environ['SYSTEM_READY_SLEEP'])
+
+
 
     def apply_arguments(self):
         parser = argparse.ArgumentParser()
@@ -55,6 +60,8 @@ class Configuration:
         parser.add_argument('-lgl', '--logger-level', dest='logger_level', type=str, default='INFO', help='Logging level => python standard')
         parser.add_argument('-du', '--docker-username', dest='docker_username', type=str, help='Username for login to docker repo', required=False)
         parser.add_argument('-dp', '--docker-password', dest='docker_password', type=str, help='Password for login to docker repo', required=False)
+        parser.add_argument('-dp', '--docker-password', dest='docker_password', type=str, help='Password for login to docker repo', required=False)
+        parser.add_argument('-ss', '--system-ready-sleep', dest='system_ready_sleep', type=int, help="System ready wait seconds", default=60)
 
         args = parser.parse_args()
         self.compose_yaml = args.compose_yaml
@@ -63,6 +70,7 @@ class Configuration:
         self.logger_level = args.logger_level
         self.docker_password = args.docker_password
         self.docker_username = args.docker_username
+        self.system_ready_sleep = args.system_ready_sleep
 
 
     def setup_logging(self):

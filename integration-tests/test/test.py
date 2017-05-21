@@ -22,6 +22,7 @@ class TestFlow:
                   'https': 'http://localhost:3128',
                 }
         self.already_up = False
+        self.system_ready_sleep = 60
 
 
     def setup_test(self, app_config):
@@ -103,8 +104,8 @@ class TestFlow:
         self.project.up()
         self.project.get_service("consul").scale(3)
         self.project.get_service("shield-browser").scale(5)
-        self.logger.info("Going to sleep one minutes for system ready. Make proxy-server health check!!!!")
-        time.sleep(60)
+        self.logger.info("Going to sleep {0} seconds for system ready. Make proxy-server health check!!!!".format(self.app_config.system_ready_sleep))
+        time.sleep(self.app_config.system_ready_sleep)
         self.logger.info("Weak up continue testing")
 
     def stop_project(self):
