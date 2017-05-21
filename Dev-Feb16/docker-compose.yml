@@ -2,15 +2,15 @@ version: '2.1'
 
 services:
     consul:
-        image: securebrowsing/shield-configuration:170516-23.40
+        image: securebrowsing/shield-configuration:shieldconfiguration
         restart: always
     shield-admin:
-        image: securebrowsing/shield-admin:170517-13.59
+        image: securebrowsing/shield-admin:shieldadmin
         ports:
             - 8181:8181
         restart: always
         environment:
-            - SHIELD_VER=8.0.0.65
+            - SHIELD_VER=shieldver
         volumes:
             - /usr/local/ericomshield/config:/data/consul
         depends_on:
@@ -21,7 +21,7 @@ services:
         volumes:
             - /usr/local/ericomshield/config:/data/consul
     shield-admin1:
-        image: securebrowsing/shield-admin-orig:170219-20.17
+        image: securebrowsing/shield-admin-orig:shieldadminorig
         ports:
             - 8500:8500
         restart: always
@@ -31,7 +31,7 @@ services:
           consul:
             condition: service_started      
     shield-browser:
-        image: securebrowsing/shield-cef:170517-21.42
+        image: securebrowsing/shield-cef:shieldcef
         cpu_quota: 100000
         shm_size: 1GB
         mem_limit: 2GB
@@ -55,7 +55,7 @@ services:
           consul:
             condition: service_started
     proxy-server:
-        image: securebrowsing/proxy-server:170516-23.39
+        image: securebrowsing/proxy-server:proxyserver
         hostname: proxy
         dns_search:
             -  node.consul
@@ -96,7 +96,7 @@ services:
           consul:
             condition: service_started
     icap-server:
-        image: securebrowsing/icap-server:170517-19.39
+        image: securebrowsing/icap-server:icapserver
         hostname: icap-server
         restart: always
         environment:
@@ -117,7 +117,7 @@ services:
           consul:
              condition: service_started
     elk:
-        image: securebrowsing/shield-elk:170126-09.14
+        image: securebrowsing/shield-elk:shieldelk
         hostname: elk
         ports:
             - 5601:5601
