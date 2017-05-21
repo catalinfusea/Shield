@@ -24,6 +24,15 @@ services:
         hard: 65535
     networks:
       - shield
+  broker-server:
+    image: securebrowsing/broker-server:170521-19.11
+    hostname: broker-server
+    volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+        - NODE_ENV=production
+    networks:
+      - shield
   shield-browser:
     image: securebrowsing/shield-cef:170517-21.42
     environment:
@@ -85,6 +94,13 @@ services:
       placement:
         constraints:
           - node.role==manager
+  dockerbeat:
+    image: ingensi/dockbeat
+    hostname: dockerbeat
+    volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+    networks: 
+      - shield
 
 networks:
   shield:
