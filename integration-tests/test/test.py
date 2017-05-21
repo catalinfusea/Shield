@@ -115,11 +115,24 @@ class TestFlow:
 
     def test_running_system(self):
         self.logger.info("Test running system")
-        r = requests.get('http://ericom.com', proxies=self.current_shield_proxy)
+        self.run_urls_test()
+
+
+    def find_proxy_server(self):
+        pass
+
+    def run_urls_test(self):
+        if self.app_config.urls_file is None:
+            self.run_single_url_test('http://ericom.com')
+        else:
+            with open(self.app_config.urls_file, mode='rb') as file:
+                for url in file:
+                    self.run_single_url_test(url)
+
+    def run_single_url_test(self, url):
+        self.logger.info("Start test {0} url".format(url))
+        r = requests.get(url, proxies=self.current_shield_proxy)
         if not 'Protected by Ericom Shield' in r.text:
             raise Exception("Can't find: Protected by Ericom Shield in returned page")
         result = "Status code: {0}, return html: {1}".format(r.status_code, r.text)
         self.logger.info(result)
-
-    def find_proxy_server(self):
-        pass

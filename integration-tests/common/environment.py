@@ -16,6 +16,7 @@ class Configuration:
         self.docker_username = None
         self.docker_password = None
         self.system_ready_sleep = 60
+        self.urls_file = None
         #append config variables here
         self.apply_environment()
         self.setup_logging()
@@ -50,6 +51,9 @@ class Configuration:
         if 'SYSTEM_READY_SLEEP' in os.environ:
             self.system_ready_sleep = int(os.environ['SYSTEM_READY_SLEEP'])
 
+        if 'URLS_FILE' in os.environ:
+            self.urls_file = os.environ['URLS_FILE']
+
 
 
     def apply_arguments(self):
@@ -62,6 +66,7 @@ class Configuration:
         parser.add_argument('-dp', '--docker-password', dest='docker_password', type=str, help='Password for login to docker repo', required=False)
         parser.add_argument('-dp', '--docker-password', dest='docker_password', type=str, help='Password for login to docker repo', required=False)
         parser.add_argument('-ss', '--system-ready-sleep', dest='system_ready_sleep', type=int, help="System ready wait seconds", default=60)
+        parser.add_argument('-uf', '--urls-file', dest="urls_file", type=str, help="File contains urls one per line for system check", default=None)
 
         args = parser.parse_args()
         self.compose_yaml = args.compose_yaml
@@ -71,6 +76,7 @@ class Configuration:
         self.docker_password = args.docker_password
         self.docker_username = args.docker_username
         self.system_ready_sleep = args.system_ready_sleep
+        self.urls_file = args.urls_file
 
 
     def setup_logging(self):
