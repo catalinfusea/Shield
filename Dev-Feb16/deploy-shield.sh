@@ -69,7 +69,6 @@ function create_network {
             --subnet 192.168.0.0/16 \
             --attachable=true \
             --opt iface=eth0 \
-            --gateway=192.168.50.119 \
             shield-network
     fi       
 }
@@ -100,7 +99,13 @@ function init_swarm {
 
 function deploy_consul {
     if [ "$DEPLOY_MODE"=='single' ]; then
-        echo $(docker run -d --network shield-network --name consul --hostname consul -e "CONSUL_BIND_INTERFACE=$CONSUL_NETWORK_INTERFACE" -p "8500:8500" $CONSUL_IMAGE)
+        echo $(docker run -d \
+               --network shield-network \
+               --name consul \
+               --hostname consul \
+               -e 'CONSUL_LOCAL_CONFIG={"skip_leave_on_interrupt": true}' \
+               -p "8500:8500" \
+               $CONSUL_IMAGE agent -server -bind=192.168.0.2 -bootstrap-expect=1 -client=0.0.0.0)
       #  echo $(docker service create --network shield-network --name consul --hostname consul --detach=false -e "CONSUL_BIND_INTERFACE=$CONSUL_NETWORK_INTERFACE" -p "8500:8500" $CONSUL_IMAGE)
     fi
 }
