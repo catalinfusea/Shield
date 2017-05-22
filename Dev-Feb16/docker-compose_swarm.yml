@@ -6,7 +6,7 @@ services:
     ports:
         - 8181:8181
     environment:
-        - SHIELD_VER=shieldver
+        - SHIELD_VER=SHIELDVER
     volumes:
         - /usr/local/ericomshield/config:/data/consul
     networks:
