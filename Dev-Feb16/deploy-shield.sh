@@ -1,4 +1,8 @@
-#!/bin/bash 
+#!/bin/bash
+############################################
+#####   Ericom Shield Installer        #####
+###################################LO##BH###
+
 DEBUG_MODE=
 CONSUL_IMAGE=consul:0.7.5
 NETWORK_INTERFACE=eth0
@@ -7,7 +11,8 @@ DEPLOY_MODE=single
 STACK_DEPLOY_NAME=shield
 CONSUL_NETWORK_INTERFACE=eth0
 BROWSER_HOSTNAME=ericom-browser.com
-COMPOSE=deploy-shield.yml
+ES_YML_FILE=docker-compose.yml
+ES_NETWORK_NAME="shield-network"
 
 function set_arg_value {
     if [ -n "$1" ]; then
@@ -17,7 +22,6 @@ function set_arg_value {
         eval "$3"
     fi
 }
-
 
 while [ "$1" != "" ]; do
     case $1 in
@@ -50,7 +54,7 @@ function get_right_interface {
     TEST_MAC=$(uname | grep Linux)
     if [ ! "$TEST_MAC" ]; then
         echo $(ifconfig $(netstat -rn | grep -E "^default|^0.0.0.0" | head -1 | awk '{print $NF}') | grep 'inet ' | awk '{print $2}' | grep -Eo '([0-9]*\.){3}[0-9]*')
-    else 
+    else
         echo $(route | grep '^default' | grep -o '[^ ]*$')
     fi
 }
@@ -63,24 +67,20 @@ ALREADY_SWARM=$( (docker node ls | grep -i 'This node is not a swarm manager') 2
 # https://docs.docker.com/engine/reference/commandline/network_create/#bridge-driver-options
 
 function create_network {
-    TEST_NETWORK=$(docker network ls | grep -i 'shield-network')
-    if [ ! $TEST_NETWORK ]; then 
+    TEST_NETWORK=$(docker network ls | grep -i '$ES_NETWORK_NAME')
+    if [ ! $TEST_NETWORK ]; then
         docker network create -d overlay \
             --subnet 192.168.0.0/16 \
             --attachable=true \
             --opt iface=eth0 \
-         # not needed in linux 
-         #   --gateway=192.168.50.119 \
-            shield-network
-    fi       
+            $ES_NETWORK_NAME
+    fi
 }
 
 function create_secrets {
     cat ./cef.crt | docker secret create "$STACK_DEPLOY_NAME"_cef.crt -;
     cat ./cef.key | docker secret create "$STACK_DEPLOY_NAME"_cef.key -
 }
-
-
 function init_swarm {
     if [ "$IP_ADDRESS" != '' ]; then
         result=$( (docker swarm init --advertise-addr $IP_ADDRESS --task-history-limit 0) 2>&1 )
@@ -90,24 +90,24 @@ function init_swarm {
 
     if [[ "$result" =~ 'already part' ]]
     then
-        echo 2 
-    elif [[ "$result" =~ 'Error' ]] 
+        echo 2
+    elif [[ "$result" =~ 'Error' ]]
     then
         echo 11
-    else 
+    else
         echo 0
     fi
 }
 
 function deploy_consul {
     if [ "$DEPLOY_MODE"=='single' ]; then
-        echo $(docker run -d --network shield-network --name consul --hostname consul -e "CONSUL_BIND_INTERFACE=$CONSUL_NETWORK_INTERFACE" -p "8500:8500" $CONSUL_IMAGE)
+        echo $(docker run -d --network $ES_NETWORK_NAME --name consul --hostname consul -e "CONSUL_BIND_INTERFACE=$CONSUL_NETWORK_INTERFACE" -p "8500:8500" $CONSUL_IMAGE)
       #  echo $(docker service create --network shield-network --name consul --hostname consul --detach=false -e "CONSUL_BIND_INTERFACE=$CONSUL_NETWORK_INTERFACE" -p "8500:8500" $CONSUL_IMAGE)
     fi
 }
 function update_images {
     echo "################## Getting images start ######################"
-    images=$(grep "image" ${COMPOSE} | awk '{print $2}' | sort | uniq)
+    images=$(grep "image" ${ES_YML_FILE} | awk '{print $2}' | sort | uniq)
     for image in ${images}; do
         docker pull ${image}
     done
@@ -124,7 +124,8 @@ function clean_system {
 ###########################################################
 # code start to run here
 
-# getting new images from docker hub if needed 
+echo "deploy-shield (swarm)"
+# getting new images from docker hub if needed
 update_images
 
 echo "################## Start Create docker swarm ######################"
@@ -133,7 +134,7 @@ NETWORK_INTERFACE=$( get_right_interface )
 swarm_res=$( init_swarm )
 echo "################## Docker swarm created ##########################"
 case "$swarm_res" in
-    0)   
+    0)
         network_res=$( create_network )
 
         if [ "$network_res" != "" ]
@@ -142,14 +143,14 @@ case "$swarm_res" in
         fi
 
         SECRET_RES=$( create_secrets )
-        
+
         CONSUL_RES=$( deploy_consul )
         if [[ "$CONSUL_RES" =~ "Error" ]]; then
             echo 'Consule deploy Error'
             exit 1
         else
             #--with-registry-auth
-            STACK_DEPLOY_RES=$(docker stack deploy -c deploy-shield.yml $STACK_DEPLOY_NAME)
+            STACK_DEPLOY_RES=$(docker stack deploy -c $ES_YML_FILE $STACK_DEPLOY_NAME)
         fi
         ;;
     1)
@@ -157,16 +158,11 @@ case "$swarm_res" in
         ;;
     2)
         echo 'Updating the system'
-        STACK_DEPLOY_RES=$(docker stack deploy -c deploy-shield.yml $STACK_DEPLOY_NAME)
+        STACK_DEPLOY_RES=$(docker stack deploy -c $ES_YML_FILE $STACK_DEPLOY_NAME)
         clean_system
         ;;
-    11) 
-        echo "It's extrimly bad"
+    11)
+        echo "It's extremly bad"
         ;;
 esac
-
-
-
-
-
 
