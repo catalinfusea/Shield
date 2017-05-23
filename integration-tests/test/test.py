@@ -66,7 +66,13 @@ class TestFlow:
             return False
         finally:
             if self.project:
-                self.stop_project()
+                try:
+                    self.stop_project()
+                except requests.RequestException as ex:
+                    if "network integration_test_default" in str(ex):
+                        self.logger("Can't stop system due docker compose open BUG, trust on system prune raise by Jenkins")
+                    else:
+                        raise ex
             current_logger.info('End test')
 
 
