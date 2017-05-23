@@ -100,7 +100,11 @@ function init_swarm {
 
 function deploy_consul {
     if [ "$DEPLOY_MODE"=='single' ]; then
-        echo $(docker run -d --network shield-network --name consul --hostname consul -e "CONSUL_BIND_INTERFACE=$CONSUL_NETWORK_INTERFACE" -p "8500:8500" $CONSUL_IMAGE)
+        echo $(docker run -d \
+            --network shield-network \
+            --name consul \
+            --hostname consul \
+            -p "8500:8500" $CONSUL_IMAGE)
       #  echo $(docker service create --network shield-network --name consul --hostname consul --detach=false -e "CONSUL_BIND_INTERFACE=$CONSUL_NETWORK_INTERFACE" -p "8500:8500" $CONSUL_IMAGE)
     fi
 }
