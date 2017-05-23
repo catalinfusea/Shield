@@ -2,15 +2,15 @@ version: '2.1'
 
 services:
     consul:
-        image: securebrowsing/shield-configuration:latest
+        image: securebrowsing/shield-configuration:170516-23.40
         restart: always
     shield-admin:
-        image: securebrowsing/shield-admin:latest
+        image: securebrowsing/shield-admin:170522-17.09-103
         ports:
             - 8181:8181
         restart: always
         environment:
-            - SHIELD_VER=8.0.0.65-DEV
+            - SHIELD_VER=8.0.0.66-DEV
         volumes:
             - /usr/local/ericomshield/config:/data/consul
         depends_on:
@@ -21,7 +21,7 @@ services:
         volumes:
             - /usr/local/ericomshield/config:/data/consul
     shield-admin1:
-        image: securebrowsing/shield-admin-orig:latest
+        image: securebrowsing/shield-admin-orig:170219-20.17
         ports:
             - 8500:8500
         restart: always
@@ -31,7 +31,7 @@ services:
           consul:
             condition: service_started      
     shield-browser:
-        image: securebrowsing/shield-cef:latest
+        image: securebrowsing/shield-cef:170522-13.36-100
         cpu_quota: 100000
         shm_size: 1GB
         mem_limit: 2GB
@@ -41,6 +41,7 @@ services:
         environment:
             - FPS=25
             - DEBUG_REMOTE_SITE=false
+            - SSLEXCLUSION=true            
         # Forward X11 sockets to the container for the container applications to be
         # able to connect to the X server on the host. This is not going to work on macOS
         # due to this Docker issue: https://github.com/docker/for-mac/issues/483
@@ -54,7 +55,7 @@ services:
           consul:
             condition: service_started
     proxy-server:
-        image: securebrowsing/proxy-server:latest
+        image: securebrowsing/proxy-server:170516-23.39
         hostname: proxy
         dns_search:
             -  node.consul
@@ -95,12 +96,13 @@ services:
           consul:
             condition: service_started
     icap-server:
-        image: securebrowsing/icap-server:latest
+        image: securebrowsing/icap-server:170522-14.39-101
         hostname: icap-server
         restart: always
         environment:
             - NODE_ENV=production
-            - SHIELD_VER=8.0.0.65-DEV
+            - SHIELD_VER=8.0.0.66-DEV
+            - SSLEXCLUSION=true
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
         dns:
@@ -116,7 +118,7 @@ services:
           consul:
              condition: service_started
     elk:
-        image: securebrowsing/shield-elk:latest
+        image: securebrowsing/shield-elk:170521-10.17
         hostname: elk
         ports:
             - 5601:5601
