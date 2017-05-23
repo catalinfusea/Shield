@@ -29,3 +29,4 @@ ES_repo_dev_ver="https://raw.githubusercontent.com/ErezPasternak/Shield/$BRANCH/
 ES_repo_yml="https://raw.githubusercontent.com/ErezPasternak/Shield/$BRANCH/Dev-Feb16/docker-compose.yml"
 # Swarm Repository: (Latest)
 ES_swarm_repo_yml="https://raw.githubusercontent.com/ErezPasternak/Shield/$BRANCH/Dev-Feb16/docker-compose_swarm.yml"
+ES_repo_swarm_sh="https://raw.githubusercontent.com/ErezPasternak/Shield/$BRANCH/Dev-Feb16/deploy_shield.sh"
