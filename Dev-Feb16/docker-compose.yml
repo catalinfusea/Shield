@@ -52,7 +52,7 @@ services:
           consul:
             condition: service_started
     proxy-server:
-        image: securebrowsing/proxy-server:proxyserver
+        image: securebrowsing/proxy-server:latest
         hostname: proxy
         ports:
             - 3128:3128
