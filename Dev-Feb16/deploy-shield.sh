@@ -1,8 +1,9 @@
-#!/bin/bash
+#!/bin/bash -x
 
 DOCKER_COMPOSE_FILE='deploy-shield.yml'
 STACK_NAME='shield'
 NETWORK_INTERFACE='eth0'
+SINGLE_MODE=true
 
 function init_swarm {
     if [ -z "$IP_ADDRESS" ]; then
@@ -13,7 +14,7 @@ function init_swarm {
 
     if [[ "$result" =~ 'already part' ]]
     then
-        echo 2
+        echo 0
     elif [[ "$result" =~ 'Error' ]]
     then
         echo 11
@@ -57,6 +58,7 @@ if [ -z "$SINGLE_MODE" ]; then
 else
     NETWORK_INTERFACE=$( get_right_interface )
     SWARM_RESULT=$( init_swarm )
+
     if [ "$SWARM_RESULT" != "0" ]; then
         echo "Swarm init failed"
         exit 1
