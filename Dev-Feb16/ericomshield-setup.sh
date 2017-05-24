@@ -153,7 +153,7 @@ function update_sysctl {
     fi
 }
 
-function creating_shield_service {
+function create_shield_service {
     echo "**************  Creating the ericomshield service..."
     systemctl --global enable "${ES_PATH}/ericomshield.service"
     cp ericomshield /etc/init.d/
