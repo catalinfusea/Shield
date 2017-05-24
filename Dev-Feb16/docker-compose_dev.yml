@@ -10,7 +10,7 @@ services:
             - 8181:8181
         restart: always
         environment:
-            - SHIELD_VER=8.0.0.66-DEV
+            - SHIELD_VER=8.0.0.67-DEV
         volumes:
             - /usr/local/ericomshield/config:/data/consul
         depends_on:
@@ -57,6 +57,8 @@ services:
     proxy-server:
         image: securebrowsing/proxy-server:170516-23.39
         hostname: proxy
+        environment:        
+            - SSLEXCLUSION=true
         dns_search:
             -  node.consul
         dns:
@@ -101,8 +103,7 @@ services:
         restart: always
         environment:
             - NODE_ENV=production
-            - SHIELD_VER=8.0.0.66-DEV
-            - SSLEXCLUSION=true
+            - SHIELD_VER=8.0.0.67-DEV
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
         dns:
