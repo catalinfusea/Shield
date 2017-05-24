@@ -2,7 +2,7 @@ version: '3.2'
 
 services:
   consul:
-    image: securebrowsing/consul
+    image: securebrowsing/shield-configuration:test
     labels: [app=consul]
     ports:
       - "8500:8500"
@@ -62,7 +62,7 @@ services:
     networks:
       - shield
   shield-browser:
-    image: securebrowsing/shield-cef:latest
+    image: securebrowsing/shield-cef:test
     environment:
          - FPS=25
          #- DEBUG_REMOTE_SITE=true
