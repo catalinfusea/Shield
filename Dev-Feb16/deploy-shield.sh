@@ -1,9 +1,22 @@
-#!/bin/bash -x
+#!/bin/bash
+
+set -e
 
 DOCKER_COMPOSE_FILE='deploy-shield.yml'
 STACK_NAME='shield'
 NETWORK_INTERFACE='eth0'
-SINGLE_MODE=true
+HOST=$( hostname )
+
+function test_swarm_exists {
+    TEST_SWARM=$( (docker node ls | grep -i "$HOST" | awk {'print $3'}) 2>&1)
+
+    if [ "$HOST" = "$TEST_SWARM" ]; then
+        echo "$HOST"
+    else
+        echo ''
+    fi
+ }
+
 
 function init_swarm {
     if [ -z "$IP_ADDRESS" ]; then
@@ -14,7 +27,7 @@ function init_swarm {
 
     if [[ "$result" =~ 'already part' ]]
     then
-        echo 0
+        echo 2
     elif [[ "$result" =~ 'Error' ]]
     then
         echo 11
@@ -56,15 +69,18 @@ if [ -z "$SINGLE_MODE" ]; then
      echo 'Run multinode script'
      exit 0
 else
-    NETWORK_INTERFACE=$( get_right_interface )
-    SWARM_RESULT=$( init_swarm )
-
-    if [ "$SWARM_RESULT" != "0" ]; then
-        echo "Swarm init failed"
-        exit 1
+    SWARM=$( test_swarm_exists )
+    if [ -z "$SWARM" ]; then
+        echo '#######################Start create swarm#####################'
+        NETWORK_INTERFACE=$( get_right_interface )
+        SWARM_RESULT=$( init_swarm )
+        if [ "$SWARM_RESULT" != "0" ]; then
+            echo "Swarm init failed"
+            exit 1
+        fi
+        echo '########################Swarm created########################'
     fi
     update_images
 fi
 
 docker stack deploy -c $DOCKER_COMPOSE_FILE $STACK_NAME
-
