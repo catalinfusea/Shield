@@ -265,9 +265,6 @@ get_shield_files
 
 echo "Preparing yml file (Containers build number)"
 prepare_yml
-#exiting for now
-echo "exiting"
-exit
 
 if [ $UPDATE -eq 0 ]; then
 # New Installation
@@ -300,10 +297,15 @@ if [ $UPDATE -eq 0 ]; then
     service ericomshield start
     systemctl start ericomshield-updater.service
   else
-    docker-compose pull
-    echo "Restarting Ericom Shield Service"
-    service ericomshield restart
-    docker system prune -f -a
+    if [ ES_SWARM == true ]; then
+      echo "source deploy-shield.sh"
+      source deploy-shield.sh
+     else 
+      docker-compose pull
+      echo "Restarting Ericom Shield Service"
+      service ericomshield restart
+      docker system prune -f -a
+    fi
 fi
 
 service ericomshield status
