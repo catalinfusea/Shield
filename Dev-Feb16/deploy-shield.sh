@@ -8,6 +8,7 @@ STACK_DEPLOY_NAME=shield
 CONSUL_NETWORK_INTERFACE=eth0
 BROWSER_HOSTNAME=ericom-browser.com
 COMPOSE=deploy-shield.yml
+DATA_PERSISTING=true
 
 function set_arg_value {
     if [ -n "$1" ]; then
@@ -42,6 +43,9 @@ while [ "$1" != "" ]; do
         -dbg|--run-in-debug-mode)
             DEBUG_MODE=true
         ;;
+        -aprs|--avoid-persist-data)
+            DATA_PERSISTING=
+        ;;
     esac
     shift
 done
@@ -52,6 +56,19 @@ function get_right_interface {
         echo $(ifconfig $(netstat -rn | grep -E "^default|^0.0.0.0" | head -1 | awk '{print $NF}') | grep 'inet ' | awk '{print $2}' | grep -Eo '([0-9]*\.){3}[0-9]*')
     else 
         echo $(route | grep '^default' | grep -o '[^ ]*$')
+    fi
+}
+
+
+function create_data_volume {
+    PORTAINER_VOLUME_EXISTS=$(docker volume ls | grep portainer)
+    if [ -z "$PORTAINER_VOLUME_EXISTS" ]; then
+        docker volume create portainer
+    fi
+    ADMIN_VOLUME_EXIST=$(docker volume ls | grep admin)
+
+    if [ -z "$ADMIN_VOLUME_EXIST" ]; then
+        docker volume create admin
     fi
 }
 
@@ -72,6 +89,7 @@ function create_network {
             shield-network
     fi       
 }
+
 
 function create_secrets {
     cat ./cef.crt | docker secret create "$STACK_DEPLOY_NAME"_cef.crt -;
@@ -99,13 +117,7 @@ function init_swarm {
 
 function deploy_consul {
     if [ "$DEPLOY_MODE"=='single' ]; then
-        echo $(docker run -d \
-               --network shield-network \
-               --name consul \
-               --hostname consul \
-               -e 'CONSUL_LOCAL_CONFIG={"skip_leave_on_interrupt": true}' \
-               -p "8500:8500" \
-               $CONSUL_IMAGE agent -server -bind=192.168.0.2 -bootstrap-expect=1 -client=0.0.0.0)
+        echo $(docker run -d --network shield-network --name consul --hostname consul -e "CONSUL_BIND_INTERFACE=$CONSUL_NETWORK_INTERFACE" -p "8500:8500" $CONSUL_IMAGE)
       #  echo $(docker service create --network shield-network --name consul --hostname consul --detach=false -e "CONSUL_BIND_INTERFACE=$CONSUL_NETWORK_INTERFACE" -p "8500:8500" $CONSUL_IMAGE)
     fi
 }
