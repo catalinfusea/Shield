@@ -56,7 +56,7 @@ services:
     networks:
       - shield
   broker-server:
-    image: securebrowsing/broker-server:170524-17.09-128
+    image: securebrowsing/broker-server:latest
     hostname: broker-server
     volumes:
         - /var/run/docker.sock:/var/run/docker.sock
@@ -88,7 +88,7 @@ services:
         memory-swappiness: 0
         shm-size: 1GB
   elk:
-    image: securebrowsing/shield-elk:170126-09.14
+    image: securebrowsing/shield-elk:latest
     hostname: elk
     ports:
       - 5601:5601
