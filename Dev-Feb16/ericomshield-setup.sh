@@ -290,7 +290,7 @@ if [ $UPDATE -eq 0 ]; then
 
     create_shield_service
 
-    if [ ES_SWARM == true ]; then
+    if [ $ES_SWARM == true ]; then
       echo "source deploy-shield.sh"
       source deploy-shield.sh
      else
@@ -300,7 +300,7 @@ if [ $UPDATE -eq 0 ]; then
 
     systemctl start ericomshield-updater.service
   else     # Update
-    if [ ES_SWARM == true ]; then
+    if [ $ES_SWARM == true ]; then
       echo "source deploy-shield.sh"
       source deploy-shield.sh
      else 
