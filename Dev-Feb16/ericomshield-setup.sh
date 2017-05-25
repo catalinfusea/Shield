@@ -188,10 +188,11 @@ function get_shield_install_files {
      #include file with files repository
      source $ES_REPO_FILE
 
-     echo "Getting shield-version-new.txt"
      if [ "$ES_DEV" == true ]; then
+        echo "Getting $ES_repo_dev_ver (dev)"
         curl -s -S -o shield-version-new.txt $ES_repo_dev_ver
       else
+        echo "Getting $ES_repo_ver (prod)"
         curl -s -S -o shield-version-new.txt $ES_repo_ver
      fi
 
