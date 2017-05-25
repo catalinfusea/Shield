@@ -295,6 +295,7 @@ if [ $UPDATE -eq 0 ]; then
       echo "source deploy-shield.sh"
       source deploy-shield.sh
      else
+      docker-compose pull
       echo "Starting Ericom Shield Service"
       service ericomshield start
     fi
@@ -305,6 +306,7 @@ if [ $UPDATE -eq 0 ]; then
       echo "source deploy-shield.sh"
       source deploy-shield.sh
      else 
+      docker-compose pull
       echo "Restarting Ericom Shield Service"
       service ericomshield restart
       docker system prune -f -a
