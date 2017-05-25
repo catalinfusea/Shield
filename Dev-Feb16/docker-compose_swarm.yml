@@ -1,4 +1,4 @@
-version: '3.2'
+version: '3.0'
 
 services:
   consul:
@@ -8,9 +8,11 @@ services:
       - "8500:8500"
     networks:
       - shield
+    hostname: consul
+    command: "agent -server -bootstrap-expect 1 -ui -client=0.0.0.0 -retry-interval 5s --log-level warn -disable-host-node-id"
     environment:
       - 'CONSUL_LOCAL_CONFIG={"skip_leave_on_interrupt": true}'
-      - CONSUL_BIND_INTERFACE=eth2
+      - CONSUL_BIND_INTERFACE=eth0
       - CONSUL=consul
       - CONSUL_CHECK_LEADER=true
     deploy:
@@ -29,6 +31,7 @@ services:
           parallelism: 1
           delay: 10s
           failure_action: continue
+
   shield-admin:
     image: securebrowsing/shield-admin:latest
     ports:
@@ -137,7 +140,7 @@ volumes:
 
 networks:
   shield:
-    driver: overlay
+    driver: bridge
     ipam:
       driver: default
       config:
