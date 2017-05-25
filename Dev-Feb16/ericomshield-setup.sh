@@ -310,11 +310,12 @@ if [ $UPDATE -eq 0 ]; then
       echo "Restarting Ericom Shield Service"
       service ericomshield restart
       docker system prune -f -a
-      service ericomshield status
+      # Running status script to see if the system is ok
+      $("${ES_PATH}/status.sh")
     fi
 fi
 
-service ericomshield status
+# Check the result of the last command (start, status, deploy-shield)
 if [ $? == 0 ]; then
    echo "***************     Success!"
   else
