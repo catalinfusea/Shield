@@ -3,8 +3,8 @@
 #####   Ericom Shield Installer        #####
 #######################################BH###
 
-#BRANCH="master"
-BRANCH="BenyH-patch-1"
+BRANCH="master"
+#BRANCH="BenyH-patch-1"
 
 # Development Repository: (Latest)
 ES_repo_setup="https://raw.githubusercontent.com/ErezPasternak/Shield/$BRANCH/Dev-Feb16/ericomshield-setup.sh"
