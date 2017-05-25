@@ -1,9 +1,9 @@
-SHIELD_VER=8.0.0.latest SHIELD_VER=8.0.0.65-DEV
+SHIELD_VER=8.0.0.latest SHIELD_VER=8.0.0.70-DEV
 shield-configuration:latest shield-configuration:170516-23.40
-shield-admin:latest shield-admin:170517-13.59
+shield-admin:latest shield-admin:170522-17.09-103
 shield-admin-orig:latest shield-admin-orig:170219-20.17
-shield-cef:latest shield-cef:170517-21.42
+shield-cef:latest shield-cef:170524-22.09-129
 proxy-server:latest proxy-server:170516-23.39
-icap-server:latest icap-server:170517-19.39
+icap-server:latest icap-server:170524-11.09-126
 shield-elk:latest shield-elk:170126-09.14
 broker-server:latest broker-server:170524-17.09-128
