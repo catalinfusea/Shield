@@ -6,3 +6,4 @@ shield-cef:latest shield-cef:170517-21.42
 proxy-server:latest proxy-server:170516-23.39
 icap-server:latest icap-server:170517-19.39
 shield-elk:latest shield-elk:170126-09.14
+broker-server:latest broker-server:170524-17.09-128
