@@ -24,7 +24,7 @@ ES_YML_FILE="$ES_PATH/docker-compose.yml"
 ES_VER_FILE="$ES_PATH/shield-version.txt"
 ES_SWARM_SH_FILE="$ES_PATH/deploy-shield.sh"
 ES_SETUP_VER="8.0.0.70"
-
+BRANCH="master"
 
 DOCKER_USER="benyh"
 DOCKER_SECRET="Ericom123$"
@@ -181,7 +181,6 @@ function prepare_yml {
 
 function get_shield_install_files {
      echo "Getting $ES_REPO_FILE"
-     BRANCH="BenyH-patch-1"
      ES_repo_setup="https://raw.githubusercontent.com/ErezPasternak/Shield/$BRANCH/Dev-Feb16/ericomshield-repo.sh"
      echo $ES_REPO_FILE
      curl -s -S -o $ES_REPO_FILE $ES_repo_setup
