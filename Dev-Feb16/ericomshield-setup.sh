@@ -153,11 +153,14 @@ function update_sysctl {
     fi
 }
 
+
 function create_shield_service {
     echo "**************  Creating the ericomshield service..."
-    systemctl --global enable "${ES_PATH}/ericomshield.service"
-    cp ericomshield /etc/init.d/
-    update-rc.d ericomshield defaults
+    if [ "$ES_SWARM" == true ]; then
+       systemctl --global enable "${ES_PATH}/ericomshield.service"
+       cp ericomshield /etc/init.d/
+       update-rc.d ericomshield defaults
+     fi  
 
     systemctl --global enable "${ES_PATH}/ericomshield-updater.service"
 
@@ -288,23 +291,24 @@ if [ $UPDATE -eq 0 ]; then
 
     create_shield_service
 
-    if [ ES_SWARM == true ]; then
+    if [ $ES_SWARM == true ]; then
       echo "source deploy-shield.sh"
       source deploy-shield.sh
+     else
+      echo "Starting Ericom Shield Service"
+      service ericomshield start
     fi
 
-    echo "Starting Ericom Shield Service"
-    service ericomshield start
     systemctl start ericomshield-updater.service
-  else
-    if [ ES_SWARM == true ]; then
+  else     # Update
+    if [ $ES_SWARM == true ]; then
       echo "source deploy-shield.sh"
       source deploy-shield.sh
      else 
-      docker-compose pull
       echo "Restarting Ericom Shield Service"
       service ericomshield restart
       docker system prune -f -a
+      service ericomshield status
     fi
 fi
 

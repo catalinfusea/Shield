@@ -2,15 +2,15 @@ version: '2.1'
 
 services:
     consul:
-        image: securebrowsing/shield-configuration:170516-23.40
+        image: securebrowsing/shield-configuration:latest
         restart: always
     shield-admin:
-        image: securebrowsing/shield-admin:170517-13.59
+        image: securebrowsing/shield-admin:latest
         ports:
             - 8181:8181
         restart: always
         environment:
-            - SHIELD_VER=8.0.0.65
+            - SHIELD_VER=8.0.0.latest
         volumes:
             - /usr/local/ericomshield/config:/data/consul
         depends_on:
@@ -18,10 +18,8 @@ services:
             condition: service_healthy
           consul:
             condition: service_started
-        volumes:
-            - /usr/local/ericomshield/config:/data/consul
     shield-admin1:
-        image: securebrowsing/shield-admin-orig:170219-20.17
+        image: securebrowsing/shield-admin-orig:latest
         ports:
             - 8500:8500
         restart: always
@@ -31,7 +29,7 @@ services:
           consul:
             condition: service_started      
     shield-browser:
-        image: securebrowsing/shield-cef:170517-21.42
+        image: securebrowsing/shield-cef:latest
         cpu_quota: 100000
         shm_size: 1GB
         mem_limit: 2GB
@@ -41,7 +39,6 @@ services:
         environment:
             - FPS=25
             - DEBUG_REMOTE_SITE=false
-            - SSLEXCLUSION=true            
         # Forward X11 sockets to the container for the container applications to be
         # able to connect to the X server on the host. This is not going to work on macOS
         # due to this Docker issue: https://github.com/docker/for-mac/issues/483
@@ -55,8 +52,10 @@ services:
           consul:
             condition: service_started
     proxy-server:
-        image: securebrowsing/proxy-server:170516-23.39
+        image: securebrowsing/proxy-server:latest
         hostname: proxy
+        ports:
+            - 3128:3128
         dns_search:
             -  node.consul
         dns:
@@ -65,8 +64,8 @@ services:
         restart: always
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
-        ports:
-            - "3128:3128"
+        environment:
+            - SSLEXCLUSION=true            
         ulimits:
           nofile:
             soft: 65535
@@ -81,11 +80,11 @@ services:
     extproxy:
         image: securebrowsing/extproxy
         hostname: extproxy
+        ports:
+            - 3138:3138
         restart: always
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
-        ports:
-            - "3138:3138"
         ulimits:
           nofile:
             soft: 65535
@@ -96,12 +95,14 @@ services:
           consul:
             condition: service_started
     icap-server:
-        image: securebrowsing/icap-server:170517-19.39
+        image: securebrowsing/icap-server:latest
         hostname: icap-server
+        ports:
+            - 1344:1344
         restart: always
         environment:
             - NODE_ENV=production
-            - SHIELD_VER=8.0.0.65
+            - SHIELD_VER=8.0.0.latest
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
         dns:
@@ -117,7 +118,7 @@ services:
           consul:
              condition: service_started
     elk:
-        image: securebrowsing/shield-elk:170126-09.14
+        image: securebrowsing/shield-elk:latest
         hostname: elk
         ports:
             - 5601:5601
@@ -135,7 +136,7 @@ services:
         image: portainer/portainer
         hostname: portainer
         ports:
-            - "9000:9000"
+            - 9000:9000
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
             - /tmp/portainer/data:/data         

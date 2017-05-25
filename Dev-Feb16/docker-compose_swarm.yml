@@ -1,22 +1,50 @@
 version: '3.2'
 
 services:
+  consul:
+    image: securebrowsing/shield-configuration:test
+    labels: [app=consul]
+    ports:
+      - "8500:8500"
+    networks:
+      - shield
+    environment:
+      - 'CONSUL_LOCAL_CONFIG={"skip_leave_on_interrupt": true}'
+      - CONSUL_BIND_INTERFACE=eth2
+      - CONSUL=consul
+      - CONSUL_CHECK_LEADER=true
+    deploy:
+      replicas: 3
+#      placement:
+#          constraints: [node.role == manager]
+      resources:
+          reservations:
+              memory: 128M
+      restart_policy:
+          condition: on-failure
+          delay: 5s
+          max_attempts: 3
+          window: 120s
+      update_config:
+          parallelism: 1
+          delay: 10s
+          failure_action: continue
   shield-admin:
-    image: securebrowsing/shield-admin:170517-13.59
+    image: securebrowsing/shield-admin:latest
     ports:
         - 8181:8181
     environment:
-        - SHIELD_VER=8.0.0.57
+        - SHIELD_VER=8.0.0.latest
     volumes:
-        - /usr/local/ericomshield/config:/data/consul
+       - admin:/data/consul
     networks:
         - shield
   icap-server:
-    image: securebrowsing/icap-server:170517-19.39
+    image: securebrowsing/icap-server:latest
     hostname: icap-server
     environment:
         - NODE_ENV=production
-        - SHIELD_VER=8.0.0.57
+        - SHIELD_VER=8.0.0.latest
         - MAX_ELASTIC_CHECK_ATTEMPTS=40
     ulimits:
       nofile:
@@ -25,7 +53,7 @@ services:
     networks:
       - shield
   broker-server:
-    image: securebrowsing/broker-server:170521-19.11
+    image: securebrowsing/broker-server:170524-17.09-128
     hostname: broker-server
     volumes:
         - /var/run/docker.sock:/var/run/docker.sock
@@ -34,7 +62,7 @@ services:
     networks:
       - shield
   shield-browser:
-    image: securebrowsing/shield-cef:170517-21.42
+    image: securebrowsing/shield-cef:test
     environment:
          - FPS=25
          #- DEBUG_REMOTE_SITE=true
@@ -49,7 +77,7 @@ services:
     deploy:
       update_config:
         parallelism: 2
-      replicas: 4
+      replicas: 0
       resources:
         memory: 2GB
         memory-swap: 0
@@ -71,7 +99,7 @@ services:
     networks:
       - shield
   proxy-server:
-    image: securebrowsing/proxy-server:170516-23.39
+    image: securebrowsing/proxy-server:latest
     ports:
       - "3128:3128"
     ulimits:
@@ -87,7 +115,7 @@ services:
         - "9000:9000"
     volumes:
         - /var/run/docker.sock:/var/run/docker.sock
-        - /tmp/portainer/data:/data
+        - portainer:/data
     networks: 
       - shield
     deploy:
@@ -102,7 +130,15 @@ services:
     networks: 
       - shield
 
+volumes:
+  admin:
+  portainer:
+
+
 networks:
   shield:
-    external:
-      name: shield-network
+    driver: overlay
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.0.0/24
