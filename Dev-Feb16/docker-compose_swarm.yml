@@ -112,7 +112,7 @@ services:
     networks:
       - shield      
   portainer:
-    image: portainer/portainer:latest
+    image: securebrowsing/shield-portainer:latest
     hostname: portainer
     ports:
         - "9000:9000"
