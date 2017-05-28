@@ -1,7 +1,7 @@
 [Unit]
 Description=Ericom Shield Service
-After=ericomshield.service
-Requires=ericomshield.service
+After=docker.service
+BindsTo=docker.service
 Conflicts=shutdown.target reboot.target halt.target
 
 [Service]
