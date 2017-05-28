@@ -59,10 +59,7 @@ do
             ES_FORCE=true
             echo " " >> $ES_VER_FILE
             ;;
-        -usage)
-            echo "Usage:" $0 [-force] [-noautoupdate] [-dev] [-swarm] [-usage]
-            exit
-            ;;
+#        -usage)
         *)
             echo "Usage:" $0 [-force] [-noautoupdate] [-dev] [-swarm] [-usage]
             exit
@@ -152,7 +149,6 @@ function update_sysctl {
        echo "file /etc/sysctl.conf already updated"
     fi
 }
-
 
 function create_shield_service {
     echo "**************  Creating the ericomshield service..."
@@ -309,9 +305,6 @@ if [ $UPDATE -eq 0 ]; then
       docker-compose pull
       echo "Restarting Ericom Shield Service"
       service ericomshield restart
-      docker system prune -f -a
-      # Running status script to see if the system is ok
-      $("${ES_PATH}/status.sh")
     fi
 fi
 
@@ -323,6 +316,9 @@ if [ $? == 0 ]; then
    echo "$(date): An error occured during the installation" >> "$LOGFILE"
    exit 1
 fi
+
+#Clean previous installed images
+docker system prune -f -a
 
 grep SHIELD_VER $ES_YML_FILE  > .version
 grep image $ES_YML_FILE >> .version
