@@ -24,7 +24,7 @@ ES_YML_FILE="$ES_PATH/docker-compose.yml"
 ES_VER_FILE="$ES_PATH/shield-version.txt"
 ES_SWARM_SH_FILE="$ES_PATH/deploy-shield.sh"
 ES_SETUP_VER="8.0.0.70"
-
+BRANCH="master"
 
 DOCKER_USER="benyh"
 DOCKER_SECRET="Ericom123$"
@@ -181,17 +181,17 @@ function prepare_yml {
 
 function get_shield_install_files {
      echo "Getting $ES_REPO_FILE"
-     BRANCH="BenyH-patch-1"
      ES_repo_setup="https://raw.githubusercontent.com/ErezPasternak/Shield/$BRANCH/Dev-Feb16/ericomshield-repo.sh"
      echo $ES_REPO_FILE
      curl -s -S -o $ES_REPO_FILE $ES_repo_setup
      #include file with files repository
      source $ES_REPO_FILE
 
-     echo "Getting shield-version-new.txt"
      if [ "$ES_DEV" == true ]; then
+        echo "Getting $ES_repo_dev_ver (dev)"
         curl -s -S -o shield-version-new.txt $ES_repo_dev_ver
       else
+        echo "Getting $ES_repo_ver (prod)"
         curl -s -S -o shield-version-new.txt $ES_repo_ver
      fi
 
@@ -295,6 +295,7 @@ if [ $UPDATE -eq 0 ]; then
       echo "source deploy-shield.sh"
       source deploy-shield.sh
      else
+      docker-compose pull
       echo "Starting Ericom Shield Service"
       service ericomshield start
     fi
@@ -305,14 +306,16 @@ if [ $UPDATE -eq 0 ]; then
       echo "source deploy-shield.sh"
       source deploy-shield.sh
      else 
+      docker-compose pull
       echo "Restarting Ericom Shield Service"
       service ericomshield restart
       docker system prune -f -a
-      service ericomshield status
+      # Running status script to see if the system is ok
+      $("${ES_PATH}/status.sh")
     fi
 fi
 
-service ericomshield status
+# Check the result of the last command (start, status, deploy-shield)
 if [ $? == 0 ]; then
    echo "***************     Success!"
   else
