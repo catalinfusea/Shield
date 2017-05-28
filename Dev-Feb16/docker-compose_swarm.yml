@@ -77,8 +77,8 @@ services:
     deploy:
       update_config:
         parallelism: 2
-        restart_policy:
-            condition: none
+      restart_policy:
+          condition: none
       replicas: 0
       resources:
         memory: 2GB
