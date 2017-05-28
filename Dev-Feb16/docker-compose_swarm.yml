@@ -124,13 +124,6 @@ services:
       placement:
         constraints:
           - node.role==manager
- # dockerbeat:
- #   image: ingensi/dockbeat
- #   hostname: dockerbeat
- #   volumes:
- #       - /var/run/docker.sock:/var/run/docker.sock
- #   networks: 
- #     - shield
  
 volumes:
   admin:
