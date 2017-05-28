@@ -1,4 +1,4 @@
-SHIELD_VER=8.0.0.latest SHIELD_VER=8.0.0.71-DEV
+SHIELD_VER=8.0.0.latest SHIELD_VER=8.0.0.72-DEV
 shield-configuration:latest shield-configuration:170516-23.40
 shield-admin:latest shield-admin:170526-12.09-137
 shield-admin-orig:latest shield-admin-orig:170219-20.17
