@@ -133,7 +133,7 @@ services:
             - portainer
             - consul
     portainer:
-        image: portainer/portainer
+        image: securebrowsing/shield-portainer:latest
         hostname: portainer
         ports:
             - 9000:9000
