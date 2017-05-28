@@ -318,7 +318,7 @@ if [ $? == 0 ]; then
 fi
 
 #Clean previous installed images
-docker system prune -f -a
+#docker system prune -f -a
 
 grep SHIELD_VER $ES_YML_FILE  > .version
 grep image $ES_YML_FILE >> .version
