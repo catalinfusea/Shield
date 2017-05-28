@@ -138,4 +138,9 @@ services:
             - "9000:9000"
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
-            - /tmp/portainer/data:/data         
+            - /tmp/portainer/data:/data
+    collector:
+        image: securebrowsing/collector:latest
+        volumes:
+          - /var/run/docker.sock:/var/run/docker.sock
+
