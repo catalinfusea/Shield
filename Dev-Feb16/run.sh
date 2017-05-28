@@ -18,6 +18,6 @@ if [ -f "$ES_SWARM_FILE" ]; then
    echo "                  proxy-server=1 "
    echo "                  icap-server=1"
    echo "***********       "
-   docker-compose -f deploy-shield.yml up -d && docker-compose -f deploy-shield.yml scale consul=1 shield-admin=1 elk=1 shield-browser=5 proxy-server=1 icap-server=1
+   docker-compose -f docker-compose.yml up -d && docker-compose -f docker-compose.yml scale consul=1 shield-admin=1 elk=1 shield-browser=20 proxy-server=1 icap-server=1
    # && docker-compose logs
 fi
