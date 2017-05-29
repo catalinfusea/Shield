@@ -152,12 +152,12 @@ function update_sysctl {
 
 function create_shield_service {
     echo "**************  Creating the ericomshield service..."
-    if [ "$ES_SWARM" == true ]; then
+    if [ "$ES_SWARM" == false ]; then
        systemctl --global enable "${ES_PATH}/ericomshield.service"
        cp ericomshield /etc/init.d/
        update-rc.d ericomshield defaults
      fi  
-
+    echo "**************  Creating the ericomshield updater service..."
     systemctl --global enable "${ES_PATH}/ericomshield-updater.service"
 
     systemctl daemon-reload
