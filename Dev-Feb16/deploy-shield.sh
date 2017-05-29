@@ -84,4 +84,3 @@ else
 fi
 
 docker stack deploy -c $DOCKER_COMPOSE_FILE $STACK_NAME
-

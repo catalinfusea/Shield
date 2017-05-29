@@ -53,7 +53,7 @@ services:
     networks:
       - shield
   broker-server:
-    image: securebrowsing/broker-server:latest
+    image: securebrowsing/broker-server:170524-17.09-128
     hostname: broker-server
     volumes:
         - /var/run/docker.sock:/var/run/docker.sock
@@ -77,7 +77,7 @@ services:
     deploy:
       update_config:
         parallelism: 2
-      replicas: 4
+      replicas: 0
       resources:
         memory: 2GB
         memory-swap: 0
