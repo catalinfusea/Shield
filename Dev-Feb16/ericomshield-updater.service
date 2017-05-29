@@ -1,5 +1,5 @@
 [Unit]
-Description=Ericom Shield Service
+Description=Ericom Shield Updater Service
 After=docker.service
 BindsTo=docker.service
 Conflicts=shutdown.target reboot.target halt.target
