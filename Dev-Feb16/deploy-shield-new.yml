@@ -1,0 +1,35 @@
+version: '3.2'
+
+services:
+    collector:
+      image: securebrowsing/collector:latest
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+      networks:
+        - shield
+
+    elastic:
+      image: securebrowsing/shield-elastic:latest
+      volumes:
+        - "elastic:/usr/share/elasticsearch/data"
+      networks:
+        - shield
+
+    kibana:
+      image: securebrowsing/shield-kibana:latest
+      networks:
+        - shield
+      ports:
+        - "5601:5601"
+
+volumes:
+  elastic:
+
+
+networks:
+  shield:
+    driver: overlay
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.0.0/24

@@ -2,7 +2,7 @@
 
 set -e
 
-DOCKER_COMPOSE_FILE='deploy-shield.yml'
+DOCKER_COMPOSE_FILE='deploy-shield-new.yml'
 STACK_NAME='shield'
 NETWORK_INTERFACE='eth0'
 HOST=$( hostname )
@@ -80,7 +80,7 @@ else
         fi
         echo '########################Swarm created########################'
     fi
-    update_images
+    #update_images
 fi
 
 docker stack deploy -c $DOCKER_COMPOSE_FILE $STACK_NAME
