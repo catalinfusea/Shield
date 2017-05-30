@@ -14,8 +14,9 @@ RestartSec=10
 WorkingDirectory=/usr/local/ericomshield
 
 Environment=SCALE_BROWSERS=20
-ExecStartPre=/usr/local/bin/docker-compose -f /usr/local/ericomshield/docker-compose.yml up
-ExecStart=/usr/local/bin/docker-compose -f /usr/local/ericomshield/docker-compose.yml scale consul=3 shield-admin=1 elk=1 shield-browser=${SCALE_BROWSERS} proxy-server=1 icap-server=1
+#ExecStartPre=/usr/local/bin/docker-compose -f /usr/local/ericomshield/docker-compose.yml up
+#ExecStart=/usr/local/bin/docker-compose -f /usr/local/ericomshield/docker-compose.yml scale consul=3 shield-admin=1 elk=1 shield-browser=${SCALE_BROWSERS} proxy-server=1 icap-server=1
+ExecStart=/usr/local/ericomshield/run.sh
 ExecStop=/usr/local/bin/docker-compose -f /usr/local/ericomshield/docker-compose.yml down
 
 NotifyAccess=all
