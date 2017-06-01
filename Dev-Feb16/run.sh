@@ -9,7 +9,7 @@ ES_SWARM_FILE="$ES_PATH/.esswarm"
 if [ -f "$ES_SWARM_FILE" ]; then
    echo run.sh is not working for swarm mode 
  else
-   #cd $ES_PATH
+   cd $ES_PATH
    echo "***********       Launching docker-compose up"
    echo "                  consul=3"
    echo "                  shield-admin=1 "
