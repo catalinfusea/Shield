@@ -8,6 +8,7 @@
 
 AUTO_UPDATE_TIME=5m
 
+UPDATE=0
 ES_PATH="/usr/local/ericomshield"
 ES_REPO_FILE="$ES_PATH/ericomshield-repo.sh"
 ES_AUTO_UPDATE_FILE="$ES_PATH/.autoupdate"
