@@ -179,7 +179,7 @@ function prepare_yml {
      cat "$ES_VER_FILE" | while read ver; do
           pattern_ver=$(echo $ver | awk '{print $1}')
           comp_ver=$(echo $ver | awk '{print $2}')
-          if [ $pattern_ver != "" ]; then          
+          if [ ! -z $pattern_ver ]; then          
              echo "Changing ver:"
              echo "  sed -i 's/$pattern_ver/$comp_ver/g' $ES_YML_FILE"
              sed -i "s/$pattern_ver/$comp_ver/g" $ES_YML_FILE
