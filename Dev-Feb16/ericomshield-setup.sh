@@ -1,4 +1,4 @@
-#!/bin/bash +x
+#!/bin/bash
 ############################################
 #####   Ericom Shield Installer        #####
 #######################################BH###
@@ -152,11 +152,20 @@ function update_sysctl {
 
 function create_shield_service {
     echo "**************  Creating the ericomshield service..."
-    if [ "$ES_SWARM" == false ]; then
+    
+    if [ ! -f "${ES_PATH}/ericomshield.service" ]; then
+    # Need to download these service files only if needed and reload only if changed
+       curl -s -S -o "${ES_PATH}/ericomshield.service" "${ES_repo_systemd_service}"
+       curl -s -S -o "${ES_PATH}/ericomshield-updater.service" "${ES_repo_systemd_updater_service}"
+    fi
+
+    if [ "$ES_SWARM" == true ]; then
+       echo "no service for swarm for now"
+     else
        systemctl --global enable "${ES_PATH}/ericomshield.service"
        cp ericomshield /etc/init.d/
        update-rc.d ericomshield defaults
-     fi  
+    fi  
     echo "**************  Creating the ericomshield updater service..."
     systemctl --global enable "${ES_PATH}/ericomshield-updater.service"
 
@@ -208,7 +217,7 @@ function get_shield_install_files {
      mv "shield-version-new.txt" "$ES_VER_FILE"
 
      echo "Getting $ES_YML_FILE"
-     if [ "$ES_SWARM" == true ]; then
+     if [ $ES_SWARM == true ]; then
         echo "Getting $ES_repo_swarm_yml SWARM"
         curl -s -S -o $ES_YML_FILE $ES_repo_swarm_yml
         curl -s -S -o deploy-shield.sh $ES_repo_swarm_sh
@@ -243,12 +252,6 @@ function get_shield_files {
      curl -s -S -o ~/show-my-ip.sh $ES_repo_ip
      chmod +x ~/show-my-ip.sh
 
-     if [ ! -f "${ES_PATH}/ericomshield.service" ]; then
-        # Need to download these service files only if needed and reload only if changed
-        curl -s -S -o "${ES_PATH}/ericomshield.service" "${ES_repo_systemd_service}"
-        curl -s -S -o "${ES_PATH}/ericomshield-updater.service" "${ES_repo_systemd_updater_service}"
-        systemctl daemon-reload
-     fi
 }
 
 ##################      MAIN: EVERYTHING START HERE: ##########################
