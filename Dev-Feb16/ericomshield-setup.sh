@@ -152,7 +152,7 @@ function update_sysctl {
 
 function create_shield_service {
     echo "**************  Creating the ericomshield service..."
-    
+  
     if [ ! -f "${ES_PATH}/ericomshield.service" ]; then
     # Need to download these service files only if needed and reload only if changed
        curl -s -S -o "${ES_PATH}/ericomshield.service" "${ES_repo_systemd_service}"
