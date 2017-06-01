@@ -167,6 +167,7 @@ function create_shield_service {
        update-rc.d ericomshield defaults
     fi  
     echo "**************  Creating the ericomshield updater service..."
+    systemctl --global link "${ES_PATH}/ericomshield-updater.service"    
     systemctl --global enable "${ES_PATH}/ericomshield-updater.service"
 
     systemctl daemon-reload
