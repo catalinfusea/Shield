@@ -24,9 +24,9 @@ systemctl daemon-reload
 rm /etc/init.d/ericomshield
 
 echo "$(date): Uninstalling Ericom Shield" >> "$LOGFILE"
-mv "/usr/local/ericomshield/ericomshield.log" ..
-rm "/usr/local/ericomshield/*"
-rm "/usr/local/ericomshield/.*"
+mv "$LOGFILE" ..
+rm -f "$ES_PATH/*"
+rm -f "$ES_PATH/.*"
 
 docker system prune -f -a
 
