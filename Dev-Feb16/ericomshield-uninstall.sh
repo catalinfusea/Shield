@@ -25,8 +25,8 @@ rm /etc/init.d/ericomshield
 
 echo "$(date): Uninstalling Ericom Shield" >> "$LOGFILE"
 mv "$LOGFILE" ..
-rm -f "$ES_PATH/*"
-rm -f "$ES_PATH/.*"
+rm -f $ES_PATH/*
+rm -f $ES_PATH/.*
 
 docker system prune -f -a
 
