@@ -301,7 +301,7 @@ if [ $UPDATE -eq 0 ]; then
       echo "Starting Ericom Shield Service"
       # TODO replace with service restart afte service fix
       # service ericomshield start      
-       run.sh
+      $ES_PATH/run.sh
     fi
 
     systemctl start ericomshield-updater.service
@@ -314,8 +314,8 @@ if [ $UPDATE -eq 0 ]; then
       echo "Restarting Ericom Shield Service"
       # TODO replace with service restart afte service fix
       # service ericomshield restart
-      stop.sh
-      run.sh
+      $ES_PATH/stop.sh
+      $ES_PATH/run.sh
     fi
 fi
 
