@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+set -ex
 
 DOCKER_COMPOSE_FILE='deploy-shield-new.yml'
 STACK_NAME='shield'
@@ -73,6 +73,10 @@ else
     if [ -z "$SWARM" ]; then
         echo '#######################Start create swarm#####################'
         NETWORK_INTERFACE=$( get_right_interface )
+        for int in $NETWORK_INTERFACE; do
+            NETWORK_INTERFACE=$int
+            break
+        done
         SWARM_RESULT=$( init_swarm )
         if [ "$SWARM_RESULT" != "0" ]; then
             echo "Swarm init failed"

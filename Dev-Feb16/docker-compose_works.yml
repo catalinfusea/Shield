@@ -5,7 +5,7 @@ services:
         image: securebrowsing/shield-configuration:170516-23.40
         restart: always
     shield-admin:
-        image: securebrowsing/shield-admin:170517-13.59
+        image: securebrowsing/shield-admin:latest
         ports:
             - 8181:8181
         restart: always
@@ -139,8 +139,4 @@ services:
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
             - /tmp/portainer/data:/data
-    collector:
-        image: securebrowsing/collector:latest
-        volumes:
-          - /var/run/docker.sock:/var/run/docker.sock
 
