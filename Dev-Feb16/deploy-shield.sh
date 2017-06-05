@@ -90,6 +90,7 @@ else
             echo "Swarm init failed"
             exit 1
         fi
+        create_uuid
         echo '########################Swarm created########################'
     fi
     update_images
