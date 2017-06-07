@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash
 ############################################
 #####   Ericom Shield Installer        #####
 ###################################LO##BH###
@@ -21,7 +21,6 @@ function test_swarm_exists {
     fi
 }
 
-
 function init_swarm {
     if [ -z "$IP_ADDRESS" ]; then
         result=$( (docker swarm init --advertise-addr $NETWORK_INTERFACE --task-history-limit 0) 2>&1 )
@@ -37,6 +36,17 @@ function init_swarm {
         echo 11
     else
         echo 0
+    fi
+}
+
+function create_uuid {
+    if [ $( docker secret ls | grep -c shield) -eq 0 ]; then
+       uuid=$(uuidgen)
+       uuid=${uuid^^}
+       echo $uuid | sudo docker secret create shield-secret -
+       echo "shield-secret created: uuid: $uuid "
+    else
+      echo " shield secret already exist "
     fi
 }
 
@@ -80,6 +90,7 @@ else
             echo "Swarm init failed"
             exit 1
         fi
+        create_uuid
         echo '########################Swarm created########################'
     fi
     update_images
