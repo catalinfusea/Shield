@@ -61,6 +61,8 @@ services:
         - NODE_ENV=production
     networks:
       - shield
+    secrets:
+      - shield_system_id
   shield-browser:
     image: securebrowsing/shield-cef:test
     environment:
