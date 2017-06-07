@@ -8,6 +8,7 @@ SINGLE_MODE=true
 STACK_NAME='shield'
 ES_YML_FILE=docker-compose.yml
 HOST=$( hostname )
+SECRET_UID="shield-system-id"
 
 set -e
 
@@ -40,13 +41,13 @@ function init_swarm {
 }
 
 function create_uuid {
-    if [ $( docker secret ls | grep -c shield) -eq 0 ]; then
+    if [ $( docker secret ls | grep -c $SECRET_UID) -eq 0 ]; then
        uuid=$(uuidgen)
        uuid=${uuid^^}
-       echo $uuid | sudo docker secret create shield-secret -
-       echo "shield-secret created: uuid: $uuid "
+       echo $uuid | sudo docker secret create $SECRET_UID -
+       echo "$SECRET_UID created: uuid: $uuid "
     else
-      echo " shield secret already exist "
+      echo " $SECRET_UID secret already exist "
     fi
 }
 
