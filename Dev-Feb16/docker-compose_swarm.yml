@@ -96,11 +96,15 @@ services:
           restart_policy:
               condition: none
           resources:
-            memory: 2GB
-            memory-swap: 0
-            cpu-quota: 100000
-            memory-swappiness: 0
-            shm-size: 1GB
+            limits:
+              cpus: '0.001'
+              memory: 2GB
+            reservations:
+              memory: 2GB
+              cpus: '0.001'
+        volumes:
+          - type: tmpfs
+            target: /dev/shm
 
     proxy-server:
         image: securebrowsing/proxy-server:latest
