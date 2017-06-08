@@ -1,4 +1,4 @@
-version: '3.0'
+version: '3.2'
 
 services:
   consul:
@@ -138,3 +138,6 @@ networks:
       driver: default
       config:
         - subnet: 192.168.0.0/24
+secrets:
+   shield_system_id:
+       external: true
