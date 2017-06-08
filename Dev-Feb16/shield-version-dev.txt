@@ -1,6 +1,6 @@
-SHIELD_VER=8.0.0.latest SHIELD_VER=8.0.0.81-DEV
+SHIELD_VER=8.0.0.latest SHIELD_VER=8.0.0.82-DEV
 shield-configuration:latest shield-configuration:170608-13.36-191
-shield-admin:latest shield-admin:170608-13.36-191
+shield-admin:latest shield-admin:170608-16.39-194
 shield-cef:latest shield-cef:170608-14.08-192
 proxy-server:latest proxy-server:170608-13.36-191
 icap-server:latest icap-server:170608-13.36-191
