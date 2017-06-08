@@ -110,6 +110,8 @@ services:
             hard: 65535
         networks:
           - shield
+        environment:
+          - SSLEXCLUSION=true
 
 
     ############################### Docker managment part ##############################################################
