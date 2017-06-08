@@ -1,5 +1,4 @@
 #!/bin/bash
-<<<<<<< HEAD
 
 set -ex
 

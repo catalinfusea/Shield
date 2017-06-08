@@ -60,11 +60,7 @@ services:
     networks:
       - shield
   broker-server:
-<<<<<<< HEAD:Dev-Feb16/deploy-shield.yml
-    image: securebrowsing/broker-server:170524-17.09-128
-=======
     image: securebrowsing/broker-server:latest
->>>>>>> master:Dev-Feb16/deploy-shield-new-consul.yml
     hostname: broker-server
     volumes:
         - /var/run/docker.sock:/var/run/docker.sock
@@ -146,11 +142,9 @@ volumes:
 
 networks:
   shield:
-<<<<<<< HEAD:Dev-Feb16/deploy-shield.yml
     driver: overlay
-=======
-    driver: bridge
->>>>>>> master:Dev-Feb16/deploy-shield-new-consul.yml
+    # relevant to compose
+    #driver: bridge
     ipam:
       driver: default
       config:
