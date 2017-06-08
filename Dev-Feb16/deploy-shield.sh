@@ -11,7 +11,6 @@ HOST=$( hostname )
 function test_swarm_exists {
     TEST_SWARM=$( (docker node ls | grep -i "$HOST" | awk {'print $3'}) 2>&1)
 
-=======
 ############################################
 #####   Ericom Shield Installer        #####
 ###################################LO##BH###
