@@ -269,27 +269,28 @@ get_shield_files
 echo "Preparing yml file (Containers build number)"
 prepare_yml
 
+install_docker
+echo "Starting docker service"
+service docker start
+if [ $? == 0 ]; then
+   echo "***************     Success!"
+  else
+   echo "An error occured during the installation"
+   echo "$(date): An error occured during the installation: failed to install docker" >> "$LOGFILE"
+   exit 1
+fi
+
+install_docker_compose
+
+docker_login
+
+update_sysctl
+
 if [ $UPDATE -eq 0 ]; then
 # New Installation
 
-    install_docker
-    echo "Starting docker service"
-    service docker start
-    if [ $? == 0 ]; then
-       echo "***************     Success!"
-      else
-       echo "An error occured during the installation"
-       echo "$(date): An error occured during the installation: failed to install docker" >> "$LOGFILE"
-       exit 1
-    fi
-
-    install_docker_compose
-
-    docker_login
-
-    update_sysctl
-
     create_shield_service
+    systemctl start ericomshield-updater.service
 
     if [ $ES_SWARM == true ]; then
       echo "source deploy-shield.sh"
@@ -302,7 +303,6 @@ if [ $UPDATE -eq 0 ]; then
       $ES_PATH/run.sh
     fi
 
-    systemctl start ericomshield-updater.service
   else     # Update
     if [ $ES_SWARM == true ]; then
       echo "source deploy-shield.sh"

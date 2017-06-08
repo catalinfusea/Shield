@@ -14,7 +14,14 @@ fi
 ES_PATH="/usr/local/ericomshield"
 LOGFILE="$ES_PATH/ericomshield.log"
 
+cd $ES_PATH
+
 service ericomshield stop
+docker-compose down
+
+docker kill $(docker ps -q)
+docker rm $(docker ps -a -q)
+docker rmi $(docker images -q)
 
 echo "Uninstalling Ericom Shield"
 systemctl --global disable ericomshield-updater.service
