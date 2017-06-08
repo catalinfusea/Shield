@@ -91,12 +91,13 @@ else
             echo "Swarm init failed"
             exit 1
         fi
-        create_uuid
         echo '########################Swarm created########################'
     fi
     update_images
 fi
 
+create_uuid
+ 
 docker stack deploy -c $ES_YML_FILE $STACK_NAME
 
 
