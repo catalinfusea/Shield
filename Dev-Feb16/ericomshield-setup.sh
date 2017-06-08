@@ -23,7 +23,7 @@ ES_REPO_FILE="$ES_PATH/ericomshield-repo.sh"
 ES_YML_FILE="$ES_PATH/docker-compose.yml"
 ES_VER_FILE="$ES_PATH/shield-version.txt"
 ES_SWARM_SH_FILE="$ES_PATH/deploy-shield.sh"
-ES_SETUP_VER="8.0.0.70"
+ES_SETUP_VER="8.0.0.80"
 BRANCH="master"
 
 DOCKER_USER="benyh"
@@ -85,7 +85,6 @@ if [ $(dpkg -l | grep  -c curl ) -eq  0 ]; then
     sudo apt-get install curl
 fi
 
-
 function install_docker {
     if [ $(sudo docker version | grep $DOCKER_VERSION |wc -l ) -le  1 ]; then
          echo "***************     Installing docker-engine"
@@ -98,11 +97,9 @@ function install_docker {
          apt-get --assume-yes install linux-image-extra-$(uname -r) linux-image-extra-virtual
          apt-get update
          apt-get --assume-yes -y install docker-engine
-
     else
          echo " ******* docker-engine is already installed"
     fi
-
 }
 
 function install_docker_compose {
@@ -254,7 +251,6 @@ function get_shield_files {
      chmod +x ericomshield
      curl -s -S -o ~/show-my-ip.sh $ES_repo_ip
      chmod +x ~/show-my-ip.sh
-
 }
 
 ##################      MAIN: EVERYTHING START HERE: ##########################
@@ -340,5 +336,3 @@ echo "***************     Success!"
 echo "***************"
 echo "***************     Ericom Shield Version:" $Version "is up and running"
 echo "$(date): Ericom Shield Version:" $Version "is up and running" >> "$LOGFILE"
-                                            
-                                           
