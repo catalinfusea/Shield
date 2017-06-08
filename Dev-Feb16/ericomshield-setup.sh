@@ -14,7 +14,7 @@ fi
 ES_PATH="/usr/local/ericomshield"
 LOGFILE="$ES_PATH/ericomshield.log"
 DOCKER_VERSION="17.05"
-DOCKER_COMPOSE_VERSION="1.10"
+DOCKER_COMPOSE_VERSION="1.13"
 UPDATE=0
 ES_DEV_FILE="$ES_PATH/.esdev"
 ES_SWARM_FILE="$ES_PATH/.esswarm"
@@ -105,7 +105,7 @@ function install_docker {
 function install_docker_compose {
     if [ $(  docker-compose version | grep $DOCKER_COMPOSE_VERSION |wc -l ) -eq 0 ]; then
        echo "***************     Installing docker-compose"
-       curl -L "https://github.com/docker/compose/releases/download/1.10.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+       curl -L "https://github.com/docker/compose/releases/download/1.13.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
        chmod +x /usr/local/bin/docker-compose
     else
        echo "***************     DockerCompose is already installed"
