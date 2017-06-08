@@ -55,7 +55,7 @@ services:
         hostname: icap-server
         environment:
             - NODE_ENV=production
-            - SHIELD_VER=8.0.0.57
+            - SHIELD_VER=8.0.0.latest
             - MAX_ELASTIC_CHECK_ATTEMPTS=40
         ulimits:
           nofile:
