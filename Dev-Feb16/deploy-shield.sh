@@ -94,7 +94,7 @@ else
         create_uuid
         echo '########################Swarm created########################'
     fi
-    #update_images
+    update_images
 fi
 
 docker stack deploy -c $ES_YML_FILE $STACK_NAME
