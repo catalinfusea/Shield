@@ -7,26 +7,50 @@
 #  sudo nohup ./autoupdate.sh > /dev/null &
 
 AUTO_UPDATE_TIME=5m
-ES_repo_setup="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/ericomshield-setup.sh"
 
+UPDATE=0
 ES_PATH="/usr/local/ericomshield"
+ES_REPO_FILE="$ES_PATH/ericomshield-repo.sh"
 ES_AUTO_UPDATE_FILE="$ES_PATH/.autoupdate"
+ES_DEV_FILE="$ES_PATH/.esdev"
+ES_VER_FILE="$ES_PATH/shield-version.txt"
 cd $ES_PATH
 
 #Check if we are root
 if (( $EUID != 0 )); then
-        echo "Usage:" $0 [-force] [-noautoupdate] [-dev] [-usage]
+        echo "Usage:" $0
         echo " Please run it as Root"
         echo "sudo" $0
         exit
 fi
 
+source $ES_REPO_FILE
+
 while true
 do
         if [ -f "$ES_AUTO_UPDATE_FILE" ]; then
-           curl -s -S -o ericomshield-setup.sh $ES_repo_setup
-           chmod +x ericomshield-setup.sh
-           ./ericomshield-setup.sh
+           echo "Getting shield-version-new.txt"
+           if [ "$ES_DEV" == true ]; then
+              curl -s -S -o shield-version-new.txt $ES_repo_dev_ver
+             else
+              curl -s -S -o shield-version-new.txt $ES_repo_ver
+           fi
+           if [ -f "$ES_VER_FILE" ]; then
+              if [ $( diff  "$ES_VER_FILE" shield-version-new.txt | wc -l ) -eq 0 ]; then
+                 echo "Your EricomShield System is Up to date"
+                else
+                 echo "***************     New version found!"
+                 UPDATE=1
+              fi
+             else
+              echo "***************     New version found!!"
+              UPDATE=1           
+           fi  
+           if [ $UPDATE -eq 1 ]; then
+              curl -s -S -o ericomshield-setup.sh $ES_repo_setup
+              chmod +x ericomshield-setup.sh
+              ./ericomshield-setup.sh
+           fi   
         fi
         echo "."
         sleep $AUTO_UPDATE_TIME

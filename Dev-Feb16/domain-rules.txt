@@ -1,9 +1,0 @@
-ericom.sharepoint.com
-app.asana.com
-login.salesforce.com
-varzi:8080
-air.ericom.com
-ptdemo.ericom.local
-helpdesk.ericom.com
-ericom.com
-.facebook.com 

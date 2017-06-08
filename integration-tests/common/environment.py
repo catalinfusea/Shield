@@ -17,6 +17,7 @@ class Configuration:
         self.docker_password = None
         self.system_ready_sleep = 60
         self.urls_file = None
+        self.retry_count = 1
         #append config variables here
         self.apply_environment()
         self.setup_logging()
@@ -54,6 +55,9 @@ class Configuration:
         if 'URLS_FILE' in os.environ:
             self.urls_file = os.environ['URLS_FILE']
 
+        if 'COUNT_OF_RETRY' in os.environ:
+            self.retry_count = int(os.environ['COUNT_OF_RETRY'])
+
 
 
     def apply_arguments(self):
@@ -67,6 +71,7 @@ class Configuration:
         parser.add_argument('-dp', '--docker-password', dest='docker_password', type=str, help='Password for login to docker repo', required=False)
         parser.add_argument('-ss', '--system-ready-sleep', dest='system_ready_sleep', type=int, help="System ready wait seconds", default=60)
         parser.add_argument('-uf', '--urls-file', dest="urls_file", type=str, help="File contains urls one per line for system check", default=None)
+        parser.add_argument('-cr', '--count-of-retry', dest="retry_count", type=int, help="Retries count for make test => don not direct fail retry!", default=1)
 
         args = parser.parse_args()
         self.compose_yaml = args.compose_yaml
@@ -77,6 +82,7 @@ class Configuration:
         self.docker_username = args.docker_username
         self.system_ready_sleep = args.system_ready_sleep
         self.urls_file = args.urls_file
+        self.retry_count = args.retry_count
 
 
     def setup_logging(self):

@@ -66,7 +66,13 @@ class TestFlow:
             return False
         finally:
             if self.project:
-                self.stop_project()
+                try:
+                    self.stop_project()
+                except Exception as ex:
+                    if "network integration_test_default" in str(ex):
+                        self.logger.info("Can't stop system due docker compose open BUG, trust on system prune raise by Jenkins")
+                    else:
+                        raise ex
             current_logger.info('End test')
 
 
@@ -104,9 +110,6 @@ class TestFlow:
         self.project.up()
         self.project.get_service("consul").scale(3)
         self.project.get_service("shield-browser").scale(5)
-        self.logger.info("Going to sleep {0} seconds for system ready. Make proxy-server health check!!!!".format(self.app_config.system_ready_sleep))
-        time.sleep(self.app_config.system_ready_sleep)
-        self.logger.info("Weak up continue testing")
 
     def stop_project(self):
         self.logger.info("Going stop system")
@@ -115,8 +118,27 @@ class TestFlow:
 
     def test_running_system(self):
         self.logger.info("Test running system")
-        self.run_urls_test()
+        test_count = 1
+        test_failed = False
+        while test_count <= self.app_config.retry_count:
+            self.logger.info("Going to sleep {0} seconds for system ready. Make proxy-server health check!!!!".format(self.app_config.system_ready_sleep))
+            time.sleep(self.app_config.system_ready_sleep)
+            self.logger.info("Weak up continue testing")
+            self.logger.info("Going execute test number {0}".format(test_count))
+            try:
+                self.run_urls_test()
+                test_failed = False
+                break
+            except Exception as e:
+                self.errors.append(str(e))
+                self.logger.error("Test number {0} failed with {1}".format(test_count, e))
+                test_failed = True
+            test_count += 1
 
+        if test_failed:
+            err = "{0} test attempts failed".format(test_count -1)
+            self.logger.error(err)
+            raise Exception(err)
 
     def find_proxy_server(self):
         pass

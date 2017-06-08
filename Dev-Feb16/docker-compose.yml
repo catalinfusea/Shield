@@ -1,141 +1,142 @@
 version: "3.2"
 
 services:
-  consul:
-      image: consul:0.8.3
-      command: "consul agent -data-dir=/tmp/data -bootstrap-expect=3 -server -ui -client=0.0.0.0 -disable-host-node-id=true"
-      hostname: consul
-      networks:
-        - shield
-      ports:
-        - "8500:8500"
-        - "8300:8300"
-        - "8301:8301"
-        - "8302:8302"
-      environment:
-        - "CONSUL_CLIENT_INTERFACE=eth0"
-
-  consul-2:
-      image: consul:0.8.3
-      command: "consul agent -data-dir=/tmp/data -server -retry-join=consul -disable-host-node-id=true"
-      environment:
-        - "CONSUL_CLIENT_INTERFACE=eth0"
-      links:
-        - consul
-      networks:
-        - shield
-  shield-admin:
-      image: securebrowsing/shield-admin:latest
-      ports:
-          - 8181:8181
-      environment:
-          - SHIELD_VER=8.0.0.57
-      volumes:
-         - admin:/data/consul
-      networks:
-          - shield
-  icap-server:
-      image: securebrowsing/icap-server:latest
-      hostname: icap-server
-      environment:
-          - NODE_ENV=production
-          - SHIELD_VER=8.0.0.57
-          - MAX_ELASTIC_CHECK_ATTEMPTS=40
-      ulimits:
-        nofile:
-          soft: 65535
-          hard: 65535
-      networks:
-        - shield
-  broker-server:
-      image: securebrowsing/broker-server:latest
-      hostname: broker-server
-      volumes:
-          - /var/run/docker.sock:/var/run/docker.sock
-      environment:
-          - NODE_ENV=production
-      networks:
-        - shield
-
-  shield-browser:
-     image: securebrowsing/shield-cef:test
-     deploy:
-       resources:
-         memory: 2GB
-         memory-swap: 0
-         cpu-quota: 100000
-         memory-swappiness: 0
-         shm-size: 1GB
-     environment:
-          - FPS=25
-          #- DEBUG_REMOTE_SITE=true
-          #- DISPOSE_BROWSER=true
-          #- RUN_WITH_DEBUGGER=false
-     networks:
-         - shield
-     links:
-        - consul
-
-  proxy-server:
-      image: securebrowsing/proxy-server:170516-23.39
-      hostname: proxy
-      dns_search:
-          - node.consul
-      dns:
-          - 8.8.8.8
-          - 8.8.4.4
-      restart: always
-      ports:
-          - "3128:3128"
-      ulimits:
-        nofile:
-          soft: 65535
-          hard: 65535
-      networks:
-        - shield
-  elk:
-      image: securebrowsing/shield-elk:170126-09.14
-      hostname: elk
-      ports:
-        - 5601:5601
-        - 5044:5044
-        - 9200:9200
-      healthcheck:
-        test: ["CMD-SHELL", "curl -s -XGET 'http://localhost:9200/_cluster/health' | grep -q yellow"]
-        interval: 20s
-        timeout: 10s
-        retries: 5
-      networks:
-        - shield
-
-  portainer:
-      image: securebrowsing/shield-portainer:latest
-      hostname: portainer
-      ports:
-        - "9000:9000"
-      volumes:
-        - /var/run/docker.sock:/var/run/docker.sock
-        - portainer:/data
-      networks:
-        - shield
-
-  collector:
-      image: securebrowsing/collector:latest
-      volumes:
-        - /var/run/docker.sock:/var/run/docker.sock
-      networks:
-        - shield
-      links:
-        - elk
-
-volumes:
-  admin:
-  portainer:
-  elk:
-
-networks:
-  shield:
-    driver: bridge
-    ipam:
-      config:
-        - subnet: 192.168.0.0/24
+    consul:
+        image: securebrowsing/shield-configuration:latest
+        restart: always
+    shield-admin:
+        image: securebrowsing/shield-admin:latest
+        ports:
+            - 8181:8181
+        restart: always
+        environment:
+            - SHIELD_VER=8.0.0.latest
+        volumes:
+            - /usr/local/ericomshield/config:/data/consul
+        depends_on:
+          elk:
+            condition: service_healthy
+          consul:
+            condition: service_started
+    shield-admin1:
+        image: securebrowsing/shield-admin-orig:latest
+        ports:
+            - 8500:8500
+        restart: always
+        depends_on:
+          elk:
+            condition: service_healthy
+          consul:
+            condition: service_started      
+    shield-browser:
+        image: securebrowsing/shield-cef:latest
+        cpu_quota: 100000
+        shm_size: 1GB
+        mem_limit: 2GB
+        memswap_limit: 0
+        mem_swappiness: 0
+        restart: always
+        environment:
+            - FPS=25
+            - DEBUG_REMOTE_SITE=false
+        # Forward X11 sockets to the container for the container applications to be
+        # able to connect to the X server on the host. This is not going to work on macOS
+        # due to this Docker issue: https://github.com/docker/for-mac/issues/483
+        # IMPORTANT: run "xhost +" on the host computer before starting the container
+        # with X11 forwarding enabled.
+        #volumes:
+        #    - /tmp/.X11-unix:/tmp/.X11-unix
+        depends_on:
+          elk:
+            condition: service_healthy
+          consul:
+            condition: service_started
+    proxy-server:
+        image: securebrowsing/proxy-server:latest
+        hostname: proxy
+        ports:
+            - 3128:3128
+        dns_search:
+            -  node.consul
+        dns:
+            - 8.8.8.8
+            - 8.8.4.4
+        restart: always
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+        environment:
+            - SSLEXCLUSION=true            
+        ulimits:
+          nofile:
+            soft: 65535
+            hard: 65535
+        depends_on:
+          elk:
+            condition: service_healthy
+          icap-server:
+            condition: service_started 
+          consul:
+            condition: service_started
+    extproxy:
+        image: securebrowsing/extproxy
+        hostname: extproxy
+        ports:
+            - 3138:3138
+        restart: always
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+        ulimits:
+          nofile:
+            soft: 65535
+            hard: 65535
+        depends_on:
+          elk:
+            condition: service_healthy
+          consul:
+            condition: service_started
+    icap-server:
+        image: securebrowsing/icap-server:latest
+        hostname: icap-server
+        ports:
+            - 1344:1344
+        restart: always
+        environment:
+            - NODE_ENV=production
+            - SHIELD_VER=8.0.0.latest
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+        dns:
+            - 8.8.8.8
+            - 8.8.4.4
+        ulimits:
+          nofile:
+            soft: 65535
+            hard: 65535
+        depends_on:
+          elk:
+             condition: service_healthy
+          consul:
+             condition: service_started
+    elk:
+        image: securebrowsing/shield-elk:latest
+        hostname: elk
+        ports:
+            - 5601:5601
+            - 5044:5044
+            - 9200:9200
+        healthcheck:
+            test: ["CMD-SHELL", "curl -s -XGET 'http://localhost:9200/_cluster/health' | grep -q yellow"]
+            interval: 20s
+            timeout: 10s
+            retries: 5
+        depends_on:
+            - portainer
+            - consul
+    portainer:
+        image: securebrowsing/shield-portainer:latest
+        hostname: portainer
+        ports:
+            - 9000:9000
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+            - /tmp/portainer/data:/data         

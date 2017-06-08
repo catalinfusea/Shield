@@ -1,4 +1,5 @@
 #!/bin/bash
+<<<<<<< HEAD
 
 set -ex
 
@@ -10,13 +11,28 @@ HOST=$( hostname )
 function test_swarm_exists {
     TEST_SWARM=$( (docker node ls | grep -i "$HOST" | awk {'print $3'}) 2>&1)
 
+=======
+############################################
+#####   Ericom Shield Installer        #####
+###################################LO##BH###
+NETWORK_INTERFACE='eth0'
+IP_ADDRESS=
+SINGLE_MODE=true
+STACK_NAME='shield'
+ES_YML_FILE=docker-compose.yml
+HOST=$( hostname )
+SECRET_UID="shield-system-id"
+
+set -e
+
+function test_swarm_exists {
+    TEST_SWARM=$( (docker node ls | grep -i "$HOST" | awk {'print $3'}) 2>&1)
     if [ "$HOST" = "$TEST_SWARM" ]; then
         echo "$HOST"
     else
         echo ''
     fi
- }
-
+}
 
 function init_swarm {
     if [ -z "$IP_ADDRESS" ]; then
@@ -36,9 +52,20 @@ function init_swarm {
     fi
 }
 
+function create_uuid {
+    if [ $( docker secret ls | grep -c $SECRET_UID) -eq 0 ]; then
+       uuid=$(uuidgen)
+       uuid=${uuid^^}
+       echo $uuid | sudo docker secret create $SECRET_UID -
+       echo "$SECRET_UID created: uuid: $uuid "
+    else
+      echo " $SECRET_UID secret already exist "
+    fi
+}
+
 function update_images {
     echo "################## Getting images start ######################"
-    images=$(grep "image" ${DOCKER_COMPOSE_FILE} | awk '{print $2}' | sort | uniq)
+    images=$(grep "image" ${ES_YML_FILE} | awk '{print $2}' | sort | uniq)
     for image in ${images}; do
         docker pull ${image}
     done
@@ -53,8 +80,6 @@ function get_right_interface {
         echo $(route | grep '^default' | grep -o '[^ ]*$')
     fi
 }
-
-
 
 while [ "$1" != "" ]; do
     case $1 in
@@ -82,9 +107,10 @@ else
             echo "Swarm init failed"
             exit 1
         fi
+        create_uuid
         echo '########################Swarm created########################'
     fi
-    #update_images
+    update_images
 fi
 
-docker stack deploy -c $DOCKER_COMPOSE_FILE $STACK_NAME
+docker stack deploy -c $ES_YML_FILE $STACK_NAME
