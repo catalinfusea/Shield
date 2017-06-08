@@ -23,7 +23,7 @@ ES_REPO_FILE="$ES_PATH/ericomshield-repo.sh"
 ES_YML_FILE="$ES_PATH/docker-compose.yml"
 ES_VER_FILE="$ES_PATH/shield-version.txt"
 ES_SWARM_SH_FILE="$ES_PATH/deploy-shield.sh"
-ES_SETUP_VER="8.0.0.70"
+ES_SETUP_VER="8.0.0.80"
 BRANCH="master"
 
 DOCKER_USER="benyh"
@@ -85,7 +85,6 @@ if [ $(dpkg -l | grep  -c curl ) -eq  0 ]; then
     sudo apt-get install curl
 fi
 
-
 function install_docker {
     if [ $(sudo docker version | grep $DOCKER_VERSION |wc -l ) -le  1 ]; then
          echo "***************     Installing docker-engine"
@@ -98,11 +97,9 @@ function install_docker {
          apt-get --assume-yes install linux-image-extra-$(uname -r) linux-image-extra-virtual
          apt-get update
          apt-get --assume-yes -y install docker-engine
-
     else
          echo " ******* docker-engine is already installed"
     fi
-
 }
 
 function install_docker_compose {
@@ -155,17 +152,19 @@ function create_shield_service {
   
     if [ ! -f "${ES_PATH}/ericomshield.service" ]; then
     # Need to download these service files only if needed and reload only if changed
-       curl -s -S -o "${ES_PATH}/ericomshield.service" "${ES_repo_systemd_service}"
        curl -s -S -o "${ES_PATH}/ericomshield-updater.service" "${ES_repo_systemd_updater_service}"
+       if [ "$ES_SWARM" == true ]; then
+          echo "service for swarm"       
+          curl -s -S -o "${ES_PATH}/ericomshield.service" "${ES_repo_systemd_service_swarm}"    
+         else 
+          curl -s -S -o "${ES_PATH}/ericomshield.service" "${ES_repo_systemd_service}"
+       fi 
     fi
 
-    if [ "$ES_SWARM" == true ]; then
-       echo "no service for swarm for now"
-     else
-       systemctl --global enable "${ES_PATH}/ericomshield.service"
-       cp ericomshield /etc/init.d/
-       update-rc.d ericomshield defaults
-    fi  
+   systemctl --global enable "${ES_PATH}/ericomshield.service"
+   cp ericomshield /etc/init.d/
+   update-rc.d ericomshield defaults
+
     echo "**************  Creating the ericomshield updater service..."
     systemctl link ${ES_PATH}/ericomshield-updater.service    
     systemctl --global enable ${ES_PATH}/ericomshield-updater.service
@@ -254,7 +253,6 @@ function get_shield_files {
      chmod +x ericomshield
      curl -s -S -o ~/show-my-ip.sh $ES_repo_ip
      chmod +x ~/show-my-ip.sh
-
 }
 
 ##################      MAIN: EVERYTHING START HERE: ##########################
@@ -340,5 +338,3 @@ echo "***************     Success!"
 echo "***************"
 echo "***************     Ericom Shield Version:" $Version "is up and running"
 echo "$(date): Ericom Shield Version:" $Version "is up and running" >> "$LOGFILE"
-                                            
-                                           

@@ -5,11 +5,14 @@
 
 ES_PATH=/usr/local/ericomshield
 ES_SWARM_FILE="$ES_PATH/.esswarm"
+STACK_NAME='shield'
+ES_YML_FILE=docker-compose.yml
 
 if [ -f "$ES_SWARM_FILE" ]; then
-   echo run.sh is not working for swarm mode 
+   echo "swarm mode:"
+   docker stack deploy -c $ES_YML_FILE $STACK_NAME
  else
-   cd $ES_PATH
+   #cd $ES_PATH
    echo "***********       Launching docker-compose up"
    echo "                  consul=3"
    echo "                  shield-admin=1 "

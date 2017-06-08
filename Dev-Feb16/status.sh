@@ -6,8 +6,6 @@ ES_PATH="/usr/local/ericomshield"
 ES_RUN="$ES_PATH/run.sh"
 ES_SWARM_FILE="$ES_PATH/.esswarm"
 
-
-
 #Check if we are root
 if (( $EUID != 0 )); then
 #    sudo su
@@ -23,7 +21,7 @@ if [ -f "$ES_SWARM_FILE" ]; then
    if [ $NUM_RUNNING_SERVICES -ge  $NUM_EXPECTED_SERVICES ]; then
        echo "***************     Ericom Shield (swarm) is running"
      else
-      echo " Ericom Shield is not running properly on this system"
+      echo " Ericom Shield (swarm) is not running properly on this system"
       exit 1
    fi
  else

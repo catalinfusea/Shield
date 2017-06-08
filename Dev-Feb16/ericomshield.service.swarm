@@ -1,0 +1,26 @@
+[Unit]
+Description=Ericom Shield Service
+After=docker.service
+BindsTo=docker.service
+Conflicts=shutdown.target reboot.target halt.target
+
+[Service]
+Type=oneshot
+TimeoutStartSec=0
+TimeoutStopSec=0
+Restart=no
+RestartSec=10
+
+WorkingDirectory=/usr/local/ericomshield
+
+Environment=STACK_NAME='shield'
+Environment=ES_YML_FILE=/usr/local/ericomshield/docker-compose.yml
+ExecStartPre=/usr/bin/docker stack deploy -c $ES_YML_FILE $STACK_NAME
+ExecStart=/usr/bin/docker stack deploy -c $ES_YML_FILE $STACK_NAME
+
+ExecStop=/usr/bin/docker stack rm $STACK_NAME
+
+NotifyAccess=all
+
+[Install]
+WantedBy=multi-user.target
