@@ -40,7 +40,7 @@ services:
           - "NUMBER_OF_EXPECTED=1"
     ###################################################################### Shield services part ##################################################################
     shield-admin:
-        image: securebrowsing/shield-admin:170427-15.50
+        image: securebrowsing/shield-admin:latest
         ports:
             - 8181:8181
         environment:
@@ -116,7 +116,7 @@ services:
 
     ############################### Docker managment part ##############################################################
     portainer:
-        image: portainer/portainer:latest
+        image: securebrowsing/shield-portainer:latest
         hostname: portainer
         ports:
             - "9000:9000"
