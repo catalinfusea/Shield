@@ -1,16 +1,16 @@
-version: "3.2"
+version: '2.1'
 
 services:
     consul:
-        image: securebrowsing/shield-configuration:latest
+        image: securebrowsing/shield-configuration:170521-10.18
         restart: always
     shield-admin:
-        image: securebrowsing/shield-admin:latest
+        image: securebrowsing/shield-admin:170427-15.50
         ports:
             - 8181:8181
         restart: always
         environment:
-            - SHIELD_VER=8.0.0.latest
+            - SHIELD_VER=8.0.0.76
         volumes:
             - /usr/local/ericomshield/config:/data/consul
         depends_on:
@@ -19,7 +19,7 @@ services:
           consul:
             condition: service_started
     shield-admin1:
-        image: securebrowsing/shield-admin-orig:latest
+        image: securebrowsing/shield-admin-orig:170219-20.17
         ports:
             - 8500:8500
         restart: always
@@ -27,9 +27,9 @@ services:
           elk:
             condition: service_healthy
           consul:
-            condition: service_started      
+            condition: service_started
     shield-browser:
-        image: securebrowsing/shield-cef:latest
+        image: securebrowsing/shield-cef:170601-13.09-161
         cpu_quota: 100000
         shm_size: 1GB
         mem_limit: 2GB
@@ -52,7 +52,7 @@ services:
           consul:
             condition: service_started
     proxy-server:
-        image: securebrowsing/proxy-server:latest
+        image: securebrowsing/proxy-server:170526-18.39-142
         hostname: proxy
         ports:
             - 3128:3128
@@ -65,7 +65,7 @@ services:
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
         environment:
-            - SSLEXCLUSION=true            
+            - SSLEXCLUSION=true
         ulimits:
           nofile:
             soft: 65535
@@ -74,7 +74,7 @@ services:
           elk:
             condition: service_healthy
           icap-server:
-            condition: service_started 
+            condition: service_started
           consul:
             condition: service_started
     extproxy:
@@ -95,14 +95,14 @@ services:
           consul:
             condition: service_started
     icap-server:
-        image: securebrowsing/icap-server:latest
+        image: securebrowsing/icap-server:170530-15.09-156
         hostname: icap-server
         ports:
             - 1344:1344
         restart: always
         environment:
             - NODE_ENV=production
-            - SHIELD_VER=8.0.0.latest
+            - SHIELD_VER=8.0.0.76
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
         dns:
@@ -118,7 +118,7 @@ services:
           consul:
              condition: service_started
     elk:
-        image: securebrowsing/shield-elk:latest
+        image: securebrowsing/shield-elk:170126-09.14
         hostname: elk
         ports:
             - 5601:5601
@@ -139,4 +139,4 @@ services:
             - 9000:9000
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
-            - /tmp/portainer/data:/data         
+            - /tmp/portainer/data:/data
