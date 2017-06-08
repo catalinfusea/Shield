@@ -62,7 +62,7 @@ services:
     networks:
       - shield
     secrets:
-      - shield_system_id
+      - shield-system-id
   shield-browser:
     image: securebrowsing/shield-cef:test
     environment:
@@ -139,5 +139,5 @@ networks:
       config:
         - subnet: 192.168.0.0/24
 secrets:
-   shield_system_id:
+   shield-system-id:
        external: true
