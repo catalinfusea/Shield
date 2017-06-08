@@ -21,3 +21,4 @@ if [ -f "$ES_SWARM_FILE" ]; then
    docker-compose -f docker-compose.yml up -d && docker-compose -f docker-compose.yml scale consul=3 shield-admin=1 elk=1 shield-browser=20 proxy-server=1 icap-server=1
    # && docker-compose logs
 fi
+

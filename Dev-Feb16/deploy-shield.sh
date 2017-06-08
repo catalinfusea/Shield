@@ -1,25 +1,21 @@
 #!/bin/bash
-############################################
+
+set -ex
+
+###########################################
 #####   Ericom Shield Installer        #####
 ###################################LO##BH###
 NETWORK_INTERFACE='eth0'
 IP_ADDRESS=
 SINGLE_MODE=true
 STACK_NAME='shield'
-ES_YML_FILE=docker-compose.yml
+ES_YML_FILE=deploy-shield-new.yml
 HOST=$( hostname )
 SECRET_UID="shield-system-id"
 
-set -e
 
 function test_swarm_exists {
-    TEST_SWARM=$( (docker node ls | grep -i "$HOST" | awk {'print $3'}) 2>&1)
-
-    if [ "$HOST" = "$TEST_SWARM" ]; then
-        echo "$HOST"
-    else
-        echo ''
-    fi
+    echo $( docker info | grep -i 'swarm: active' )
 }
 
 function init_swarm {
@@ -44,7 +40,7 @@ function create_uuid {
     if [ $( docker secret ls | grep -c $SECRET_UID) -eq 0 ]; then
        uuid=$(uuidgen)
        uuid=${uuid^^}
-       echo $uuid | sudo docker secret create $SECRET_UID -
+       echo $uuid | docker secret create $SECRET_UID -
        echo "$SECRET_UID created: uuid: $uuid "
     else
       echo " $SECRET_UID secret already exist "
@@ -86,6 +82,10 @@ else
     if [ -z "$SWARM" ]; then
         echo '#######################Start create swarm#####################'
         NETWORK_INTERFACE=$( get_right_interface )
+        for int in $NETWORK_INTERFACE; do
+            NETWORK_INTERFACE=$int
+            break
+        done
         SWARM_RESULT=$( init_swarm )
         if [ "$SWARM_RESULT" != "0" ]; then
             echo "Swarm init failed"
@@ -94,7 +94,9 @@ else
         create_uuid
         echo '########################Swarm created########################'
     fi
-    update_images
+    #update_images
 fi
 
 docker stack deploy -c $ES_YML_FILE $STACK_NAME
+
+

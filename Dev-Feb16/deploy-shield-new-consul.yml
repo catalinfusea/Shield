@@ -8,15 +8,19 @@ services:
       - "8500:8500"
     networks:
       - shield
-    hostname: consul
-    command: "agent -server -bootstrap-expect 1 -ui -client=0.0.0.0 -retry-interval 5s --log-level warn -disable-host-node-id"
     environment:
       - 'CONSUL_LOCAL_CONFIG={"skip_leave_on_interrupt": true}'
-      - CONSUL_BIND_INTERFACE=eth0
+      - CONSUL_BIND_INTERFACE=eth2
       - CONSUL=consul
       - CONSUL_CHECK_LEADER=true
+    # Actual for compose running
+    # hostname: consul
+    # command: "agent -server -bootstrap-expect 1 -ui -client=0.0.0.0 -retry-interval 5s --log-level warn -disable-host-node-id"
+    # environment:
+    #   - 'CONSUL_LOCAL_CONFIG={"skip_leave_on_interrupt": true}'
+    #   - CONSUL_BIND_INTERFACE=eth0
     deploy:
-      replicas: 3
+      #replicas: 3
 #      placement:
 #          constraints: [node.role == manager]
       resources:
@@ -80,7 +84,7 @@ services:
     deploy:
       update_config:
         parallelism: 2
-      replicas: 4
+      replicas: 0
       resources:
         memory: 2GB
         memory-swap: 0
@@ -138,7 +142,9 @@ volumes:
 
 networks:
   shield:
-    driver: bridge
+    driver: overlay
+    # relevant to compose
+    #driver: bridge
     ipam:
       driver: default
       config:
