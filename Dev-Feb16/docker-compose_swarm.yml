@@ -1,6 +1,5 @@
 version: '3.2'
 
-#THIS IS A TEST
 services:
     collector:
       image: securebrowsing/shield-collector:latest
@@ -119,7 +118,6 @@ services:
         environment:
           - SSLEXCLUSION=true
 
-
     ############################### Docker managment part ##############################################################
     portainer:
         image: securebrowsing/shield-portainer:latest
@@ -135,12 +133,10 @@ services:
           placement:
             constraints:
               - node.role==manager
-
 volumes:
   elastic:
   portainer:
   admin:
-
 
 networks:
   shield:
