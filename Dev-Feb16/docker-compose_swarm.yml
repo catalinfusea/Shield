@@ -97,7 +97,6 @@ services:
               condition: none
           resources:
             limits:
-              cpus: '0.001'
               memory: 2GB
             reservations:
               memory: 2GB
