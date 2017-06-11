@@ -99,7 +99,7 @@ services:
           resources:
             limits:
               memory: 2GB
-              cpus: "0.01"
+#              cpus: "0.01"
             reservations:
               memory: 400MB
         volumes:
