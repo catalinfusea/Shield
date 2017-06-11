@@ -36,6 +36,15 @@ function init_swarm {
     fi
 }
 
+function set_experimental {
+    if [ $( grep "experimental : true" ) -eq 1 ]; then
+       echo "experimental : true in /etc/docker/daemon.json"
+     else
+       echo $'{\nexperimental : true\n}\n' > /etc/docker/daemon.json
+       echo "Setting: experimental : true in /etc/docker/daemon.json"
+    fi
+}
+
 function create_uuid {
     if [ $( docker secret ls | grep -c $SECRET_UID) -eq 0 ]; then
        uuid=$(uuidgen)
@@ -98,6 +107,8 @@ fi
 
 create_uuid
  
+set_experimental
+
 docker stack deploy -c $ES_YML_FILE $STACK_NAME
 
 
