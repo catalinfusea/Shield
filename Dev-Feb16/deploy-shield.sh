@@ -36,7 +36,7 @@ function init_swarm {
 }
 
 function set_experimental {
-    if [ $( grep -c "experimental : true" /etc/docker/daemon.json ) -eq 1 ]; then
+    if [ -f /etc/docker/daemon.json ] && [  $( grep -c "experimental : true" /etc/docker/daemon.json ) -eq 1 ]; then
        echo "experimental : true in /etc/docker/daemon.json"
      else
        echo $'{\nexperimental : true\n}\n' > /etc/docker/daemon.json
