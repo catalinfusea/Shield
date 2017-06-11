@@ -119,7 +119,6 @@ services:
         environment:
           - SSLEXCLUSION=true
 
-
     ############################### Docker managment part ##############################################################
     portainer:
         image: securebrowsing/shield-portainer:latest
@@ -135,12 +134,10 @@ services:
           placement:
             constraints:
               - node.role==manager
-
 volumes:
   elastic:
   portainer:
   admin:
-
 
 networks:
   shield:
