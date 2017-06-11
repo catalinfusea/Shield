@@ -13,7 +13,6 @@ ES_YML_FILE=docker-compose.yml
 HOST=$( hostname )
 SECRET_UID="shield-system-id"
 
-
 function test_swarm_exists {
     echo $( docker info | grep -i 'swarm: active' )
 }
@@ -37,7 +36,7 @@ function init_swarm {
 }
 
 function set_experimental {
-    if [ $( grep "experimental : true" ) -eq 1 ]; then
+    if [ $( grep -c "experimental : true" /etc/docker/daemon.json ) -eq 1 ]; then
        echo "experimental : true in /etc/docker/daemon.json"
      else
        echo $'{\nexperimental : true\n}\n' > /etc/docker/daemon.json
