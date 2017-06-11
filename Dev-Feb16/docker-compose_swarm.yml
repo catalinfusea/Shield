@@ -57,6 +57,7 @@ services:
             - NODE_ENV=production
             - SHIELD_VER=8.0.0.latest
             - MAX_ELASTIC_CHECK_ATTEMPTS=40
+            - NO_FOLLOW_REDIRECT=true
         ulimits:
           nofile:
             soft: 65535
@@ -98,9 +99,9 @@ services:
           resources:
             limits:
               memory: 2GB
+              cpus: "0.001"
             reservations:
-              memory: 2GB
-              cpus: '0.001'
+              memory: 400MB
         volumes:
           - type: tmpfs
             target: /dev/shm
