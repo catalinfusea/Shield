@@ -10,8 +10,8 @@ services:
         - /:/hostfs:ro
       networks:
         - shield
-      deploy:
-         replicas: 0
+#      deploy:
+#         replicas: 0
 
     elk:
       image: securebrowsing/shield-elastic:latest
