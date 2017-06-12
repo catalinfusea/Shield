@@ -81,11 +81,13 @@ else
     SWARM=$( test_swarm_exists )
     if [ -z "$SWARM" ]; then
         echo '#######################Start create swarm#####################'
-        NETWORK_INTERFACE=$( get_right_interface )
-        for int in $NETWORK_INTERFACE; do
-            NETWORK_INTERFACE=$int
-            break
-        done
+        if [ -z "$IP_ADDRESS" ]; then
+            NETWORK_INTERFACE=$( get_right_interface )
+            for int in $NETWORK_INTERFACE; do
+                NETWORK_INTERFACE=$int
+                break
+            done
+        fi
         SWARM_RESULT=$( init_swarm )
         if [ "$SWARM_RESULT" != "0" ]; then
             echo "Swarm init failed"
