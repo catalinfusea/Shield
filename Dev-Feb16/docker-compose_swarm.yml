@@ -66,6 +66,11 @@ services:
             hard: 65535
         networks:
           - shield
+        deploy:
+          replicas: 2
+        placement:
+            constraints:
+              - node.role==manager
 
     broker-server:
         image: securebrowsing/broker-server:latest
@@ -120,6 +125,11 @@ services:
           - shield
         environment:
           - SSLEXCLUSION=true
+        deploy:
+          replicas: 2
+          placement:
+            constraints:
+              - node.role==manager
 
     ############################### Docker managment part ##############################################################
     portainer:
