@@ -120,6 +120,11 @@ services:
           - shield
         environment:
           - SSLEXCLUSION=true
+        deploy:
+          replicas: 2
+          placement:
+            constraints:
+              - node.role==manager
 
     ############################### Docker managment part ##############################################################
     portainer:
