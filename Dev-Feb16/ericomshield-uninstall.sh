@@ -13,6 +13,8 @@ if (( $EUID != 0 )); then
 fi
 ES_PATH="/usr/local/ericomshield"
 LOGFILE="$ES_PATH/ericomshield.log"
+ES_SWARM_FILE="$ES_PATH/.esswarm"
+STACK_NAME=shield
 
 cd $ES_PATH
 
@@ -24,17 +26,25 @@ docker rm $(docker ps -a -q)
 docker rmi $(docker images -q)
 
 echo "Uninstalling Ericom Shield"
+echo "$(date): Uninstalling Ericom Shield" >> "$LOGFILE"
+mv "$LOGFILE" ..
 systemctl --global disable ericomshield-updater.service
 systemctl --global disable ericomshield.service
 systemctl daemon-reload
 
 rm /etc/init.d/ericomshield
 
-echo "$(date): Uninstalling Ericom Shield" >> "$LOGFILE"
-mv "$LOGFILE" ..
+if [ -f "$ES_SWARM_FILE" ]; then
+   echo "***********       Removing EricomShield (swarm) "
+   echo "***********       "
+   docker stack rm $STACK_NAME
+   docker swarm leave -f
+fi
+
+docker system prune -f -a
+
 rm -f $ES_PATH/*
 rm -f $ES_PATH/.*
 
-docker system prune -f -a
 
 echo "Done!"
