@@ -6,7 +6,7 @@ set -ex
 #####   Ericom Shield Installer        #####
 ###################################LO##BH###
 NETWORK_INTERFACE='eth0'
-IP_ADDRESS=
+#IP_ADDRESS=
 SINGLE_MODE=true
 STACK_NAME='shield'
 ES_YML_FILE=docker-compose_swarm.yml
