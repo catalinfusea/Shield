@@ -298,9 +298,8 @@ if [ $UPDATE -eq 0 ]; then
      else
       docker-compose pull
       echo "Starting Ericom Shield Service"
-      # TODO replace with service restart afte service fix
-      # service ericomshield start      
       $ES_PATH/run.sh
+      service ericomshield start      
     fi
 
   else     # Update
@@ -310,10 +309,7 @@ if [ $UPDATE -eq 0 ]; then
      else 
       docker-compose pull
       echo "Restarting Ericom Shield Service"
-      # TODO replace with service restart afte service fix
-      # service ericomshield restart
-      $ES_PATH/stop.sh
-      $ES_PATH/run.sh
+      service ericomshield restart
     fi
 fi
 
@@ -326,9 +322,12 @@ if [ $? == 0 ]; then
    exit 1
 fi
 
-# TODO clean after service fix
-#Clean previous installed images
-#docker system prune -f -a
+#Check the status of the system, and clean only if running
+status.sh
+if [ $? == 0 ]; then
+   #Clean previous installed images
+   docker system prune -f -a
+fi   
 
 grep SHIELD_VER $ES_YML_FILE  > .version
 grep image $ES_YML_FILE >> .version
