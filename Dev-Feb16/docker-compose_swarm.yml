@@ -68,9 +68,9 @@ services:
           - shield
         deploy:
           replicas: 2
-        placement:
-            constraints:
-              - node.role==manager
+          placement:
+              constraints:
+                - node.role==manager
 
     broker-server:
         image: securebrowsing/broker-server:latest
