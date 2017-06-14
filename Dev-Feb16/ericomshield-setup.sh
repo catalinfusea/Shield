@@ -323,9 +323,10 @@ if [ $? == 0 ]; then
 fi
 
 #Check the status of the system, and clean only if running
-status.sh
+source $ES_PATH/status.sh
 if [ $? == 0 ]; then
    #Clean previous installed images
+   echo"*************** cleaning old images"
    docker system prune -f -a
 fi   
 
