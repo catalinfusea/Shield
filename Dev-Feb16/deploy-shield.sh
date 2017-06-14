@@ -36,11 +36,11 @@ function init_swarm {
 }
 
 function set_experimental {
-    if [ -f /etc/docker/daemon.json ] && [  $( grep -c "experimental : true" /etc/docker/daemon.json ) -eq 1 ]; then
-       echo "experimental : true in /etc/docker/daemon.json"
+    if [ -f /etc/docker/daemon.json ] && [  $( grep -c "\"experimental\" : true" /etc/docker/daemon.json ) -eq 1 ]; then
+       echo "\"experimental\" : true in /etc/docker/daemon.json"
      else
-       echo $'{\nexperimental : true\n}\n' > /etc/docker/daemon.json
-       echo "Setting: experimental : true in /etc/docker/daemon.json"
+       echo $'{\n\"experimental\" : true\n}\n' > /etc/docker/daemon.json
+       echo "Setting: \"experimental\" : true in /etc/docker/daemon.json"
     fi
 }
 
@@ -101,7 +101,7 @@ else
         fi
         echo '########################Swarm created########################'
     fi
-    #update_images
+    #update_images # no need to pull images docker stack does it
 fi
 
 create_uuid
