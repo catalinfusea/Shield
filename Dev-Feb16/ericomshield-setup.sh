@@ -23,7 +23,7 @@ ES_REPO_FILE="$ES_PATH/ericomshield-repo.sh"
 ES_YML_FILE="$ES_PATH/docker-compose.yml"
 ES_VER_FILE="$ES_PATH/shield-version.txt"
 ES_SWARM_SH_FILE="$ES_PATH/deploy-shield.sh"
-ES_SETUP_VER="8.0.0.80"
+ES_SETUP_VER="8.0.0.93"
 BRANCH="master"
 
 DOCKER_USER="benyh"
@@ -321,19 +321,22 @@ if [ $? == 0 ]; then
    echo "$(date): An error occured during the installation" >> "$LOGFILE"
    exit 1
 fi
-
 #Check the status of the system, and clean only if running
 $ES_PATH/status.sh
 if [ $? == 0 ]; then
    #Clean previous installed images
    echo "*************** cleaning old images"
    docker system prune -f -a
-fi   
+fi
 
-grep SHIELD_VER $ES_YML_FILE  > .version
+Version=`grep  SHIELD_VER $ES_YML_FILE`
+if [ "$ES_SWARM" == true ]; then
+   Version=$Version'(Swarm)'
+fi
+
+echo $Version  > .version
 grep image $ES_YML_FILE >> .version
 
-Version=`grep  SHIELD_VER docker-compose.yml`
 echo "***************     Success!"
 echo "***************"
 echo "***************     Ericom Shield Version:" $Version "is up and running"
