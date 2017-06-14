@@ -11,8 +11,8 @@ services:
       networks:
         - shield
       environment:
-        - "SYSTEM_PERIOD=300s"
-        - "DOCKER_PERIOD=300s"
+        - "SYSTEM_PERIOD=5m"
+        - "DOCKER_PERIOD=5m"
 #      deploy:
 #         replicas: 0
 
