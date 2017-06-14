@@ -101,13 +101,13 @@ else
         fi
         echo '########################Swarm created########################'
     fi
-    update_images
+    #update_images
 fi
 
 create_uuid
  
 set_experimental
 
-docker stack deploy -c $ES_YML_FILE $STACK_NAME
+docker stack deploy -c $ES_YML_FILE $STACK_NAME --with-registry-auth
 
 
