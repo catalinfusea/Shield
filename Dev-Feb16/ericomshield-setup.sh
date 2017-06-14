@@ -184,6 +184,14 @@ function prepare_yml {
              sed -i "s/$pattern_ver/$comp_ver/g" $ES_YML_FILE
           fi   
      done
+
+     MY_IP=IP=$(/sbin/ifconfig | grep 'inet addr:' | grep -v "127.0" | grep -v "172.1" | cut -d: -f2 | awk '{ print $1}')     
+     if [ "$ES_SWARM" == true ]; then
+        MY_IP=$MY_IP'(Swarm)'
+     fi
+     
+     echo "  sed -i 's/IP_ADDRESS/$MY_IP/g' $ES_YML_FILE"
+     sed -i "s/IP_ADDRESS/$MY_IP/g" $ES_YML_FILE
 }
 
 function get_shield_install_files {
