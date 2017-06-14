@@ -10,6 +10,9 @@ services:
         - /:/hostfs:ro
       networks:
         - shield
+      environment:
+        - "SYSTEM_PERIOD=300s"
+        - "DOCKER_PERIOD=300s"
 #      deploy:
 #         replicas: 0
 
