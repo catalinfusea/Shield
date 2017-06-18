@@ -151,8 +151,7 @@ function create_shield_service {
     echo "**************  Creating the ericomshield service..."
   
     if [ ! -f "${ES_PATH}/ericomshield.service" ]; then
-    # Need to download these service files only if needed and reload only if changed
-       curl -s -S -o "${ES_PATH}/ericomshield-updater.service" "${ES_repo_systemd_updater_service}"
+      # Need to download the service file only if needed and reload only if changed
        if [ "$ES_SWARM" == true ]; then
           echo "service for swarm"       
           curl -s -S -o "${ES_PATH}/ericomshield.service" "${ES_repo_systemd_service_swarm}"    
@@ -166,6 +165,10 @@ function create_shield_service {
    update-rc.d ericomshield defaults
 
     echo "**************  Creating the ericomshield updater service..."
+    if [ ! -f "${ES_PATH}/ericomshield-updater.service" ]; then
+       # Need to download the service file only if needed and reload only if changed
+       curl -s -S -o "${ES_PATH}/ericomshield-updater.service" "${ES_repo_systemd_updater_service}"
+    fi
     systemctl link ${ES_PATH}/ericomshield-updater.service    
     systemctl --global enable ${ES_PATH}/ericomshield-updater.service
 
