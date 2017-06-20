@@ -23,13 +23,15 @@ ES_REPO_FILE="$ES_PATH/ericomshield-repo.sh"
 ES_YML_FILE="$ES_PATH/docker-compose.yml"
 ES_VER_FILE="$ES_PATH/shield-version.txt"
 ES_SWARM_SH_FILE="$ES_PATH/deploy-shield.sh"
-ES_SETUP_VER="8.0.0.93"
+ES_SETUP_VER="8.0.0.100"
 BRANCH="master"
 
 DOCKER_USER="benyh"
 DOCKER_SECRET="Ericom123$"
 ES_DEV=false
-ES_SWARM=false
+ES_SWARM=true
+echo "ES_SWARM" > "$ES_SWARM_FILE"
+
 ES_AUTO_UPDATE=true
 # Create the Ericom empty dir if necessary
 if [ ! -d $ES_PATH ]; then
@@ -47,9 +49,9 @@ do
             ES_DEV=true
             echo "ES_DEV" > "$ES_DEV_FILE"
             ;;
-        -swarm)
-            ES_SWARM=true
-            echo "ES_SWARM" > "$ES_SWARM_FILE"
+        -compose)
+            ES_SWARM=false
+            rm "$ES_SWARM_FILE"
             ;;
         -noautoupdate)
             ES_AUTO_UPDATE=false
@@ -61,7 +63,7 @@ do
             ;;
 #        -usage)
         *)
-            echo "Usage:" $0 [-force] [-noautoupdate] [-dev] [-swarm] [-usage]
+            echo "Usage:" $0 [-force] [-noautoupdate] [-dev] [-compose] [-usage]
             exit
             ;;
     esac
@@ -146,6 +148,8 @@ function update_sysctl {
       else
        echo "file /etc/sysctl.conf already updated"
     fi
+    echo "setting sysctl fs.file=1000000"
+    sysctl -w fs.file-max=1000000
 }
 
 function create_shield_service {
