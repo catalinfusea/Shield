@@ -80,7 +80,8 @@ if [ "$ES_AUTO_UPDATE" == true ]; then
    echo "ES_AUTO_UPDATE" > "$ES_AUTO_UPDATE_FILE"
 fi
 
-if [ $(dpkg -l | grep  -c curl ) -eq  0 ]; then
+#Check if curl is installed (-w check that the whole word is found)
+if [ $(dpkg -l | grep -w -c curl ) -eq  0 ]; then
     echo "***************     Installing curl"
     sudo apt-get install curl
 fi
