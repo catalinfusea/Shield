@@ -10,7 +10,7 @@ ES_YML_FILE=docker-compose.yml
 
 if [ -f "$ES_SWARM_FILE" ]; then
    echo "swarm mode:"
-   docker stack deploy -c $ES_YML_FILE $STACK_NAME
+   docker stack deploy -c $ES_YML_FILE $STACK_NAME  --with-registry-auth
  else
    #cd $ES_PATH
    echo "***********       Launching docker-compose up"
