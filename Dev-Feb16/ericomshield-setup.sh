@@ -6,7 +6,7 @@
 #Check if we are root
 if (( $EUID != 0 )); then
 #    sudo su
-        echo "Usage:" $0 [-force] [-noautoupdate] [-dev] [-swarm] [-usage]
+        echo "Usage:" $0 [-force] [-noautoupdate] [-dev] [-usage]
         echo " Please run it as Root"
         echo "sudo" $0 $1 $2 $3 $4 $5
         exit
