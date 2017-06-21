@@ -15,8 +15,7 @@ WorkingDirectory=/usr/local/ericomshield
 
 Environment=STACK_NAME='shield'
 Environment=ES_YML_FILE=/usr/local/ericomshield/docker-compose.yml
-ExecStartPre=/usr/bin/docker stack deploy -c $ES_YML_FILE $STACK_NAME
-ExecStart=/usr/bin/docker stack deploy -c $ES_YML_FILE $STACK_NAME
+ExecStart=/usr/bin/docker stack deploy -c $ES_YML_FILE $STACK_NAME --with-registry-auth
 
 ExecStop=/usr/bin/docker stack rm $STACK_NAME
 
