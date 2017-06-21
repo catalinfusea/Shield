@@ -118,8 +118,8 @@ services:
             limits:
               memory: 2GB
               cpus: "100000"
-            reservations:
-              memory: 400MB
+#            reservations:
+#              memory: 400MB
         volumes:
           - type: tmpfs
             target: /dev/shm
@@ -137,7 +137,7 @@ services:
         environment:
           - SSLEXCLUSION=true
         deploy:
-          replicas: 2
+#          replicas: 2
           placement:
             constraints:
               - node.role==manager
