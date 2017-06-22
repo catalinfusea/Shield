@@ -13,8 +13,6 @@ services:
       environment:
         - "SYSTEM_PERIOD=5m"
         - "DOCKER_PERIOD=5m"
-#      deploy:
-#         replicas: 0
 
     elk:
       image: securebrowsing/shield-elastic:latest
@@ -136,7 +134,6 @@ services:
         environment:
           - SSLEXCLUSION=true
         deploy:
-#          replicas: 2
           placement:
             constraints:
               - node.role==manager
