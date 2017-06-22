@@ -90,6 +90,8 @@ services:
             - /var/run/docker.sock:/var/run/docker.sock
         environment:
             - NODE_ENV=production
+        deploy:
+          replicas: 0
         networks:
           - shield
         secrets:
@@ -114,7 +116,7 @@ services:
         deploy:
           update_config:
             parallelism: 0
-          replicas: 0
+          replicas: 10
           restart_policy:
               condition: none
           resources:
