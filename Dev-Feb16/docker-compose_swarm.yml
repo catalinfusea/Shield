@@ -109,8 +109,7 @@ services:
       #    - /home/lev/projects/SB/Containers/Docker/shield-cef/src:/app/src
         deploy:
           update_config:
-            parallelism: 2
-            delay: 20s
+            parallelism: 0
           replicas: 0
           restart_policy:
               condition: none
