@@ -15,8 +15,8 @@ if (( $EUID != 0 )); then
 fi
 
 if [ -f "$ES_SWARM_FILE" ]; then
-   NUM_EXPECTED_SERVICES= grep -c image docker-compose.yml
-   NUM_RUNNING_SERVICES= docker service ls |wc -l
+   NUM_EXPECTED_SERVICES=$(grep -c image docker-compose.yml)
+   NUM_RUNNING_SERVICES=$(docker service ls |wc -l)
 
    if [ $NUM_RUNNING_SERVICES -ge  $NUM_EXPECTED_SERVICES ]; then
        echo "***************     Ericom Shield (swarm) is running"
