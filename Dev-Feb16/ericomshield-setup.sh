@@ -6,7 +6,7 @@
 #Check if we are root
 if (( $EUID != 0 )); then
 #    sudo su
-        echo "Usage:" $0 [-force] [-noautoupdate] [-dev] [-swarm] [-usage]
+        echo "Usage:" $0 [-force] [-noautoupdate] [-dev] [-usage] [-pocket]
         echo " Please run it as Root"
         echo "sudo" $0 $1 $2 $3 $4 $5
         exit
@@ -30,6 +30,7 @@ DOCKER_USER="benyh"
 DOCKER_SECRET="Ericom123$"
 ES_DEV=false
 ES_SWARM=true
+ES_POCKET=false
 echo "ES_SWARM" > "$ES_SWARM_FILE"
 
 ES_AUTO_UPDATE=true
@@ -60,6 +61,10 @@ do
         -force)
             ES_FORCE=true
             echo " " >> $ES_VER_FILE
+            ;;
+        -pocket)
+            ES_POCKET=true
+            echo " pocket version "
             ;;
 #        -usage)
         *)
@@ -243,6 +248,10 @@ function get_shield_install_files {
        else
         curl -s -S -o $ES_YML_FILE $ES_repo_yml
      fi
+     if [ $ES_POCKET == true ]; then
+        echo "Getting $ES_repo_pocket_yml SWARM"
+        curl -s -S -o $ES_YML_FILE $ES_repo_pocket_yml
+     fi
 }
 
 #############     Getting all files from Github
@@ -252,11 +261,8 @@ function get_shield_files {
         chmod +x ericomshield-setup.sh
      fi
 
-     if [ ! -f "run.sh" ]; then
-        curl -s -S -o run.sh $ES_repo_run
-        chmod +x run.sh
-     fi
-
+     curl -s -S -o run.sh $ES_repo_run
+     chmod +x run.sh
      curl -s -S -o autoupdate.sh $ES_repo_update
      chmod +x autoupdate.sh
      curl -s -S -o showversion.sh $ES_repo_version
