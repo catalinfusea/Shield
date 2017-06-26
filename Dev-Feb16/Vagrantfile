@@ -24,7 +24,7 @@ Vagrant.configure("2") do |config|
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
   # `vagrant box outdated`. This is not recommended.
-  config.vm.box_check_update = true
+  config.vm.box_check_update = false
 
   # Create a forwarded port mapping which allows access to a specific port
   # within the machine from a port on the host machine. In the example below,
@@ -90,9 +90,9 @@ Vagrant.configure("2") do |config|
   config.vm.provision "shell", inline: <<-SHELL
     echo ' ericomshield VM using Vagrant (v-8.0.0.100) '
     apt-get update
-    rm /var/lib/apt/lists/lock
+    apt-get upgrade
     apt-get install uuid-runtime
-  #  apt-get upgrade
+    rm /var/lib/apt/lists/lock
   #  apt-get install -y git tofrodos dos2unix firefox
 
     wget -q "https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/show-my-ip.sh"
