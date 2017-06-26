@@ -91,7 +91,7 @@ services:
         environment:
             - NODE_ENV=production
         deploy:
-          replicas: 0
+          replicas: 1
         networks:
           - shield
         secrets:
