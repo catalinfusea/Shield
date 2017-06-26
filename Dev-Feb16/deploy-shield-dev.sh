@@ -65,6 +65,17 @@ function get_right_interface {
     fi
 }
 
+function make_in_memory_volume {
+    if [ ! -d "/tmp/containershm" ]; then
+        mkdir -p /tmp/containershm
+        mount -t tmpfs -o size=2G tmpfs /tmp/containershm
+    else
+       if [ ! "$(mount | grep containershm)" ]; then
+          mount -t tmpfs -o size=2G tmpfs /tmp/containershm
+       fi
+    fi
+}
+
 while [ "$1" != "" ]; do
     case $1 in
         -s|--single-mode)
@@ -97,7 +108,7 @@ else
     fi
     #update_images
 fi
-
+make_in_memory_volume
 create_uuid
  
 docker stack deploy -c $ES_YML_FILE $STACK_NAME

@@ -116,13 +116,17 @@ services:
               condition: none
           resources:
             limits:
-              memory: 2GB
+              memory: 500MB
               cpus: "100000"
             reservations:
               memory: 400MB
         volumes:
           - type: tmpfs
             target: /dev/shm
+          - type: bind
+            target: /dev/shm/xorg
+            source: /tmp/containershm
+
 
     proxy-server:
         image: securebrowsing/proxy-server:latest
