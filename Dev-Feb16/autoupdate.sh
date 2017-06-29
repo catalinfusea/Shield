@@ -28,6 +28,10 @@ source $ES_REPO_FILE
 
 while true
 do
+        if [ -f "$ES_DEV_FILE" ]; then
+           ES_DEV=true
+        fi
+
         if [ -f "$ES_AUTO_UPDATE_FILE" ]; then
            echo "Getting shield-version-new.txt"
            if [ "$ES_DEV" == true ]; then
@@ -49,15 +53,15 @@ do
            if [ $UPDATE -eq 1 ]; then
               curl -s -S -o ericomshield-setup.sh $ES_repo_setup
               chmod +x ericomshield-setup.sh
-              ./ericomshield-setup.sh
+              $ES_PATH/ericomshield-setup.sh
            fi   
         fi
         echo "."
         sleep $AUTO_UPDATE_TIME
         echo "-"
-        ./status.sh  > /dev/null &
+        $ES_PATH/status.sh  > /dev/null &
         if [ $? -ne 0 ]; then
           echo "ericomshield was not running"
-          ./run.sh
+          $ES_PATH/run.sh
         fi
 done
