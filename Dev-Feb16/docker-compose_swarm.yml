@@ -15,20 +15,34 @@ services:
         - "DOCKER_PERIOD=5m"
 
     elk:
-      image: securebrowsing/shield-elastic:latest
-      volumes:
-        - "elastic:/usr/share/elasticsearch/data"
-      networks:
-        - shield
+      image: securebrowsing/shield-elk:170126-09.14
       ports:
-        - "9200:9200"
+          - 5601:5601
+          - 5044:5044
+          - 9200:9200
+      healthcheck:
+          test: ["CMD-SHELL", "curl -s -XGET 'http://localhost:9200/_cluster/health' | grep -q yellow"]
+          interval: 20s
+          timeout: 10s
+          retries: 5
+      networks:
+          - shield
+#    elk:
+#      image: securebrowsing/shield-elastic:latest
+#      volumes:
+#        - "elastic:/usr/share/elasticsearch/data"
+#      networks:
+#        - shield
+#      ports:
+#        - "9200:9200"
 
-    kibana:
-      image: securebrowsing/shield-kibana:latest
-      networks:
-        - shield
-      ports:
-        - "5601:5601"
+#    kibana:
+#      image: securebrowsing/shield-kibana:latest
+#      networks:
+#        - shield
+#      ports:
+#        - "5601:5601"
+
 
     consul:
         image: securebrowsing/shield-configuration:latest
@@ -90,7 +104,9 @@ services:
           - shield-system-id
 
     shield-browser:
-        image: securebrowsing/shield-cef:latest
+        image: securebrowsing/shield-cef:170627-13.32-127
+        labels:
+          - com.ericom.browser
         environment:
              - FPS=25
              #- DEBUG_REMOTE_SITE=true
@@ -113,10 +129,10 @@ services:
               condition: none
           resources:
             limits:
-              memory: 500MB
-              cpus: "100000"
-#            reservations:
-#              memory: 400MB
+             memory: 500MB
+             cpus: "100000"
+            reservations:
+              memory: 400MB
         volumes:
           - type: tmpfs
             target: /dev/shm
@@ -126,7 +142,7 @@ services:
 
 
     proxy-server:
-        image: securebrowsing/proxy-server:latest
+        image: securebrowsing/proxy-server:170627-22.58-131
         ports:
           - "3128:3128"
         ulimits:
