@@ -3,8 +3,8 @@ shield-configuration:latest shield-configuration:170608-13.36-191
 shield-admin:latest shield-admin:170627-14.10-128
 shield-portainer:latest shield-portainer:170528-10.51-145
 proxy-server:latest proxy-server:170627-22.58-131
-icap-server:latest icap-server:170627-22.58-131
-shield-cef:latest shield-cef:170627-18.30-130
+icap-server:latest icap-server:170628-17.58-133
+shield-cef:latest shield-cef:170628-18.58-134
 broker-server:latest broker-server:170625-20.29-118
 shield-elastic:latest shield-elastic:170612-16.04-216
 shield-collector:latest shield-collector:170621-13.26-72
