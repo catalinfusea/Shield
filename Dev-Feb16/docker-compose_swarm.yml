@@ -11,38 +11,19 @@ services:
       networks:
         - shield
       environment:
-        - "SYSTEM_PERIOD=5m"
-        - "DOCKER_PERIOD=5m"
-
+        - "SYSTEM_PERIOD=20s"
+        - "DOCKER_PERIOD=20s"
+#
     elk:
-      image: securebrowsing/shield-elk:170126-09.14
+      image: securebrowsing/shield-elk:latest
       ports:
           - 5601:5601
-          - 5044:5044
           - 9200:9200
-      healthcheck:
-          test: ["CMD-SHELL", "curl -s -XGET 'http://localhost:9200/_cluster/health' | grep -q yellow"]
-          interval: 20s
-          timeout: 10s
-          retries: 5
+          - 5014:5014
       networks:
           - shield
-#    elk:
-#      image: securebrowsing/shield-elastic:latest
-#      volumes:
-#        - "elastic:/usr/share/elasticsearch/data"
-#      networks:
-#        - shield
-#      ports:
-#        - "9200:9200"
-
-#    kibana:
-#      image: securebrowsing/shield-kibana:latest
-#      networks:
-#        - shield
-#      ports:
-#        - "5601:5601"
-
+      volumes:
+          - elastic:/var/lib
 
     consul:
         image: securebrowsing/shield-configuration:latest
@@ -55,6 +36,10 @@ services:
         environment:
           - "CONSUL_BIND_INTERFACE=eth2"
           - "NUMBER_OF_EXPECTED=1"
+        logging:
+          driver: syslog
+          options:
+            syslog-address: tcp://localhost:5014
 
 ###################################################################### Shield services part ##################################################################
     shield-admin:
@@ -67,6 +52,10 @@ services:
            - admin:/data/consul
         networks:
             - shield
+        logging:
+          driver: syslog
+          options:
+            syslog-address: tcp://localhost:5014
 
     icap-server:
         image: securebrowsing/icap-server:latest
@@ -85,12 +74,16 @@ services:
         networks:
           - shield
         ports:
-          - 1344:1344          
+          - 1344:1344
         deploy:
           replicas: 1
           placement:
               constraints:
                 - node.role==manager
+        logging:
+          driver: syslog
+          options:
+            syslog-address: tcp://localhost:5014
     broker-server:
         image: securebrowsing/broker-server:latest
         hostname: broker-server
@@ -102,6 +95,10 @@ services:
           - shield
         secrets:
           - shield-system-id
+        logging:
+          driver: syslog
+          options:
+            syslog-address: tcp://localhost:5014
 
     shield-browser:
         image: securebrowsing/shield-cef:170627-13.32-127
@@ -129,8 +126,8 @@ services:
               condition: none
           resources:
             limits:
-             memory: 500MB
-             cpus: "100000"
+              memory: 500MB
+              cpus: "1"
             reservations:
               memory: 400MB
         volumes:
@@ -139,6 +136,10 @@ services:
           - type: bind
             target: /dev/shm/xorg
             source: /tmp/containershm
+        logging:
+          driver: syslog
+          options:
+            syslog-address: tcp://localhost:5014
 
 
     proxy-server:
@@ -157,6 +158,11 @@ services:
           placement:
             constraints:
               - node.role==manager
+        logging:
+          driver: syslog
+          options:
+            syslog-address: tcp://localhost:5014
+
     ext-proxy:
         image: securebrowsing/extproxy:170605-11.44
         ports:
@@ -173,7 +179,7 @@ services:
             constraints:
               - node.role==manager
 
-    ############################### Docker managment part ##############################################################
+    ############################## Docker managment part ##############################################################
     portainer:
         image: securebrowsing/shield-portainer:latest
         hostname: portainer
@@ -188,6 +194,10 @@ services:
           placement:
             constraints:
               - node.role==manager
+        logging:
+          driver: syslog
+          options:
+            syslog-address: tcp://localhost:5014
 volumes:
   elastic:
   portainer:
