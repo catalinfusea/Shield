@@ -170,7 +170,7 @@ function create_shield_service {
        fi 
     fi
 
-   systemctl --global enable "${ES_PATH}/ericomshield.service"
+   systemctl --system enable "${ES_PATH}/ericomshield.service"
    cp ericomshield /etc/init.d/
    update-rc.d ericomshield defaults
 
@@ -179,8 +179,8 @@ function create_shield_service {
        # Need to download the service file only if needed and reload only if changed
        curl -s -S -o "${ES_PATH}/ericomshield-updater.service" "${ES_repo_systemd_updater_service}"
     fi
-    systemctl link ${ES_PATH}/ericomshield-updater.service    
-    systemctl --global enable ${ES_PATH}/ericomshield-updater.service
+    systemctl link ${ES_PATH}/ericomshield-updater.service
+    systemctl --system enable ${ES_PATH}/ericomshield-updater.service
 
     systemctl daemon-reload
     echo "Done!"
@@ -321,7 +321,7 @@ if [ $UPDATE -eq 0 ]; then
       docker-compose pull
       echo "Starting Ericom Shield Service"
       $ES_PATH/run.sh
-      service ericomshield start      
+      service ericomshield start
     fi
 
   else     # Update
