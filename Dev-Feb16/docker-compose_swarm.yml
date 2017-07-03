@@ -1,5 +1,5 @@
 version: '3.2'
-#SHIELD_YML_VERSION:8.0.0.107a 
+#SHIELD_YML_VERSION:8.0.0.107b 
 
 services:
     collector:
@@ -17,10 +17,10 @@ services:
       deploy:
         restart_policy:
           condition: on-failure
-        resources:
-          limits:
-            memory: 2GB
-            cpus: "1"
+#        resources:
+#          limits:
+#            memory: 2GB
+#            cpus: "1"
 
     elk:
       image: securebrowsing/shield-elk:latest
@@ -38,10 +38,10 @@ services:
       deploy:
         restart_policy:
           condition: on-failure
-        resources:
-          limits:
-            memory: 2GB
-            cpus: "1"
+#        resources:
+#          limits:
+#            memory: 2GB
+#            cpus: '1'
 
     consul:
       image: securebrowsing/shield-configuration:latest
@@ -53,10 +53,10 @@ services:
         restart_policy:
           condition: on-failure
         mode: global
-        resources:
-          limits:
-            memory: 1GB
-            cpus: "1"
+ #       resources:
+ #         limits:
+ #           memory: 1GB
+ #           cpus: '1'
       environment:
         - "CONSUL_BIND_INTERFACE=eth2"
         - "NUMBER_OF_EXPECTED=1"
@@ -73,10 +73,10 @@ services:
       networks:
         - shield
       deploy:
-        resources:
-          limits:
-            memory: 1GB
-            cpus: "1"
+#        resources:
+#         limits:
+#            memory: 1GB
+#            cpus: '1'
 
     icap-server:
       image: securebrowsing/icap-server:latest
@@ -98,9 +98,9 @@ services:
         restart_policy:
           condition: on-failure
         resources:
-          limits:
-            memory: 1GB
-            cpus: "1"
+#          limits:
+#            memory: 1GB
+#            cpus: "1"
         replicas: 1
         placement:
           constraints:
@@ -122,10 +122,10 @@ services:
       deploy:
         restart_policy:
           condition: on-failure
-        resources:
-          limits:
-            memory: 1GB
-            cpus: "1"
+ #       resources:
+ #         limits:
+ #           memory: 1GB
+ #           cpus: "1"
 
     shield-browser:
       image: securebrowsing/shield-cef:latest
@@ -153,7 +153,7 @@ services:
         resources:
           limits:
             memory: 1GB
-            cpus: "1"
+            cpus: '1'
           reservations:
             memory: 250MB
   
@@ -182,10 +182,10 @@ services:
         placement:
           constraints:
             - node.role==manager
-        resources:
-          limits:
-            memory: 1GB
-            cpus: "2"
+#        resources:
+#          limits:
+#            memory: 1GB
+#            cpus: "2"
       networks:
         - shield
 
@@ -207,10 +207,10 @@ services:
       deploy:
         restart_policy:
           condition: on-failure
-        resources:
-          limits:
-            memory: 1GB
-            cpus: "1"
+ #       resources:
+ #         limits:
+ #           memory: 1GB
+ #           cpus: "1"
 
     ############################### Docker managment part ##############################################################
     portainer:
@@ -226,10 +226,10 @@ services:
       deploy:
         restart_policy:
           condition: on-failure
-        resources:
-          limits:
-            memory: 500MB
-            cpus: "0.5"
+  #      resources:
+  #        limits:
+  #          memory: 500MB
+  #          cpus: "0.5"
         placement:
           constraints:
             - node.role==manager
