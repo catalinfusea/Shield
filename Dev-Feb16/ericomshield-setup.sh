@@ -23,11 +23,11 @@ ES_REPO_FILE="$ES_PATH/ericomshield-repo.sh"
 ES_YML_FILE="$ES_PATH/docker-compose.yml"
 ES_VER_FILE="$ES_PATH/shield-version.txt"
 ES_SWARM_SH_FILE="$ES_PATH/deploy-shield.sh"
-ES_SETUP_VER="8.0.0.100"
+ES_SETUP_VER="8.0.0.107"
 BRANCH="master"
 
-DOCKER_USER="benyh"
-DOCKER_SECRET="Ericom123$"
+DOCKER_USER="ericomshield1"
+DOCKER_SECRET="Ericom98765$"
 ES_DEV=false
 ES_SWARM=true
 ES_POCKET=false
