@@ -26,7 +26,6 @@ while true
 do
    docker service ls > $SERVICES_CUR_FILE
    if [ $( diff  $SERVICES_LAST_FILE $SERVICES_CUR_FILE | wc -l ) -ne 0 ]; then
-then
       cat $SERVICES_CUR_FILE
       echo "$(date):" >> "$LOGFILE"
       cat $SERVICES_CUR_FILE >> "$LOGFILE"
