@@ -1,6 +1,8 @@
 #!/bin/bash
 #####   Ericom Shield Run              #####
+# wget https://github.com/ErezPasternak/Shield/blob/master/Dev-Feb16/Utils/monitor-services.sh
 #######################################BH###
+
 
 if (( $EUID != 0 )); then
 #    sudo su
