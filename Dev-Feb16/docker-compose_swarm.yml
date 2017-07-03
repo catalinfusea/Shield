@@ -14,7 +14,7 @@ services:
         - "SYSTEM_PERIOD=5m"
         - "DOCKER_PERIOD=5m"
 
-   elk:
+    elk:
      image: securebrowsing/shield-elk:latest
      hostname: elk
      ports:
