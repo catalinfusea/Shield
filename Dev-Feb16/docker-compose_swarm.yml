@@ -1,5 +1,5 @@
 version: '3.2'
-#SHIELD_YML_VERSION:8.0.0.107 
+#SHIELD_YML_VERSION:8.0.0.107a 
 
 services:
     collector:
@@ -14,10 +14,13 @@ services:
         - "DOCKER_PERIOD=5m"
       networks:
         - shield
-      resources:
-        limits:
-          memory: 2GB
-          cpus: "1.5"
+      deploy:
+        restart_policy:
+          condition: on-failure
+        resources:
+          limits:
+            memory: 2GB
+            cpus: "1"
 
     elk:
       image: securebrowsing/shield-elk:latest
@@ -32,23 +35,28 @@ services:
         retries: 5
       networks:
         - shield
-      resources:
-        limits:
-          memory: 2GB
-          cpus: "1.5"
+      deploy:
+        restart_policy:
+          condition: on-failure
+        resources:
+          limits:
+            memory: 2GB
+            cpus: "1"
 
     consul:
       image: securebrowsing/shield-configuration:latest
       ports:
         - "8500:8500"
-      deploy:
-        mode: global
       networks:
         - shield
-      resources:
-        limits:
-          memory: 1GB
-          cpus: "1"
+      deploy:
+        restart_policy:
+          condition: on-failure
+        mode: global
+        resources:
+          limits:
+            memory: 1GB
+            cpus: "1"
       environment:
         - "CONSUL_BIND_INTERFACE=eth2"
         - "NUMBER_OF_EXPECTED=1"
@@ -64,10 +72,11 @@ services:
         - admin:/data/consul
       networks:
         - shield
-      resources:
-        limits:
-          memory: 1GB
-          cpus: "1"
+      deploy:
+        resources:
+          limits:
+            memory: 1GB
+            cpus: "1"
 
     icap-server:
       image: securebrowsing/icap-server:latest
@@ -86,16 +95,18 @@ services:
       ports:
         - 1344:1344          
       deploy:
+        restart_policy:
+          condition: on-failure
+        resources:
+          limits:
+            memory: 1GB
+            cpus: "1"
         replicas: 1
         placement:
           constraints:
             - node.role==manager
       networks:
         - shield
-      resources:
-        limits:
-          memory: 1GB
-          cpus: "1"
 
     broker-server:
       image: securebrowsing/broker-server:latest
@@ -108,10 +119,13 @@ services:
         - shield-system-id
       networks:
         - shield
-      resources:
-        limits:
-          memory: 1GB
-          cpus: "1"
+      deploy:
+        restart_policy:
+          condition: on-failure
+        resources:
+          limits:
+            memory: 1GB
+            cpus: "1"
 
     shield-browser:
       image: securebrowsing/shield-cef:latest
@@ -120,8 +134,8 @@ services:
       environment:
         - FPS=25
         - DISPOSE_BROWSER=true
-        #- DEBUG_REMOTE_SITE=true	
-        - PERF_STATS=true	
+        #- DEBUG_REMOTE_SITE=true
+        - PERF_STATS=true
         #- RUN_WITH_DEBUGGER=false
         #- EXTProxyAddress=
         #- DEBUG_SEND_LOG_TO_AN=true
@@ -136,14 +150,15 @@ services:
         replicas: 1
         restart_policy:
           condition: none
+        resources:
+          limits:
+            memory: 1GB
+            cpus: "1"
+          reservations:
+            memory: 250MB
+  
       networks:
         - shield
-      resources:
-        limits:
-          memory: 1GB
-          cpus: "1.5"
-        reservations:
-          memory: 250MB
       volumes:
         - type: tmpfs
           target: /dev/shm
@@ -162,15 +177,17 @@ services:
       environment:
         - SSLEXCLUSION=true
       deploy:
+        restart_policy:
+          condition: on-failure
         placement:
           constraints:
             - node.role==manager
+        resources:
+          limits:
+            memory: 1GB
+            cpus: "2"
       networks:
         - shield
-      resources:
-        limits:
-          memory: 1GB
-          cpus: "2"
 
     ext-proxy:
       image: securebrowsing/extproxy:170605-11.44
@@ -187,10 +204,13 @@ services:
             - node.role==manager
       networks:
         - shield
-      resources:
-        limits:
-          memory: 1GB
-          cpus: "1"
+      deploy:
+        restart_policy:
+          condition: on-failure
+        resources:
+          limits:
+            memory: 1GB
+            cpus: "1"
 
     ############################### Docker managment part ##############################################################
     portainer:
@@ -204,15 +224,17 @@ services:
       networks:
         - shield
       deploy:
+        restart_policy:
+          condition: on-failure
+        resources:
+          limits:
+            memory: 500MB
+            cpus: "0.5"
         placement:
           constraints:
             - node.role==manager
       networks:
         - shield
-      resources:
-        limits:
-          memory: 500MB
-          cpus: "0.5"
 
 volumes:
   elastic:
