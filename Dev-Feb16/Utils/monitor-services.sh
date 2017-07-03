@@ -1,6 +1,6 @@
 #!/bin/bash
 #####   Ericom Shield Run              #####
-# wget https://github.com/ErezPasternak/Shield/blob/master/Dev-Feb16/Utils/monitor-services.sh
+# wget https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/Utils/monitor-services.sh
 #######################################BH###
 
 
