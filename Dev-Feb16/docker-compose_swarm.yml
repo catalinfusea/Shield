@@ -1,21 +1,21 @@
 version: '3.2'
 
 services:
-    collector:
-      image: securebrowsing/shield-collector:latest
-      volumes:
-        - /var/run/docker.sock:/var/run/docker.sock
-        - /proc:/hostfs/proc:ro
-        - /sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro
-        - /:/hostfs:ro
-      networks:
-        - shield
-      environment:
-        - "SYSTEM_PERIOD=5m"
-        - "DOCKER_PERIOD=5m"
+#    collector:
+#      image: securebrowsing/shield-collector:latest
+#      volumes:
+#        - /var/run/docker.sock:/var/run/docker.sock
+#        - /proc:/hostfs/proc:ro
+#        - /sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro
+#        - /:/hostfs:ro
+#      networks:
+#        - shield
+#      environment:
+#        - "SYSTEM_PERIOD=5m"
+#        - "DOCKER_PERIOD=5m"
 
     elk:
-     image: securebrowsing/shield-elk:latest
+     image: securebrowsing/shield-elastic:latest
      hostname: elk
      ports:
          - 5601:5601
