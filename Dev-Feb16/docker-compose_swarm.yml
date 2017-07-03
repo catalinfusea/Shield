@@ -1,4 +1,5 @@
 version: '3.2'
+#SHIELD_YML_VERSION:8.0.0.107 
 
 services:
     collector:
@@ -8,186 +9,211 @@ services:
         - /proc:/hostfs/proc:ro
         - /sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro
         - /:/hostfs:ro
-      networks:
-        - shield
       environment:
         - "SYSTEM_PERIOD=5m"
         - "DOCKER_PERIOD=5m"
+      networks:
+        - shield
+      resources:
+        limits:
+          memory: 2GB
+          cpus: "1.5"
 
     elk:
-      image: securebrowsing/shield-elk:170126-09.14
+      image: securebrowsing/shield-elk:latest
       ports:
           - 5601:5601
           - 5044:5044
           - 9200:9200
       healthcheck:
-          test: ["CMD-SHELL", "curl -s -XGET 'http://localhost:9200/_cluster/health' | grep -q yellow"]
-          interval: 20s
-          timeout: 10s
-          retries: 5
+        test: ["CMD-SHELL", "curl -s -XGET 'http://localhost:9200/_cluster/health' | grep -q yellow"]
+        interval: 20s
+        timeout: 10s
+        retries: 5
       networks:
-          - shield
-#    elk:
-#      image: securebrowsing/shield-elastic:latest
-#      volumes:
-#        - "elastic:/usr/share/elasticsearch/data"
-#      networks:
-#        - shield
-#      ports:
-#        - "9200:9200"
-
-#    kibana:
-#      image: securebrowsing/shield-kibana:latest
-#      networks:
-#        - shield
-#      ports:
-#        - "5601:5601"
-
+        - shield
+      resources:
+        limits:
+          memory: 2GB
+          cpus: "1.5"
 
     consul:
-        image: securebrowsing/shield-configuration:latest
-        networks:
-          - shield
-        ports:
-          - "8500:8500"
-        deploy:
-          mode: global
-        environment:
-          - "CONSUL_BIND_INTERFACE=eth2"
-          - "NUMBER_OF_EXPECTED=1"
+      image: securebrowsing/shield-configuration:latest
+      ports:
+        - "8500:8500"
+      deploy:
+        mode: global
+      networks:
+        - shield
+      resources:
+        limits:
+          memory: 1GB
+          cpus: "1"
+      environment:
+        - "CONSUL_BIND_INTERFACE=eth2"
+        - "NUMBER_OF_EXPECTED=1"
 
 ###################################################################### Shield services part ##################################################################
     shield-admin:
-        image: securebrowsing/shield-admin:latest
-        ports:
-            - 8181:8181
-        environment:
-            - SHIELD_VER=8.0.0.latest
-        volumes:
-           - admin:/data/consul
-        networks:
-            - shield
+      image: securebrowsing/shield-admin:latest
+      ports:
+        - 8181:8181
+      environment:
+        - SHIELD_VER=8.0.0.latest
+      volumes:
+        - admin:/data/consul
+      networks:
+        - shield
+      resources:
+        limits:
+          memory: 1GB
+          cpus: "1"
 
     icap-server:
-        image: securebrowsing/icap-server:latest
-        hostname: icap-server
-        environment:
-            - NODE_ENV=production
-            - SHIELD_VER=8.0.0.latest
-            - MAX_ELASTIC_CHECK_ATTEMPTS=40
-            - NO_FOLLOW_REDIRECT=true
-            - "SHIELD_IP=IP_ADDRESS"
-#           - SHIELD_WATERMARK=TRUE
-        ulimits:
-          nofile:
-            soft: 65535
-            hard: 65535
-        networks:
-          - shield
-        ports:
-          - 1344:1344          
-        deploy:
-          replicas: 1
-          placement:
-              constraints:
-                - node.role==manager
+      image: securebrowsing/icap-server:latest
+      hostname: icap-server
+      environment:
+        - NODE_ENV=production
+        - SHIELD_VER=8.0.0.latest
+        - MAX_ELASTIC_CHECK_ATTEMPTS=40
+        - NO_FOLLOW_REDIRECT=true
+        - "SHIELD_IP=IP_ADDRESS"
+#         - SHIELD_WATERMARK=TRUE
+      ulimits:
+        nofile:
+          soft: 65535
+          hard: 65535
+      ports:
+        - 1344:1344          
+      deploy:
+        replicas: 1
+        placement:
+          constraints:
+            - node.role==manager
+      networks:
+        - shield
+      resources:
+        limits:
+          memory: 1GB
+          cpus: "1"
+				
     broker-server:
-        image: securebrowsing/broker-server:latest
-        hostname: broker-server
-        volumes:
-            - /var/run/docker.sock:/var/run/docker.sock
-        environment:
-            - NODE_ENV=production
-        networks:
-          - shield
-        secrets:
-          - shield-system-id
+      image: securebrowsing/broker-server:latest
+      hostname: broker-server
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+      environment:
+        - NODE_ENV=production
+      secrets:
+        - shield-system-id
+      networks:
+        - shield
+      resources:
+        limits:
+          memory: 1GB
+          cpus: "1"
 
     shield-browser:
-        image: securebrowsing/shield-cef:170627-13.32-127
-        labels:
-          - com.ericom.browser
-        environment:
-             - FPS=25
-             #- DEBUG_REMOTE_SITE=true
-             - DISPOSE_BROWSER=true
-             #- RUN_WITH_DEBUGGER=false
-             #- EXTProxyAddress=
-             #- DEBUG_SEND_LOG_TO_AN=true
-             - PERF_STATS=true
-        networks:
-            - shield
+      image: securebrowsing/shield-cef:latest
+      labels:
+        - com.ericom.browser
+      environment:
+        - FPS=25
+        #- DEBUG_REMOTE_SITE=true
+        - DISPOSE_BROWSER=true
+        #- RUN_WITH_DEBUGGER=false
+        #- EXTProxyAddress=
+        #- DEBUG_SEND_LOG_TO_AN=true
+         - PERF_STATS=true
       # ports:
       #    - "3656:3656"
       #  volumes:
       #    - /home/lev/projects/SB/Containers/Docker/shield-cef/src:/app/src
-        deploy:
-          update_config:
-            parallelism: 0
-          replicas: 0
-          restart_policy:
-              condition: none
-          resources:
-            limits:
-             memory: 500MB
-             cpus: "100000"
-            reservations:
-              memory: 400MB
-        volumes:
-          - type: tmpfs
-            target: /dev/shm
-          - type: bind
-            target: /dev/shm/xorg
-            source: /tmp/containershm
-
+      deploy:
+        update_config:
+          parallelism: 0
+      #  Starting with one Browser, Broker will scale according to Pool Settings
+        replicas: 1
+        restart_policy:
+          condition: none
+      networks:
+        - shield
+      resources:
+        limits:
+          memory: 1GB
+          cpus: "1.5"
+        reservations:
+          memory: 250MB
+      volumes:
+        - type: tmpfs
+          target: /dev/shm
+        - type: bind
+          target: /dev/shm/xorg
+          source: /tmp/containershm
 
     proxy-server:
-        image: securebrowsing/proxy-server:170627-22.58-131
-        ports:
-          - "3128:3128"
-        ulimits:
-          nofile:
-            soft: 65535
-            hard: 65535
-        networks:
-          - shield
-        environment:
-          - SSLEXCLUSION=true
-        deploy:
-          placement:
-            constraints:
-              - node.role==manager
+      image: securebrowsing/proxy-server:latest
+      ports:
+        - "3128:3128"
+      ulimits:
+        nofile:
+          soft: 65535
+          hard: 65535
+      environment:
+        - SSLEXCLUSION=true
+      deploy:
+        placement:
+          constraints:
+            - node.role==manager
+      networks:
+        - shield
+      resources:
+        limits:
+          memory: 1GB
+          cpus: "2"
+			
     ext-proxy:
-        image: securebrowsing/extproxy:170605-11.44
-        ports:
-          - "3138:3138"
-        ulimits:
-          nofile:
-            soft: 65535
-            hard: 65535
-        networks:
-          - shield
-        deploy:
-          replicas: 0
-          placement:
-            constraints:
-              - node.role==manager
+      image: securebrowsing/extproxy:170605-11.44
+      ports:
+        - "3138:3138"
+      ulimits:
+        nofile:
+          soft: 65535
+          hard: 65535
+      deploy:
+        replicas: 0
+        placement:
+          constraints:
+            - node.role==manager
+      networks:
+        - shield
+      resources:
+        limits:
+          memory: 1GB
+          cpus: "1"
 
     ############################### Docker managment part ##############################################################
     portainer:
-        image: securebrowsing/shield-portainer:latest
-        hostname: portainer
-        ports:
-            - "9000:9000"
-        volumes:
-            - /var/run/docker.sock:/var/run/docker.sock
-            - portainer:/data
-        networks:
-          - shield
-        deploy:
-          placement:
-            constraints:
-              - node.role==manager
+      image: securebrowsing/shield-portainer:latest
+      hostname: portainer
+      ports:
+        - "9000:9000"
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+        - portainer:/data
+      networks:
+        - shield
+      deploy:
+        placement:
+          constraints:
+            - node.role==manager
+      networks:
+        - shield
+      resources:
+        limits:
+          memory: 500MB
+          cpus: "0.5"
+			
 volumes:
   elastic:
   portainer:
