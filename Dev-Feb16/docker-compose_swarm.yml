@@ -19,7 +19,7 @@ services:
       ports:
           - 5601:5601
           - 9200:9200
-          - 5014:5014
+          - 5014:5014/udp
       networks:
           - shield
       volumes:
@@ -39,7 +39,7 @@ services:
         logging:
           driver: syslog
           options:
-            syslog-address: tcp://localhost:5014
+            syslog-address: udp://localhost:5014
 
 ###################################################################### Shield services part ##################################################################
     shield-admin:
@@ -55,7 +55,7 @@ services:
         logging:
           driver: syslog
           options:
-            syslog-address: tcp://localhost:5014
+            syslog-address: udp://localhost:5014
 
     icap-server:
         image: securebrowsing/icap-server:latest
@@ -83,7 +83,7 @@ services:
         logging:
           driver: syslog
           options:
-            syslog-address: tcp://localhost:5014
+            syslog-address: udp://localhost:5014
     broker-server:
         image: securebrowsing/broker-server:latest
         hostname: broker-server
@@ -98,10 +98,10 @@ services:
         logging:
           driver: syslog
           options:
-            syslog-address: tcp://localhost:5014
+            syslog-address: udp://localhost:5014
 
     shield-browser:
-        image: securebrowsing/shield-cef:170627-13.32-127
+        image: securebrowsing/shield-cef:latest
         labels:
           - com.ericom.browser
         environment:
@@ -139,11 +139,11 @@ services:
         logging:
           driver: syslog
           options:
-            syslog-address: tcp://localhost:5014
+            syslog-address: udp://localhost:5014
 
 
     proxy-server:
-        image: securebrowsing/proxy-server:170627-22.58-131
+        image: securebrowsing/proxy-server:latest
         ports:
           - "3128:3128"
         ulimits:
@@ -161,10 +161,10 @@ services:
         logging:
           driver: syslog
           options:
-            syslog-address: tcp://localhost:5014
+            syslog-address: udp://localhost:5014
 
     ext-proxy:
-        image: securebrowsing/extproxy:170605-11.44
+        image: securebrowsing/extproxy:latest
         ports:
           - "3138:3138"
         ulimits:
@@ -197,7 +197,7 @@ services:
         logging:
           driver: syslog
           options:
-            syslog-address: tcp://localhost:5014
+            syslog-address: udp://localhost:5014
 volumes:
   elastic:
   portainer:
