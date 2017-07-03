@@ -13,9 +13,7 @@ RestartSec=10
 
 WorkingDirectory=/usr/local/ericomshield
 
-ExecStart=/usr/local/ericomshield/autoupdate.sh &
-
-ExecStop=/usr/bin/pkill autoupdate.sh
+ExecStart=/usr/local/ericomshield/autoupdate.sh
 
 NotifyAccess=all
 

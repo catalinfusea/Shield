@@ -11,19 +11,18 @@ services:
       networks:
         - shield
       environment:
-        - "SYSTEM_PERIOD=20s"
-        - "DOCKER_PERIOD=20s"
-#
-    elk:
-      image: securebrowsing/shield-elk:latest
-      ports:
-          - 5601:5601
-          - 9200:9200
-          - 5014:5014
+        - "SYSTEM_PERIOD=5m"
+        - "DOCKER_PERIOD=5m"
+
+   elk:
+     image: securebrowsing/shield-elk:latest
+     hostname: elk
+     ports:
+         - 5601:5601
+         - 5044:5044
+         - 9200:9200
       networks:
           - shield
-      volumes:
-          - elastic:/var/lib
 
     consul:
         image: securebrowsing/shield-configuration:latest
@@ -36,10 +35,6 @@ services:
         environment:
           - "CONSUL_BIND_INTERFACE=eth2"
           - "NUMBER_OF_EXPECTED=1"
-        logging:
-          driver: syslog
-          options:
-            syslog-address: tcp://localhost:5014
 
 ###################################################################### Shield services part ##################################################################
     shield-admin:
@@ -52,10 +47,6 @@ services:
            - admin:/data/consul
         networks:
             - shield
-        logging:
-          driver: syslog
-          options:
-            syslog-address: tcp://localhost:5014
 
     icap-server:
         image: securebrowsing/icap-server:latest
@@ -80,10 +71,6 @@ services:
           placement:
               constraints:
                 - node.role==manager
-        logging:
-          driver: syslog
-          options:
-            syslog-address: tcp://localhost:5014
     broker-server:
         image: securebrowsing/broker-server:latest
         hostname: broker-server
@@ -95,15 +82,9 @@ services:
           - shield
         secrets:
           - shield-system-id
-        logging:
-          driver: syslog
-          options:
-            syslog-address: tcp://localhost:5014
 
     shield-browser:
-        image: securebrowsing/shield-cef:170627-13.32-127
-        labels:
-          - com.ericom.browser
+        image: securebrowsing/shield-cef:latest
         environment:
              - FPS=25
              #- DEBUG_REMOTE_SITE=true
@@ -126,24 +107,16 @@ services:
               condition: none
           resources:
             limits:
-              memory: 500MB
-              cpus: "1"
-            reservations:
-              memory: 400MB
+              memory: 2GB
+              cpus: "100000"
+#            reservations:
+#              memory: 400MB
         volumes:
           - type: tmpfs
             target: /dev/shm
-          - type: bind
-            target: /dev/shm/xorg
-            source: /tmp/containershm
-        logging:
-          driver: syslog
-          options:
-            syslog-address: tcp://localhost:5014
-
 
     proxy-server:
-        image: securebrowsing/proxy-server:170627-22.58-131
+        image: securebrowsing/proxy-server:latest
         ports:
           - "3128:3128"
         ulimits:
@@ -158,11 +131,6 @@ services:
           placement:
             constraints:
               - node.role==manager
-        logging:
-          driver: syslog
-          options:
-            syslog-address: tcp://localhost:5014
-
     ext-proxy:
         image: securebrowsing/extproxy:170605-11.44
         ports:
@@ -179,7 +147,7 @@ services:
             constraints:
               - node.role==manager
 
-    ############################## Docker managment part ##############################################################
+    ############################### Docker managment part ##############################################################
     portainer:
         image: securebrowsing/shield-portainer:latest
         hostname: portainer
@@ -194,10 +162,6 @@ services:
           placement:
             constraints:
               - node.role==manager
-        logging:
-          driver: syslog
-          options:
-            syslog-address: tcp://localhost:5014
 volumes:
   elastic:
   portainer:
