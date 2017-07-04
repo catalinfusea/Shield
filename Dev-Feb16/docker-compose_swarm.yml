@@ -65,7 +65,7 @@ services:
             - SHIELD_VER=8.0.0.latest
             - MAX_ELASTIC_CHECK_ATTEMPTS=40
             - NO_FOLLOW_REDIRECT=true
-            - "SHIELD_IP=SYS_LOG_HOST"
+            - "SHIELD_IP=IP_ADDRESS"
 #           - SHIELD_WATERMARK=TRUE
         ulimits:
           nofile:
