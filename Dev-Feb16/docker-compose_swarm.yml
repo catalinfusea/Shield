@@ -11,9 +11,9 @@ services:
       networks:
         - shield
       environment:
-        - "SYSTEM_PERIOD=20s"
-        - "DOCKER_PERIOD=20s"
-#
+        - "SYSTEM_PERIOD=5m"
+        - "DOCKER_PERIOD=5m"
+
     elk:
       image: securebrowsing/shield-elk:latest
       ports:
@@ -84,6 +84,7 @@ services:
           driver: syslog
           options:
             syslog-address: udp://localhost:5014
+
     broker-server:
         image: securebrowsing/broker-server:latest
         hostname: broker-server
@@ -126,10 +127,10 @@ services:
               condition: none
           resources:
             limits:
-              memory: 500MB
+              memory: 1GB
               cpus: "1"
             reservations:
-              memory: 400MB
+              memory: 200MB
         volumes:
           - type: tmpfs
             target: /dev/shm
@@ -163,6 +164,7 @@ services:
           options:
             syslog-address: udp://localhost:5014
 
+
     ext-proxy:
         image: securebrowsing/extproxy:latest
         ports:
@@ -179,7 +181,7 @@ services:
             constraints:
               - node.role==manager
 
-    ############################## Docker managment part ##############################################################
+    ############################### Docker managment part ##############################################################
     portainer:
         image: securebrowsing/shield-portainer:latest
         hostname: portainer
@@ -198,6 +200,7 @@ services:
           driver: syslog
           options:
             syslog-address: udp://localhost:5014
+
 volumes:
   elastic:
   portainer:
