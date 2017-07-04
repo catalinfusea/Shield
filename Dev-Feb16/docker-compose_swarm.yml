@@ -39,7 +39,7 @@ services:
         logging:
           driver: syslog
           options:
-            syslog-address: udp://localhost:5014
+            syslog-address: udp://${SYS_LOG_HOST}:5014
 
 ###################################################################### Shield services part ##################################################################
     shield-admin:
@@ -55,7 +55,7 @@ services:
         logging:
           driver: syslog
           options:
-            syslog-address: udp://localhost:5014
+            syslog-address: udp://${SYS_LOG_HOST}:5014
 
     icap-server:
         image: securebrowsing/icap-server:latest
@@ -65,7 +65,7 @@ services:
             - SHIELD_VER=8.0.0.latest
             - MAX_ELASTIC_CHECK_ATTEMPTS=40
             - NO_FOLLOW_REDIRECT=true
-            - "SHIELD_IP=IP_ADDRESS"
+            - "SHIELD_IP=SYS_LOG_HOST"
 #           - SHIELD_WATERMARK=TRUE
         ulimits:
           nofile:
@@ -83,7 +83,7 @@ services:
         logging:
           driver: syslog
           options:
-            syslog-address: udp://localhost:5014
+            syslog-address: udp://${SYS_LOG_HOST}:5014
 
     broker-server:
         image: securebrowsing/broker-server:latest
@@ -99,7 +99,7 @@ services:
         logging:
           driver: syslog
           options:
-            syslog-address: udp://localhost:5014
+            syslog-address: udp://${SYS_LOG_HOST}:5014
 
     shield-browser:
         image: securebrowsing/shield-cef:latest
@@ -140,7 +140,7 @@ services:
         logging:
           driver: syslog
           options:
-            syslog-address: udp://localhost:5014
+            syslog-address: udp://${SYS_LOG_HOST}:5014
 
 
     proxy-server:
@@ -162,7 +162,7 @@ services:
         logging:
           driver: syslog
           options:
-            syslog-address: udp://localhost:5014
+            syslog-address: udp://${SYS_LOG_HOST}:5014
 
 
     ext-proxy:
@@ -199,7 +199,7 @@ services:
         logging:
           driver: syslog
           options:
-            syslog-address: udp://localhost:5014
+            syslog-address: udp://${SYS_LOG_HOST}:5014
 
 volumes:
   elastic:

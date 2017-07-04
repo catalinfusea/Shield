@@ -108,9 +108,11 @@ else
     fi
     #update_images
 fi
+
 make_in_memory_volume
 create_uuid
  
+export SYS_LOG_HOST=$( docker node ls | grep Leader | awk '{print $3}' )
 docker stack deploy -c $ES_YML_FILE $STACK_NAME
 
 

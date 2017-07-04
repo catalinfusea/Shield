@@ -118,7 +118,7 @@ fi
 create_uuid
 make_in_memory_volume
 set_experimental
-
+export SYS_LOG_HOST=$( docker node ls | grep Leader | awk '{print $3}' )
 docker stack deploy -c $ES_YML_FILE $STACK_NAME --with-registry-auth
 
 
