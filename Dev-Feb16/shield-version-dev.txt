@@ -1,9 +1,9 @@
-SHIELD_VER=8.0.0.latest SHIELD_VER=8.0.0.109-DEV 
+SHIELD_VER=8.0.0.latest SHIELD_VER=8.0.0.110-DEV 
 shield-configuration:latest shield-configuration:170608-13.36-191
 shield-admin:latest shield-admin:170704-19.38-171
 shield-portainer:latest shield-portainer:170528-10.51-145
 proxy-server:latest proxy-server:170704-17.54-170
-icap-server:latest icap-server:170705-00.28-172
+icap-server:latest icap-server:170705-08.16-173
 shield-cef:latest shield-cef:170704-17.47-169
 broker-server:latest broker-server:170704-17.38-167
 shield-elastic:latest shield-elastic:170612-16.04-216
