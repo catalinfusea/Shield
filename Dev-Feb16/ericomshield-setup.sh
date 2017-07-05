@@ -350,6 +350,7 @@ if [ $? == 0 ]; then
   else
    echo "An error occured during the installation"
    echo "$(date): An error occured during the installation" >> "$LOGFILE"
+   echo "--failed" >> "$ES_VER_FILE" ] # adding failed into the version file
    exit 1
 fi
 #Check the status of the system, and clean only if running
