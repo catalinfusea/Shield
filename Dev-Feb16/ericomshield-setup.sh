@@ -108,6 +108,11 @@ function install_docker {
     else
          echo " ******* docker-engine is already installed"
     fi
+    if [ $(sudo docker version |wc -l ) -le  1 ]; then    
+       echo "Failed to install docker, Exiting!"
+       echo "$(date): An error occured during the installation: Cannot login to docker" >> "$LOGFILE"
+       exit 1   
+    fi
 }
 
 function install_docker_compose {
@@ -189,13 +194,17 @@ function create_shield_service {
 function prepare_yml {
      echo "Preparing yml file..."
      cat "$ES_VER_FILE" | while read ver; do
-          pattern_ver=$(echo $ver | awk '{print $1}')
-          comp_ver=$(echo $ver | awk '{print $2}')
-          if [ ! -z $pattern_ver ]; then          
-             echo "Changing ver:"
-             echo "  sed -i 's/$pattern_ver/$comp_ver/g' $ES_YML_FILE"
-             sed -i "s/$pattern_ver/$comp_ver/g" $ES_YML_FILE
-          fi   
+          if [ ${ver:0:1} == '#' ]; then
+            echo $ver
+           else 
+            pattern_ver=$(echo $ver | awk '{print $1}')
+            comp_ver=$(echo $ver | awk '{print $2}')
+            if [ ! -z $pattern_ver ]; then          
+               echo "Changing ver:"
+               echo "  sed -i 's/$pattern_ver/$comp_ver/g' $ES_YML_FILE"
+               sed -i "s/$pattern_ver/$comp_ver/g" $ES_YML_FILE
+            fi   
+          fi  
      done
 
      MY_IP=IP=$(/sbin/ifconfig | grep 'inet addr:' | grep -v "127.0" | grep -v "172.1" | cut -d: -f2 | awk '{ print $1}')     
@@ -284,13 +293,6 @@ echo "dev=$ES_DEV"
 echo "autoupdate=$ES_AUTO_UPDATE"
 echo "Swarm=$ES_SWARM"
 
-get_shield_install_files
-
-get_shield_files
-
-echo "Preparing yml file (Containers build number)"
-prepare_yml
-
 install_docker
 echo "Starting docker service"
 service docker start
@@ -304,9 +306,16 @@ fi
 
 install_docker_compose
 
+get_shield_install_files
+
+get_shield_files
+
 docker_login
 
 update_sysctl
+
+echo "Preparing yml file (Containers build number)"
+prepare_yml
 
 if [ $UPDATE -eq 0 ]; then
 # New Installation
