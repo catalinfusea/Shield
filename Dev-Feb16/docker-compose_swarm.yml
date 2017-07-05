@@ -128,7 +128,7 @@ services:
           resources:
             limits:
               memory: 1GB
-              cpus: "1"
+              cpus: "2"
             reservations:
               memory: 200MB
         volumes:
