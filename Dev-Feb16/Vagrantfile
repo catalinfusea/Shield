@@ -24,14 +24,14 @@ Vagrant.configure("2") do |config|
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
   # `vagrant box outdated`. This is not recommended.
-  config.vm.box_check_update = true
+  config.vm.box_check_update = false
 
   # Create a forwarded port mapping which allows access to a specific port
   # within the machine from a port on the host machine. In the example below,
   # accessing "localhost:8080" will access port 80 on the guest machine.
   # config.vm.network "forwarded_port", guest: 80, host: 8080
   # config.vm.network "forwarded_port", guest: 22, host: 10022
-   config.vm.network "forwarded_port", guest: 9000, host: 9000
+   config.vm.network "forwarded_port", guest: 9000, host:  9000
    config.vm.network "forwarded_port" , guest: 3128, host: 3128
    config.vm.network "forwarded_port" , guest: 5601, host: 5601
    config.vm.network "forwarded_port" , guest: 8500, host: 8500
@@ -88,9 +88,11 @@ Vagrant.configure("2") do |config|
   # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
   # documentation for more information about their specific syntax and use.
   config.vm.provision "shell", inline: <<-SHELL
-    echo ' ericomshield VM using Vagrant (v-8.0.0.29) '
-    apt-get update
-  #  apt-get upgrade
+    echo ' ericomshield VM using Vagrant (v-8.0.0.100) '
+    apt-get update > /dev/null 2 >&1
+    apt-get upgrade > /dev/null 2 >&1
+    apt-get install uuid-runtime > /dev/null 2 >&1
+    rm /var/lib/apt/lists/lock
   #  apt-get install -y git tofrodos dos2unix firefox
 
     wget -q "https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/show-my-ip.sh"
@@ -101,7 +103,7 @@ Vagrant.configure("2") do |config|
     cd ericomshield
     wget -q https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/ericomshield-setup.sh
     chmod +x ericomshield-setup.sh
-    ./ericomshield-setup.sh -eval
+    ./ericomshield-setup.sh -pocket
 
     apt-get clean
 

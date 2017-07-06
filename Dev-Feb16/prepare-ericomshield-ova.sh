@@ -18,7 +18,7 @@ ES_repo_Vagrant="https://raw.githubusercontent.com/ErezPasternak/Shield/master/D
 ES_repo_Vagrant_dev="https://raw.githubusercontent.com/ErezPasternak/Shield/master/Dev-Feb16/Vagrantfile_dev"
 PUSH_STRATEGY_GDRIVE="0"
 PUSH_STRATEGY_COPY="1"
-TARGET_FOLDER="/tmp/shield_ova"
+TARGET_FOLDER="/tmp/shield_ova/"
 PUSH_STRATEGY_FTP="0"
 
 if [ "$1" == "-dev" ]; then
@@ -97,7 +97,11 @@ if [ $PUSH_STRATEGY_GDRIVE == "1" ]; then
 fi
 
 if [ $PUSH_STRATEGY_COPY == "1" ]; then
-    echo "***************     Copying the File to: $TARGET_FOLDER"
+    echo "***************     Moving the File to: $TARGET_FOLDER"
+    if [ ! -d $TARGET_FOLDER ]; then
+       mkdir -p $TARGET_FOLDER
+       chmod 0755 $TARGET_FOLDER
+    fi
     time mv $OVA_FILE $TARGET_FOLDER
 
     if [ $? == 0 ]; then

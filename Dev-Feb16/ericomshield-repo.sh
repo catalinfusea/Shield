@@ -16,6 +16,7 @@ ES_repo_status="https://raw.githubusercontent.com/ErezPasternak/Shield/$BRANCH/D
 ES_repo_service="https://raw.githubusercontent.com/ErezPasternak/Shield/$BRANCH/Dev-Feb16/ericomshield"
 ES_repo_ip="https://raw.githubusercontent.com/ErezPasternak/Shield/$BRANCH/Dev-Feb16/show-my-ip.sh"
 ES_repo_systemd_service="https://raw.githubusercontent.com/ErezPasternak/Shield/$BRANCH/Dev-Feb16/ericomshield.service"
+ES_repo_systemd_service_swarm="https://raw.githubusercontent.com/ErezPasternak/Shield/$BRANCH/Dev-Feb16/ericomshield.service.swarm"
 ES_repo_systemd_updater_service="https://raw.githubusercontent.com/ErezPasternak/Shield/$BRANCH/Dev-Feb16/ericomshield-updater.service"
 ES_repo_sysctl_shield_conf="https://raw.githubusercontent.com/ErezPasternak/Shield/$BRANCH/Dev-Feb16/sysctl_shield.conf"
 
@@ -29,4 +30,5 @@ ES_repo_dev_ver="https://raw.githubusercontent.com/ErezPasternak/Shield/$BRANCH/
 ES_repo_yml="https://raw.githubusercontent.com/ErezPasternak/Shield/$BRANCH/Dev-Feb16/docker-compose.yml"
 # Swarm Repository: (Latest)
 ES_repo_swarm_yml="https://raw.githubusercontent.com/ErezPasternak/Shield/$BRANCH/Dev-Feb16/docker-compose_swarm.yml"
+ES_repo_pocket_yml="https://raw.githubusercontent.com/ErezPasternak/Shield/$BRANCH/Dev-Feb16/docker-compose_pocket.yml"
 ES_repo_swarm_sh="https://raw.githubusercontent.com/ErezPasternak/Shield/$BRANCH/Dev-Feb16/deploy-shield.sh"

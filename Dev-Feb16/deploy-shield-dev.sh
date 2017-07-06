@@ -6,12 +6,13 @@ set -ex
 #####   Ericom Shield Installer        #####
 ###################################LO##BH###
 NETWORK_INTERFACE='eth0'
-IP_ADDRESS=
+#IP_ADDRESS=
 SINGLE_MODE=true
 STACK_NAME='shield'
-ES_YML_FILE=docker-compose.yml
+ES_YML_FILE=docker-compose_swarm.yml
 HOST=$( hostname )
 SECRET_UID="shield-system-id"
+
 
 function test_swarm_exists {
     echo $( docker info | grep -i 'swarm: active' )
@@ -32,15 +33,6 @@ function init_swarm {
         echo 11
     else
         echo 0
-    fi
-}
-
-function set_experimental {
-    if [ -f /etc/docker/daemon.json ] && [  $( grep -c "\"experimental\" : true" /etc/docker/daemon.json ) -eq 1 ]; then
-       echo "\"experimental\" : true in /etc/docker/daemon.json"
-     else
-       echo $'{\n\"experimental\" : true\n}\n' > /etc/docker/daemon.json
-       echo "Setting: \"experimental\" : true in /etc/docker/daemon.json"
     fi
 }
 
@@ -100,11 +92,13 @@ else
     SWARM=$( test_swarm_exists )
     if [ -z "$SWARM" ]; then
         echo '#######################Start create swarm#####################'
-        NETWORK_INTERFACE=$( get_right_interface )
-        for int in $NETWORK_INTERFACE; do
-            NETWORK_INTERFACE=$int
-            break
-        done
+        if [ -z "$IP_ADDRESS" ]; then
+            NETWORK_INTERFACE=$( get_right_interface )
+            for int in $NETWORK_INTERFACE; do
+                NETWORK_INTERFACE=$int
+                break
+            done
+        fi
         SWARM_RESULT=$( init_swarm )
         if [ "$SWARM_RESULT" != "0" ]; then
             echo "Swarm init failed"
@@ -112,13 +106,13 @@ else
         fi
         echo '########################Swarm created########################'
     fi
-    #update_images # no need to pull images docker stack does it
+    #update_images
 fi
 
-create_uuid
 make_in_memory_volume
-set_experimental
+create_uuid
+ 
 export SYS_LOG_HOST=$( docker node ls | grep Leader | awk '{print $3}' )
-docker stack deploy -c $ES_YML_FILE $STACK_NAME --with-registry-auth
+docker stack deploy -c $ES_YML_FILE $STACK_NAME
 
 
