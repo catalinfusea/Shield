@@ -10,6 +10,11 @@ services:
         - /:/hostfs:ro
       networks:
         - shield
+      deploy:
+        replicas: 1
+        placement:
+            constraints:
+                - node.role==manager
       environment:
         - "SYSTEM_PERIOD=5m"
         - "DOCKER_PERIOD=5m"
@@ -22,6 +27,11 @@ services:
           - 5014:5014/udp
       networks:
           - shield
+      deploy:
+        replicas: 1
+        placement:
+            constraints:
+                - node.role==manager
       volumes:
           - elastic:/var/lib
 
@@ -52,6 +62,11 @@ services:
            - admin:/data/consul
         networks:
             - shield
+        deploy:
+          replicas: 1
+          placement:
+              constraints:
+                - node.role==manager
         logging:
           driver: syslog
           options:
@@ -120,9 +135,9 @@ services:
       #  volumes:
       #    - /home/lev/projects/SB/Containers/Docker/shield-cef/src:/app/src
         deploy:
+          replicas: 0
           update_config:
             parallelism: 0
-          replicas: 0
           restart_policy:
               condition: none
           resources:
