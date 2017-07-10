@@ -13,6 +13,7 @@ if (( $EUID != 0 )); then
         echo "sudo" $0 $1 $2
         exit
 fi
+cd $ES_PATH
 
 if [ -f "$ES_SWARM_FILE" ]; then
    NUM_EXPECTED_SERVICES=$(grep -c image docker-compose.yml)
