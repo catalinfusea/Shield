@@ -1,4 +1,4 @@
-#!/bin/bash +x
+#!/bin/bash
 ############################################
 #####   Ericom Shield Run              #####
 #######################################BH###
@@ -8,9 +8,18 @@ ES_SWARM_FILE="$ES_PATH/.esswarm"
 STACK_NAME='shield'
 ES_YML_FILE=docker-compose.yml
 
+#Check if we are root
+if (( $EUID != 0 )); then
+#    sudo su
+        echo " Please run it as Root"
+        echo "sudo" $0 $1 $2
+        exit
+fi
+cd $ES_PATH
+
 if [ -f "$ES_SWARM_FILE" ]; then
    echo "swarm mode:"
-   docker stack deploy -c $ES_YML_FILE $STACK_NAME  --with-registry-auth
+   ./deploy-shield.sh
  else
    #cd $ES_PATH
    echo "***********       Launching docker-compose up"
