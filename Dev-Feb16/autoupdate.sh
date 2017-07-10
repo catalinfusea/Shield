@@ -14,15 +14,15 @@ ES_REPO_FILE="$ES_PATH/ericomshield-repo.sh"
 ES_AUTO_UPDATE_FILE="$ES_PATH/.autoupdate"
 ES_DEV_FILE="$ES_PATH/.esdev"
 ES_VER_FILE="$ES_PATH/shield-version.txt"
-cd $ES_PATH
 
 #Check if we are root
 if (( $EUID != 0 )); then
-        echo "Usage:" $0
+#    sudo su
         echo " Please run it as Root"
-        echo "sudo" $0
+        echo "sudo" $0 $1 $2
         exit
 fi
+cd $ES_PATH
 
 source $ES_REPO_FILE
 
