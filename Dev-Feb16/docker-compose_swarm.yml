@@ -171,6 +171,7 @@ services:
         environment:
           - SSLEXCLUSION=true
         deploy:
+          replicas: 2
           placement:
             constraints:
               - node.role==manager
