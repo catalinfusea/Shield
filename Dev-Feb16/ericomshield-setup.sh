@@ -357,14 +357,11 @@ fi
 $ES_PATH/status.sh
 if [ $? == 0 ]; then
    #Clean previous installed images
-   echo "*************** cleaning old images"
-   docker system prune -f -a
+   echo "*************** not cleaning old images for now"
+#   docker system prune -f -a
 fi
 
 Version=`grep  SHIELD_VER $ES_YML_FILE`
-if [ "$ES_SWARM" == true ]; then
-   Version=$Version'(Swarm)'
-fi
 
 echo $Version  > .version
 grep image $ES_YML_FILE >> .version
