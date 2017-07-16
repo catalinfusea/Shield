@@ -350,16 +350,26 @@ if [ $? == 0 ]; then
   else
    echo "An error occured during the installation"
    echo "$(date): An error occured during the installation" >> "$LOGFILE"
-   echo "--failed" >> "$ES_VER_FILE" ] # adding failed into the version file
+   echo "--failed" >> "$ES_VER_FILE" # adding failed into the version file
    exit 1
 fi
 #Check the status of the system, and clean only if running
-$ES_PATH/status.sh
-if [ $? == 0 ]; then
-   #Clean previous installed images
-   echo "*************** not cleaning old images for now"
-#   docker system prune -f -a
-fi
+wait=0
+while [ $wait -lt 5 ]
+do
+  
+  $ES_PATH/status.sh
+  if [ $? == 0 ]; then
+     echo "Ericom Shield is Running!"
+     #Clean previous installed images
+     echo "*************** not cleaning old images for now"
+     #   docker system prune -f -a
+     break;
+    else
+     sleep 60
+  fi
+  wait=$[$wait+1]  
+done
 
 Version=`grep  SHIELD_VER $ES_YML_FILE`
 
