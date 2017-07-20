@@ -12,9 +12,10 @@ if [ -f "$ES_SWARM_FILE" ]; then
    echo "***********       "
    docker stack rm $STACK_NAME
 #   docker swarm leave -f
- else
+   umount /tmp/containershm
+else
    cd $ES_PATH
    echo "***********       Stopping EricomShield "
    echo "***********       "
    docker-compose down
- fi
+fi
