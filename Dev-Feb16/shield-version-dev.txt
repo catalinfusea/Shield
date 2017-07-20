@@ -1,10 +1,10 @@
-SHIELD_VER=8.0.0.latest SHIELD_VER=8.0.0.122-DEV 
+SHIELD_VER=8.0.0.latest SHIELD_VER=8.0.0.123-DEV 
 shield-configuration:latest shield-configuration:170608-13.36-191
-shield-admin:latest shield-admin:170718-14.40-237
+shield-admin:latest shield-admin:170719-10.37-241
 shield-portainer:latest shield-portainer:170716-10.56-232
 proxy-server:latest proxy-server:170710-14.56-202
-icap-server:latest icap-server:170718-11.58-236
-shield-cef:latest shield-cef:170718-15.35-238
+icap-server:latest icap-server:170719-16.04-242
+shield-cef:latest shield-cef:170719-17.28-243
 broker-server:latest broker-server:170716-16.27-233
 shield-elastic:latest shield-elastic:170612-16.04-216
 shield-collector:latest shield-collector:170704-12.55-161
