@@ -130,6 +130,7 @@ services:
 
     shield-browser:
         image: securebrowsing/shield-cef:latest
+        user: user
         labels:
           - com.ericom.browser
         environment:
