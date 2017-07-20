@@ -12,3 +12,4 @@ shield-kibana:latest shield-kibana:170621-13.26-72
 shield-elk:latest shield-elk:170704-12.55-161
 shield-admin-orig:latest shield-admin-orig:170219-20.17
 PERF_STATS=true PERF_STATS=false
+user: #user:
