@@ -131,6 +131,9 @@ services:
     shield-browser:
         image: securebrowsing/shield-cef:latest
         user: user
+        ulimits:
+            nice: -20
+            rtprio: 10
         labels:
           - com.ericom.browser
         environment:
