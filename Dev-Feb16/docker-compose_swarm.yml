@@ -135,9 +135,9 @@ services:
         labels:
           - com.ericom.browser
         environment:
-             - FPS=25
+             #- FPS=25
              #- DEBUG_REMOTE_SITE=true
-             - DISPOSE_BROWSER=true
+             #- DISPOSE_BROWSER=true
              #- RUN_WITH_DEBUGGER=false
              #- EXTProxyAddress=
              #- DEBUG_SEND_LOG_TO_AN=true
@@ -147,7 +147,8 @@ services:
         deploy:
           replicas: 0
           update_config:
-            parallelism: 0
+            parallelism: 2
+            delay: 10s
           restart_policy:
               condition: none
           resources:
@@ -166,8 +167,6 @@ services:
           driver: syslog
           options:
             syslog-address: udp://${SYS_LOG_HOST}:5014
-
-
     proxy-server:
         image: securebrowsing/proxy-server:latest
         ports:
@@ -189,9 +188,7 @@ services:
           driver: syslog
           options:
             syslog-address: udp://${SYS_LOG_HOST}:5014
-
-
-    ext-proxy:
+     ext-proxy:
         image: securebrowsing/extproxy:170724-21.57-269
         ports:
           - "3138:3138"
