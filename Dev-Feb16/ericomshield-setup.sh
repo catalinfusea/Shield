@@ -357,14 +357,6 @@ if [ $UPDATE -eq 0 ]; then
       service ericomshield restart
     fi
   
-    if [ $ES_SWARM == true ]; then
-      echo "source deploy-shield.sh"
-      source deploy-shield.sh
-     else 
-      docker-compose pull
-      echo "Restarting Ericom Shield Service"
-      service ericomshield restart
-    fi
 fi
 
 # Check the result of the last command (start, status, deploy-shield)
