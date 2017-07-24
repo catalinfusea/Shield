@@ -78,8 +78,6 @@ services:
         environment:
             - NODE_ENV=production
             - SHIELD_VER=8.0.0.latest
-            - MAX_ELASTIC_CHECK_ATTEMPTS=40
-            - NO_FOLLOW_REDIRECT=true
             - "SHIELD_IP=IP_ADDRESS"
 #           - SHIELD_WATERMARK=TRUE
         ulimits:
@@ -146,10 +144,6 @@ services:
              - PERF_STATS=true
         networks:
             - shield
-      # ports:
-      #    - "3656:3656"
-      #  volumes:
-      #    - /home/lev/projects/SB/Containers/Docker/shield-cef/src:/app/src
         deploy:
           replicas: 0
           update_config:
