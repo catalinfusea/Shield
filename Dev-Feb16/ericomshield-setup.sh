@@ -332,8 +332,31 @@ if [ $UPDATE -eq 0 ]; then
       $ES_PATH/run.sh
       service ericomshield start
     fi
+   else     # Update
+    if [ $ES_SWARM == true ]; then
+      echo -n "stop shield-broker"
+      docker service scale shield_broker-server=0
+      wait=0
+      while [ $wait -lt 5 ]
+      do
+        if [ $(docker service ps shield_broker-server | wc -l) == 1 ]; then
+          echo !
+          break
+         else
+          echo -n .
+          sleep 10
+        fi
+      wait=$[$wait+1]
+      done
 
-  else     # Update
+      echo "source deploy-shield.sh"
+      source deploy-shield.sh
+     else
+      docker-compose pull
+      echo "Restarting Ericom Shield Service"
+      service ericomshield restart
+    fi
+  
     if [ $ES_SWARM == true ]; then
       echo "source deploy-shield.sh"
       source deploy-shield.sh
@@ -355,9 +378,8 @@ if [ $? == 0 ]; then
 fi
 #Check the status of the system, and clean only if running
 wait=0
-while [ $wait -lt 5 ]
+while [ $wait -lt 10 ]
 do
-  
   $ES_PATH/status.sh
   if [ $? == 0 ]; then
      echo "Ericom Shield is Running!"
