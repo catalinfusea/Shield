@@ -16,6 +16,10 @@ services:
         placement:
             constraints:
                 - node.role==manager
+        resources:
+          limits:
+            memory: 2GB
+            cpus: "1"
       environment:
         - "SYSTEM_PERIOD=5m"
         - "DOCKER_PERIOD=5m"
@@ -33,6 +37,10 @@ services:
         placement:
             constraints:
                 - node.role==manager
+        resources:
+          limits:
+            memory: 2GB
+            cpus: "1"
       volumes:
           - elastic:/var/lib
 
@@ -45,6 +53,10 @@ services:
           - "8500:8500"
         deploy:
           mode: global
+          resources:
+            limits:
+              memory: 500MB
+              cpus: "1"
         environment:
           - "CONSUL_BIND_INTERFACE=eth2"
           - "NUMBER_OF_EXPECTED=1"
@@ -69,6 +81,10 @@ services:
           placement:
               constraints:
                 - node.role==manager
+          resources:
+            limits:
+              memory: 500MB
+              cpus: "0.5"
         logging:
           driver: syslog
           options:
@@ -96,6 +112,10 @@ services:
           placement:
               constraints:
                 - node.role==manager
+          resources:
+            limits:
+              memory: 500MB
+              cpus: "1"
         logging:
           driver: syslog
           options:
@@ -160,7 +180,7 @@ services:
               memory: 1GB
               cpus: "2"
             reservations:
-              memory: 200MB
+              memory: 150MB
         volumes:
           - type: tmpfs
             target: /dev/shm
@@ -188,6 +208,10 @@ services:
           placement:
             constraints:
               - node.role==manager
+          resources:
+            limits:
+              memory: 500MB
+              cpus: "1"
         logging:
           driver: syslog
           options:
@@ -208,6 +232,10 @@ services:
           placement:
             constraints:
               - node.role==manager
+          resources:
+            limits:
+              memory: 500MB
+              cpus: "1"
 
     ############################### Docker managment part ##############################################################
     portainer:
@@ -224,6 +252,10 @@ services:
           placement:
             constraints:
               - node.role==manager
+        resources:
+          limits:
+            memory: 100MB
+            cpus: "0.5"
         logging:
           driver: syslog
           options:
