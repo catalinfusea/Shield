@@ -1,4 +1,3 @@
-version: '3.2'
 #Ericom Shield Stack Description
 services:
     collector:
@@ -37,6 +36,7 @@ services:
 
     consul:
         image: securebrowsing/shield-configuration:latest
+        user: consul
         networks:
           - shield
         ports:
@@ -74,6 +74,7 @@ services:
 
     icap-server:
         image: securebrowsing/icap-server:latest
+        # user: nobody
         hostname: icap-server
         environment:
             - NODE_ENV=production
@@ -100,6 +101,7 @@ services:
 
     broker-server:
         image: securebrowsing/broker-server:latest
+        # user: nobody
         hostname: broker-server
         deploy:
           replicas: 1
@@ -190,6 +192,7 @@ services:
             syslog-address: udp://${SYS_LOG_HOST}:5014
     ext-proxy:
         image: securebrowsing/extproxy:170724-21.57-269
+        # user: nobody
         ports:
           - "3138:3138"
         ulimits:
