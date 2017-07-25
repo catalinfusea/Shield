@@ -252,10 +252,10 @@ services:
           placement:
             constraints:
               - node.role==manager
-        resources:
-          limits:
-            memory: 100MB
-            cpus: "0.5"
+          resources:
+            limits:
+              memory: 100MB
+              cpus: "0.5"
         logging:
           driver: syslog
           options:
