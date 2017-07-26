@@ -1,6 +1,5 @@
 version: '3.2'
 
-#Ericom Shield Stack Description
 services:
     collector:
       image: securebrowsing/shield-collector:latest
@@ -16,10 +15,6 @@ services:
         placement:
             constraints:
                 - node.role==manager
-        resources:
-          limits:
-            memory: 2GB
-            cpus: "1"
       environment:
         - "SYSTEM_PERIOD=5m"
         - "DOCKER_PERIOD=5m"
@@ -37,26 +32,17 @@ services:
         placement:
             constraints:
                 - node.role==manager
-        resources:
-          limits:
-            memory: 2GB
-            cpus: "1"
       volumes:
           - elastic:/var/lib
 
     consul:
         image: securebrowsing/shield-configuration:latest
-        user: consul
         networks:
           - shield
         ports:
           - "8500:8500"
         deploy:
           mode: global
-          resources:
-            limits:
-              memory: 500MB
-              cpus: "1"
         environment:
           - "CONSUL_BIND_INTERFACE=eth2"
           - "NUMBER_OF_EXPECTED=1"
@@ -81,10 +67,6 @@ services:
           placement:
               constraints:
                 - node.role==manager
-          resources:
-            limits:
-              memory: 500MB
-              cpus: "0.5"
         logging:
           driver: syslog
           options:
@@ -92,11 +74,12 @@ services:
 
     icap-server:
         image: securebrowsing/icap-server:latest
-        # user: nobody
         hostname: icap-server
         environment:
             - NODE_ENV=production
             - SHIELD_VER=8.0.0.latest
+            - MAX_ELASTIC_CHECK_ATTEMPTS=40
+            - NO_FOLLOW_REDIRECT=true
             - "SHIELD_IP=IP_ADDRESS"
 #           - SHIELD_WATERMARK=TRUE
         ulimits:
@@ -112,10 +95,6 @@ services:
           placement:
               constraints:
                 - node.role==manager
-          resources:
-            limits:
-              memory: 500MB
-              cpus: "1"
         logging:
           driver: syslog
           options:
@@ -123,7 +102,6 @@ services:
 
     broker-server:
         image: securebrowsing/broker-server:latest
-        # user: nobody
         hostname: broker-server
         deploy:
           replicas: 1
@@ -165,14 +143,17 @@ services:
              #- RUN_WITH_DEBUGGER=false
              #- EXTProxyAddress=
              #- DEBUG_SEND_LOG_TO_AN=true
-             - PERF_STATS=true
+             #- PERF_STATS=true
         networks:
             - shield
+      # ports:
+      #    - "3656:3656"
+      #  volumes:
+      #    - /home/lev/projects/SB/Containers/Docker/shield-cef/src:/app/src
         deploy:
           replicas: 0
           update_config:
-            parallelism: 2
-            delay: 10s
+            parallelism: 0
           restart_policy:
               condition: none
           resources:
@@ -180,7 +161,7 @@ services:
               memory: 1GB
               cpus: "2"
             reservations:
-              memory: 150MB
+              memory: 200MB
         volumes:
           - type: tmpfs
             target: /dev/shm
@@ -191,6 +172,8 @@ services:
           driver: syslog
           options:
             syslog-address: udp://${SYS_LOG_HOST}:5014
+
+
     proxy-server:
         image: securebrowsing/proxy-server:latest
         ports:
@@ -208,17 +191,14 @@ services:
           placement:
             constraints:
               - node.role==manager
-          resources:
-            limits:
-              memory: 500MB
-              cpus: "1"
         logging:
           driver: syslog
           options:
             syslog-address: udp://${SYS_LOG_HOST}:5014
+
+
     ext-proxy:
-        image: securebrowsing/extproxy:170724-21.57-269
-        # user: nobody
+        image: securebrowsing/extproxy:latest
         ports:
           - "3138:3138"
         ulimits:
@@ -232,10 +212,6 @@ services:
           placement:
             constraints:
               - node.role==manager
-          resources:
-            limits:
-              memory: 500MB
-              cpus: "1"
 
     ############################### Docker managment part ##############################################################
     portainer:
@@ -252,10 +228,6 @@ services:
           placement:
             constraints:
               - node.role==manager
-          resources:
-            limits:
-              memory: 100MB
-              cpus: "0.5"
         logging:
           driver: syslog
           options:
