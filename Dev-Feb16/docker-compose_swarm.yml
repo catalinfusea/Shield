@@ -136,7 +136,7 @@ services:
             rtprio: 10
         labels:
           - com.ericom.browser
-        environment:
+        #environment:
              #- FPS=25
              #- DEBUG_REMOTE_SITE=true
              #- DISPOSE_BROWSER=true
