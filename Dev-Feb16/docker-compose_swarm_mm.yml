@@ -18,8 +18,8 @@ services:
             memory: 2GB
             cpus: "1"
       environment:
-        - "SYSTEM_PERIOD=5m"
-        - "DOCKER_PERIOD=5m"
+        - "SYSTEM_PERIOD=30s"
+        - "DOCKER_PERIOD=30s"
 
     elk:
       image: securebrowsing/shield-elk:170706-14.29-184
@@ -49,14 +49,17 @@ services:
         ports:
           - "8500:8500"
         deploy:
-          mode: global
+          replicas: 1
+          placement:
+            constraints:
+              - node.role==manager
           resources:
             limits:
               memory: 500MB
               cpus: "1"
         environment:
           - "CONSUL_BIND_INTERFACE=eth2"
-          - "NUMBER_OF_EXPECTED=3"
+          - "NUMBER_OF_EXPECTED=1"
         logging:
           driver: syslog
           options:
@@ -88,7 +91,7 @@ services:
             syslog-address: udp://${SYS_LOG_HOST}:5014
 
     icap-server:
-        image: securebrowsing/icap-server:170725-16.42-4
+        image: securebrowsing/icap-server:170727-15.57-285
         # user: nobody
         hostname: icap-server
         environment:
@@ -119,7 +122,7 @@ services:
             syslog-address: udp://${SYS_LOG_HOST}:5014
 
     broker-server:
-        image: securebrowsing/broker-server:170724-20.57-268
+        image: securebrowsing/broker-server:170727-15.57-285
         # user: nobody
         hostname: broker-server
         deploy:
@@ -151,7 +154,7 @@ services:
             syslog-address: udp://${SYS_LOG_HOST}:5014
 
     shield-browser:
-        image: securebrowsing/shield-cef:170725-16.23-4
+        image: securebrowsing/shield-cef:170727-18.58-288
         user: user
         ulimits:
             nice: -20
@@ -183,7 +186,7 @@ services:
               memory: 1GB
               cpus: "2"
             reservations:
-              memory: 150MB
+              memory: 100MB
         volumes:
           - type: tmpfs
             target: /dev/shm

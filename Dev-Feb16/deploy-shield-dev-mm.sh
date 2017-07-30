@@ -28,7 +28,7 @@ function create_uuid {
 create_uuid
  
 #export SYS_LOG_HOST=$( docker node ls | grep Leader | awk '{print $3}' )
-export SYS_LOG_HOST=10.0.0.1
+export SYS_LOG_HOST=192.168.50.133
 docker stack deploy -c $ES_YML_FILE $STACK_NAME --with-registry-auth
 
 
