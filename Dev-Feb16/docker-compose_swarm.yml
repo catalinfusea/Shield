@@ -62,6 +62,7 @@ services:
             - SHIELD_VER=8.0.0.latest
         volumes:
            - admin:/data/consul
+           - /var/run/docker.sock:/var/run/docker.sock
         networks:
             - shield
         deploy:
