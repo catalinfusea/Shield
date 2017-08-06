@@ -44,10 +44,7 @@ services:
         ports:
           - "8500:8500"
         deploy:
-          replicas: 1
-          placement:
-            constraints:
-              - node.role==manager
+          mode: global
         environment:
           - "CONSUL_BIND_INTERFACE=eth2"
           - "NUMBER_OF_EXPECTED=1"
