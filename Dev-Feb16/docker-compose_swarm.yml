@@ -27,6 +27,8 @@ services:
           - 5014:5014/udp
       networks:
           - shield
+      environment:
+        - "CONSUL_ADDRESS=consul"
       deploy:
         replicas: 1
         placement:
