@@ -13,25 +13,23 @@ if (( $EUID != 0 )); then
 fi
 ES_PATH="/usr/local/ericomshield"
 LOGFILE="$ES_PATH/ericomshield.log"
-DOCKER_VERSION="17.05"
-DOCKER_COMPOSE_VERSION="1.13"
+DOCKER_VERSION="17.06"
+DOCKER_COMPOSE_VERSION="1.15.0"
 UPDATE=0
 ES_DEV_FILE="$ES_PATH/.esdev"
-ES_SWARM_FILE="$ES_PATH/.esswarm"
 ES_AUTO_UPDATE_FILE="$ES_PATH/.autoupdate"
 ES_REPO_FILE="$ES_PATH/ericomshield-repo.sh"
 ES_YML_FILE="$ES_PATH/docker-compose.yml"
 ES_VER_FILE="$ES_PATH/shield-version.txt"
 ES_SWARM_SH_FILE="$ES_PATH/deploy-shield.sh"
-ES_SETUP_VER="8.0.0.120-setup"
-BRANCH="master"
+ES_SETUP_VER="8.0.0.070817-setup"
+BRANCH="BenyH-install-scripts"
 
 DOCKER_USER="ericomshield1"
 DOCKER_SECRET="Ericom98765$"
 ES_DEV=false
 ES_SWARM=true
 ES_POCKET=false
-echo "ES_SWARM" > "$ES_SWARM_FILE"
 
 ES_AUTO_UPDATE=true
 # Create the Ericom empty dir if necessary
@@ -50,10 +48,6 @@ do
             ES_DEV=true
             echo "ES_DEV" > "$ES_DEV_FILE"
             ;;
-        -compose)
-            ES_SWARM=false
-            rm "$ES_SWARM_FILE"
-            ;;
         -noautoupdate)
             ES_AUTO_UPDATE=false
             rm -f "$ES_AUTO_UPDATE_FILE"
@@ -68,7 +62,7 @@ do
             ;;
 #        -usage)
         *)
-            echo "Usage:" $0 [-force] [-noautoupdate] [-dev] [-compose] [-usage]
+            echo "Usage:" $0 [-force] [-noautoupdate] [-dev] [-pocket] [-usage]
             exit
             ;;
     esac
@@ -77,10 +71,6 @@ done
 
 if [ -f "$ES_DEV_FILE" ]; then
    ES_DEV=true
-fi
-
-if [ -f "$ES_SWARM_FILE" ]; then
-   ES_SWARM=true
 fi
 
 if [ "$ES_AUTO_UPDATE" == true ]; then
@@ -118,7 +108,7 @@ function install_docker {
 function install_docker_compose {
     if [ $(  docker-compose version | grep $DOCKER_COMPOSE_VERSION |wc -l ) -eq 0 ]; then
        echo "***************     Installing docker-compose"
-       curl -L "https://github.com/docker/compose/releases/download/1.13.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+       curl -L "https://github.com/docker/compose/releases/download/$DOCKER_COMPOSE_VERSION/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
        chmod +x /usr/local/bin/docker-compose
     else
        echo "***************     DockerCompose is already installed"
@@ -167,12 +157,7 @@ function create_shield_service {
   
     if [ ! -f "${ES_PATH}/ericomshield.service" ]; then
       # Need to download the service file only if needed and reload only if changed
-       if [ "$ES_SWARM" == true ]; then
-          echo "service for swarm"       
-          curl -s -S -o "${ES_PATH}/ericomshield.service" "${ES_repo_systemd_service_swarm}"    
-         else 
-          curl -s -S -o "${ES_PATH}/ericomshield.service" "${ES_repo_systemd_service}"
-       fi 
+      curl -s -S -o "${ES_PATH}/ericomshield.service" "${ES_repo_systemd_service_swarm}"    
     fi
 
    systemctl --system enable "${ES_PATH}/ericomshield.service"
@@ -249,15 +234,14 @@ function get_shield_install_files {
      mv "shield-version-new.txt" "$ES_VER_FILE"
 
      echo "Getting $ES_YML_FILE"
-     if [ $ES_SWARM == true ]; then
-        echo "Getting $ES_repo_swarm_yml SWARM"
-        curl -s -S -o $ES_YML_FILE $ES_repo_swarm_yml
-        curl -s -S -o deploy-shield.sh $ES_repo_swarm_sh
-        chmod +x deploy-shield.sh
-       else
-        curl -s -S -o $ES_YML_FILE $ES_repo_yml
-     fi
+     curl -s -S -o $ES_YML_FILE $ES_repo_swarm_yml
+     curl -s -S -o deploy-shield.sh $ES_repo_swarm_sh
+     chmod +x deploy-shield.sh
      if [ $ES_POCKET == true ]; then
+        echo "Getting $ES_repo_pocket_yml"
+        curl -s -S -o $ES_YML_FILE $ES_repo_pocket_yml
+     fi
+     if [ "$ES_DEV" == true ]; then
         echo "Getting $ES_repo_pocket_yml SWARM"
         curl -s -S -o $ES_YML_FILE $ES_repo_pocket_yml
      fi
@@ -291,7 +275,6 @@ function get_shield_files {
 echo Docker Login: $DOCKER_USER $DOCKER_SECRET
 echo "dev=$ES_DEV"
 echo "autoupdate=$ES_AUTO_UPDATE"
-echo "Swarm=$ES_SWARM"
 
 install_docker
 echo "Starting docker service"
@@ -320,43 +303,28 @@ prepare_yml
 if [ $UPDATE -eq 0 ]; then
 # New Installation
 
-    create_shield_service
-    systemctl start ericomshield-updater.service
+  create_shield_service
+  systemctl start ericomshield-updater.service
 
-    if [ $ES_SWARM == true ]; then
-      echo "source deploy-shield.sh"
-      source deploy-shield.sh
-     else
-      docker-compose pull
-      echo "Starting Ericom Shield Service"
-      $ES_PATH/run.sh
-      service ericomshield start
-    fi
-   else     # Update
-    if [ $ES_SWARM == true ]; then
-      echo -n "stop shield-broker"
-      docker service scale shield_broker-server=0
-      wait=0
-      while [ $wait -lt 5 ]
-      do
-        if [ $(docker service ps shield_broker-server | wc -l) == 1 ]; then
-          echo !
-          break
-         else
-          echo -n .
-          sleep 10
-        fi
-      wait=$[$wait+1]
-      done
+  echo "source deploy-shield.sh"
+  source deploy-shield.sh
+ else     # Update
+  echo -n "stop shield-broker"
+  docker service scale shield_broker-server=0
+  wait=0
+  while [ $wait -lt 5 ] do
+      if [ $(docker service ps shield_broker-server | wc -l) <= 1 ]; then
+        echo !
+        break
+       else
+        echo -n .
+        sleep 10
+      fi
+    wait=$[$wait+1]
+  done
 
-      echo "source deploy-shield.sh"
-      source deploy-shield.sh
-     else
-      docker-compose pull
-      echo "Restarting Ericom Shield Service"
-      service ericomshield restart
-    fi
-  
+  echo "source deploy-shield.sh"
+  source deploy-shield.sh
 fi
 
 # Check the result of the last command (start, status, deploy-shield)
@@ -370,8 +338,7 @@ if [ $? == 0 ]; then
 fi
 #Check the status of the system, and clean only if running
 wait=0
-while [ $wait -lt 10 ]
-do
+while [ $wait -lt 10 ] do
   $ES_PATH/status.sh
   if [ $? == 0 ]; then
      echo "Ericom Shield is Running!"
@@ -380,6 +347,7 @@ do
      #   docker system prune -f -a
      break;
     else
+     echo -n .
      sleep 60
   fi
   wait=$[$wait+1]  
